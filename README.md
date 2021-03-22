@@ -20,16 +20,27 @@ Photon is an application capable of:
 ### Patents API's
 * [European Patent Office API](https://developers.epo.org/)
 
+## Requirements
+* Docker + docker-compose
+* NPM
+* .env in api/ with the following information:
+> DATABASE_URI=neo4j://localhost:7687
+> DATABASE_USERNAME=neo4j
+> DATABASE_PASSWORD=test
+> DATABASE_HTTP=7474
+> DATABASE_BOLT=7687
+> SERVER_PORT=5000
+
 ## Usage
 ### API Usage 
 * cd api
 * docker-compose up -d neo (localhost:7474)
 * npm install
 * npm run build
-* npm dev
+* npm run dev
 
 ## Developers
-* [Eduardo Ribeiro](https://github.com/motapinto)
+* [Eduardo Ribeiro](https://github.com/EduRibeiro00)
 * [Martim Pinto da Silva](https://github.com/motapinto)
 * [Miguel Pinto](https://github.com/MiguelDelPinto)
-* [Nuno Ribeiro](https://github.com/nmtc01)
+* [Nuno Cardoso](https://github.com/nmtc01)
