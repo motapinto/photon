@@ -24,23 +24,28 @@ Photon is an application capable of:
 * Docker + docker-compose
 * NPM
 * .env in api/ with the following information:
-> DATABASE_URI=neo4j://localhost:7687
-> DATABASE_USERNAME=neo4j
-> DATABASE_PASSWORD=test
-> DATABASE_HTTP=7474
-> DATABASE_BOLT=7687
+> DATABASE_URI=neo4j://localhost:7687\
+> DATABASE_USERNAME=neo4j\
+> DATABASE_PASSWORD=test\
+> DATABASE_HTTP=7474\
+> DATABASE_BOLT=7687\
 > SERVER_PORT=5000
 
 ## Usage
 ### API Usage 
 * cd api
-* docker-compose up -d neo (localhost:7474)
+* npm run neo4j
 * npm install
 * npm run build
+* [npm run populate]
 * npm run dev
+
+**Note:** If you want to use mock data, instead of real data, you can use *npm run populate* to test our application. If not, just skip that instruction.
 
 ## Developers
 * [Eduardo Ribeiro](https://github.com/EduRibeiro00)
 * [Martim Pinto da Silva](https://github.com/motapinto)
 * [Miguel Pinto](https://github.com/MiguelDelPinto)
 * [Nuno Cardoso](https://github.com/nmtc01)
+
+**Note:** This project was done in close collaboration with the [Research Center for Assistive Information and Communication Solutions – AICOS](https://www.aicos.fraunhofer.pt/en/home.html) from [Fraunhofer Portugal](https://www.fraunhofer.pt/en/about_us.html).
