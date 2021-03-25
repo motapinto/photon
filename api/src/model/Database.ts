@@ -1,44 +1,86 @@
 import { Connection, equals, node, relation } from 'cypher-query-builder';
+import { IEdge } from './IEdge';
+import { INode } from './INode';
 
-export class Database {
+export default class Database {
     private static instance: Database;
     private static neo4j: Connection;
 
-    private static url: string;
-    private static username: string;
-    private static password: string;
-
     private constructor(url: string, username: string, password: string) {
-        Database.url = url;
-        Database.username = username;
-        Database.password = password;
-        this.connect();
+        Database.neo4j = new Connection(url, { username, password });
     };
 
-    private connect() {
-        Database.neo4j = new Connection(Database.url, {
-            username: Database.username,
-            password: Database.password
-        });
-    };
-
-    public async createTestNode() {        
+    /**
+     * Returns a given node
+     */
+    public async getNode(oldNode: INode) {
         try {
-            const results = await Database.neo4j.matchNode('person', 'Person')
-            .where({ 'person.name': equals('Martim') })
-            .return('person')
-            .run();
+            return Database.neo4j.matchNode('node', oldNode.labels, oldNode.properties)
+                .return('node')
+                .run();
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
-            let rows = results.map(row => row.person);
+    /**
+     * Creates and returns a given node
+     */
+    public async createNode(newNode: INode, unique?: boolean) {
+        try {
+            if(unique && this.getNode(newNode)) {
+                console.log(`Node: ${JSON.stringify(newNode)} already exists!`);
+                return;
+            }
 
-            if(rows.length == 0) {
-                await Database.neo4j.create([
-                    node('person', 'Person', { name: 'Martim' }),
-                    relation('out', '', 'HasVehicle'),
-                    node('vehicle', 'Vehicle', { brand: 'Ferrari', colour: 'red' })
+            return Database.neo4j.createNode('n', newNode.labels, newNode.properties)
+                .return('n')
+                .run();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    /**
+     * Creates an edge between two existing nodes
+     */
+    public async createEdge(origin: INode, dest: INode, edge: IEdge) {
+        try {
+            return Database.neo4j.matchNode('origin', origin.labels, origin.properties)
+                .matchNode('dest', dest.labels, dest.properties)
+                .create([
+                    node('origin'),
+                    relation(edge.direction, edge.labels, edge.properties),
+                    node('dest'),
                 ])
                 .run();
-            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    /**
+     * Creates the two nodes, if they don't exist, and the edge between them
+     */
+    public async mergeNodes(origin: INode, dest: INode, edge: IEdge) {
+        try {
+            return Database.neo4j.matchNode('origin', origin.labels, origin.properties)
+            .matchNode('dest', dest.labels, dest.properties)
+            .merge([
+                node('origin'),
+                relation(edge.direction, edge.labels, edge.properties),
+                node('dest'),
+            ])
+            .run();
+            
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    public async drop() {
+        try {
+            return Database.neo4j.matchNode('n').detachDelete('n').run();
         } catch (error) {
             console.error(error);
         }
