@@ -3,10 +3,6 @@ import { INode } from "../model/INode";
 export const countries: INode[] = [
     { 
         labels: ['Country'], 
-        properties: { name: 'Portugal' } 
-    },
-    { 
-        labels: ['Country'], 
         properties: { name: 'US' } 
     },
     { 
@@ -15,22 +11,6 @@ export const countries: INode[] = [
     },
     { 
         labels: ['Country'], 
-        properties: { name: 'Colombia' } 
+        properties: { name: 'Canada' } 
     },
-    { 
-        labels: ['Country'], 
-        properties: { name: 'Germany' } 
-    },
-    { 
-        labels: ['Country'], 
-        properties: { name: 'Sweden' } 
-    },
-    { 
-        labels: ['Country'], 
-        properties: { name: 'Brazil' } 
-    },
-    { 
-        labels: ['Country'], 
-        properties: { name: 'China' } 
-    }
 ];

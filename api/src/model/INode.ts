@@ -1,5 +1,5 @@
 export interface INode {
-    identity?: string;
-    labels: string[];
-    properties: Object;
+    readonly identity?: string;
+    readonly labels: string[];
+    readonly properties: Object;
 }
