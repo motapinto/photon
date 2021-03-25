@@ -4,5 +4,5 @@ export interface IEdge {
     identity?: string;
     direction: RelationDirection;
     labels: string[];
-    properties: Object;
+    properties?: Object;
 }

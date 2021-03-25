@@ -1,42 +1,11 @@
 import Database from "./model/Database";
 import { IEdge } from "./model/IEdge";
-import { INode } from "./model/INode";
+
+// Entity Nodes
+import { countries } from "./populate/countries";
+import { energy, nonRenewableEnergy, renewableEnergy } from "./populate/sectors";
 
 (async () => {
-    const countries: INode[] = [
-        { 
-            labels: ['Country'], 
-            properties: { name: 'Portugal' } 
-        },
-        { 
-            labels: ['Country'], 
-            properties: { name: 'US' } 
-        },
-        { 
-            labels: ['Country'], 
-            properties: { name: 'UK' } 
-        },
-        { 
-            labels: ['Country'], 
-            properties: { name: 'Colombia' } 
-        },
-        { 
-            labels: ['Country'], 
-            properties: { name: 'Germany' } 
-        },
-        { 
-            labels: ['Country'], 
-            properties: { name: 'Sweden' } 
-        },
-        { 
-            labels: ['Country'], 
-            properties: { name: 'Brazil' } 
-        },
-        { 
-            labels: ['Country'], 
-            properties: { name: 'China' } 
-        }
-    ];
 
     try {        
         const db = Database.getInstance();
@@ -55,6 +24,48 @@ import { INode } from "./model/INode";
             db.createNode(countries[6]),
             db.createNode(countries[7]),
         ]);   
+
+        // Creates Energy areas
+        await Promise.all([
+            db.createNode(energy[0]),
+            db.createNode(energy[1]),
+            db.createNode(energy[2]),
+            db.createNode(renewableEnergy[0]),
+            db.createNode(renewableEnergy[1]),
+            db.createNode(renewableEnergy[2]),
+            db.createNode(renewableEnergy[3]),
+            db.createNode(renewableEnergy[4]),
+            db.createNode(renewableEnergy[5]),
+            db.createNode(nonRenewableEnergy[0]),
+            db.createNode(nonRenewableEnergy[1]),
+            db.createNode(nonRenewableEnergy[2]),
+            db.createNode(nonRenewableEnergy[3]),
+            db.createNode(nonRenewableEnergy[4]),
+        ]);   
+
+        const majorAreaEdge: IEdge = {
+            direction: 'out',
+            labels: ['majorArea'],
+        }
+
+        const subAreaEdge: IEdge = {
+            direction: 'out',
+            labels: ['subArea'],
+        }
+        await Promise.all([
+            db.createEdge(energy[0], energy[1], majorAreaEdge),
+            db.createEdge(energy[0], energy[2], majorAreaEdge),
+            db.createEdge(energy[1], renewableEnergy[0], subAreaEdge),
+            db.createEdge(energy[1], renewableEnergy[1], subAreaEdge),
+            db.createEdge(energy[1], renewableEnergy[2], subAreaEdge),
+            db.createEdge(energy[1], renewableEnergy[3], subAreaEdge),
+            db.createEdge(energy[1], renewableEnergy[4], subAreaEdge),
+            db.createEdge(energy[2], nonRenewableEnergy[0], subAreaEdge),
+            db.createEdge(energy[2], nonRenewableEnergy[1], subAreaEdge),
+            db.createEdge(energy[2], nonRenewableEnergy[2], subAreaEdge),
+            db.createEdge(energy[2], nonRenewableEnergy[3], subAreaEdge),
+            db.createEdge(energy[2], nonRenewableEnergy[4], subAreaEdge),
+        ]);
 
         console.log("DB is now populated!");
         process.exit();
