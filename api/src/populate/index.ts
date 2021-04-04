@@ -1,13 +1,12 @@
-import Database from "./model/Database";
-import { IEdge } from "./model/IEdge";
+import Database from "../model/Database";
+import { IEdge } from "../model/IEdge";
 
 // Entity Nodes
-import { countries } from "./populate/countries";
-import { energy, nonRenewableEnergy, renewableEnergy } from "./populate/sectors";
-import { articles } from "./populate/articles";
+import { countries } from "./countries";
+import { energy, nonRenewableEnergy, renewableEnergy } from "./sectors";
+import { articles } from "./articles";
 
 (async () => {
-
     try {        
         const db = Database.getInstance();
 

@@ -8,7 +8,7 @@
     "build": "tsc --module commonjs",
     "dev": "nodemon --config nodemon.json src/server.ts",
     "prod": "node .",
-    "populate": "node -r ts-node/register ./src/populate.ts"
+    "populate": "node -r ts-node/register ./src/populate/index.ts"
   },
   "author": "",
   "license": "ISC",

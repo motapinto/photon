@@ -5,5 +5,6 @@ export interface IArticle extends INode {
         title: string,
         url: string,
         publishedAt: string,
+        score: number
     };
 }

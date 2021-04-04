@@ -78,6 +78,13 @@ export default class Database {
         }
     }
 
+    /**
+     * Returns graph from root node 'Energy'
+     */
+    public async getGraph() {
+        
+    }
+
     public async drop() {
         try {
             return Database.neo4j.matchNode('n').detachDelete('n').run();
