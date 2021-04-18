@@ -8,7 +8,7 @@ import { Request, Response } from 'express';
     });
 
     app.get('/graph', (_req: Request, res: Response) => {
-        res.send( 'This is the graph visualization page!' );
+        res.status(200).send( 'This is the graph visualization page!' );
     });
 
     app.get('/about', (_req: Request, res: Response) => {
