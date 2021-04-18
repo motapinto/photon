@@ -57,14 +57,17 @@ export default class Database {
       MATCH (origin: ${origin.label} ${Utils.stringify(origin.properties)}), (dest: ${dest.label} ${Utils.stringify(dest.properties)})
       MERGE (origin)-[e: ${edge.label} ${Utils.stringify(edge.properties)}]->(dest)
       RETURN origin, e, dest
-      `);
+    `);
   }
 
    /**
      * Returns graph from root node 'Energy'
      */
-    public async getGraph() {
-        
+    public async getGraph(): Promise<Record[] | undefined> {
+      return await this.query(`
+        MATCH (origin)-[edge]-(dest) 
+        RETURN origin, edge, dest;
+      `);
     }
 
   public async dropDB() {

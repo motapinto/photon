@@ -1,5 +1,6 @@
-import express from 'express';
-import { Request, Response } from 'express';
+import express, { Request, Response } from 'express';
+import { Record } from 'neo4j-driver';
+import Database from './database/Database';
 
 (async () => {
     const app = express();
@@ -7,7 +8,13 @@ import { Request, Response } from 'express';
         res.send( 'This is the main page!' );
     });
 
-    app.get('/graph', (_req: Request, res: Response) => {
+    app.get('/graph', async(_req: Request, res: Response) => {
+        const records = await Database.getInstance().getGraph() ?? [];
+        const record1: Record = records[1];
+        console.log(record1.get('origin'));
+        console.log(record1.get('edge'));
+        console.log(record1.get('dest'));
+        
         res.status(200).send( 'This is the graph visualization page!' );
     });
 
