@@ -1,10 +1,11 @@
 import express from 'express';
 import { Request, Response } from 'express';
 import { Database } from './model/Database';
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 app.get('/', (req: Request, res: Response) => {
-    res.header("Access-Control-Allow-Origin", "*");
     const initData = {
         nodes: [ {id: 0 } ],
         links: []
