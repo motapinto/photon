@@ -1,10 +1,18 @@
 import axios from "axios";
 
-export function getGraphData(): Promise<string> {
+type GraphData = {
+    nodes: [],
+    links: [],
+}
+
+export function getGraphData(): Promise<GraphData> {
     return axios.get(
-        "localhost:5000",
+        "http://localhost:5000",
+        {
+            headers: {"Access-Control-Allow-Origin": "*"}
+        }
     ).then((response) =>
-        response.data.token,
+        response.data,
     ).catch((err) => {
         throw err;
     });

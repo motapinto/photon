@@ -4,7 +4,12 @@ import { Database } from './model/Database';
 
 const app = express();
 app.get('/', (req: Request, res: Response) => {
-    res.send( 'Hello world!' );
+    res.header("Access-Control-Allow-Origin", "*");
+    const initData = {
+        nodes: [ {id: 0 } ],
+        links: []
+    };
+    res.send(initData);
 });
 
 const PORT = process.env.SERVER_PORT || 5000;
