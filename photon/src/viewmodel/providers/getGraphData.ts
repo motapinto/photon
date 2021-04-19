@@ -1,13 +1,17 @@
 import axios from "axios";
-import Node from "../../model/node";
 import Link from "../../model/link";
+import Node from "../../model/node";
+import Article from "../../model/article";
+import Area from "../../model/area";
+import Country from "../../model/country";
+import labels from "../../model/labels.json";
 
 type GraphData = {
     nodes: Node[],
     links: Link[],
 }
 
-function parseNode(node: any): Node {
+function parseArticle(node: any): Article {
     const id = node["identity"]["high"] + node["identity"]["low"];
     const label = node["labels"][0];
     const properties = node["properties"];
@@ -19,7 +23,46 @@ function parseNode(node: any): Node {
     const title = properties["title"];
     const url = properties["url"];
 
-    return new Node(id, label, publishedAt, score, title, url);
+    return new Article(id, label, publishedAt, score, title, url);
+}
+
+function parseArea(node: any): Area {
+    const id = node["identity"]["high"] + node["identity"]["low"];
+    const label = node["labels"][0];
+    const properties = node["properties"];
+    const growth = properties["growth"]["low"] + properties["growth"]["high"];
+    const name = properties["name"];
+    const numNews = properties["numNews"]["low"] + properties["numNews"]["high"];
+
+    return new Area(id, label, growth, name, numNews);
+}
+
+function parseCountry(node: any): Country {
+    const id = node["identity"]["high"] + node["identity"]["low"];
+    const label = node["labels"][0];
+    const properties = node["properties"];
+    const name = properties["name"];
+
+    return new Country(id, label, name);
+}
+
+function parseNode(node: any): Node {
+    const id = node["identity"]["high"] + node["identity"]["low"];
+    const label = node["labels"][0];
+
+    switch(label) {
+        case labels.article: {
+            return parseArticle(node);
+        }
+        case labels.majorArea:
+        case labels.subArea: {
+            return parseArea(node);
+        }
+        case labels.country: {
+            return parseCountry(node);
+        }
+    }
+    return new Node(id, label);
 }
 
 function parseLink(link: any): Link {

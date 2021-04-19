@@ -14,16 +14,7 @@ type GraphData = {
 export default function Graph(): JSX.Element {
     const resource = useGetResource(getGraphData).data as GraphData;
     const myGraph = ForceGraph3D();
-    const [focusedNodeId, setFocusedNodeId] = useState(1);
-
-    function getNodeById(id: number): Node | undefined {
-        if (resource)
-            resource.nodes.forEach(node => {
-                if (node.id === id)
-                    return node;
-            });
-        return undefined
-    }
+    const [focusedNode, setFocusedNode] = useState(undefined);
 
     useEffect(() => {
         function focusNode(node: any) {
@@ -37,7 +28,7 @@ export default function Graph(): JSX.Element {
                 2000  // ms transition duration
             );
         
-            setFocusedNodeId(node.id);
+            setFocusedNode(node);
         }
         let element = document.getElementById("graph");
         if (element) {
@@ -54,7 +45,7 @@ export default function Graph(): JSX.Element {
         <div>
             <div id="graph" />
             <div>
-                <Popup node={getNodeById(focusedNodeId)} />
+                <Popup node={focusedNode} />
             </div>
         </div>
     );
