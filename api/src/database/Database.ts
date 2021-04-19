@@ -60,15 +60,12 @@ export default class Database {
     `);
   }
 
-   /**
-     * Returns graph from root node 'Energy'
-     */
-    public async getGraph(): Promise<Record[] | undefined> {
-      return await this.query(`
-        MATCH (origin)-[edge]-(dest) 
-        RETURN origin, edge, dest;
-      `);
-    }
+  public async getGraph(): Promise<Record[] | undefined> {
+    return await this.query(`
+      MATCH (origin)-[edge]-(dest) 
+      RETURN origin, edge, dest;
+    `);
+  }
 
   public async dropDB() {
     return await this.query(`
@@ -77,39 +74,7 @@ export default class Database {
     `);
   }
 
-    // /**
-    //  * Returns a given node
-    //  */
-    // public async getNode(oldNode: Node) {
-    //     try {
-    //         return Database.neo4j.matchNode('node', oldNode.labels, oldNode.properties)
-    //             .return('node')
-    //             .run();
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
-
-    // /**
-    //  * Creates the two nodes, if they don't exist, and the edge between them
-    //  */
-    // public async mergeNodes(origin: Node, dest: Node, edge: Edge) {
-    //     try {
-    //         return Database.neo4j.matchNode('origin', origin.labels, origin.properties)
-    //         .matchNode('dest', dest.labels, dest.properties)
-    //         .merge([
-    //             node('origin'),
-    //             relation(edge.direction, edge.labels, edge.properties),
-    //             node('dest'),
-    //         ])
-    //         .run();
-            
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
-
-    public async close() {
+  public async close() {
     if(Database.neo) {
       try {
         Database.neo.close();

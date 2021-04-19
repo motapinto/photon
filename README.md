@@ -19,22 +19,15 @@ Photon is an application capable of:
 * [Usearch API](https://usearch.com/)
 
 ## Requirements
-* Docker + docker-compose
+* Docker
 * NPM
-* .env in api/ with the following information:
-> DATABASE_URI=neo4j://localhost:7687\
-> DATABASE_USERNAME=neo4j\
-> DATABASE_PASSWORD=test\
-> DATABASE_HTTP=7474\
-> DATABASE_BOLT=7687\
-> SERVER_PORT=5000
+* .env similar do .env.example in api/
 
 ## Usage
 ### API Usage 
 * cd api
-* npm run neo4j
 * npm install
-* npm run build
+* npm run neo4j
 * [npm run seed]
 * npm run dev
 
