@@ -4,9 +4,11 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
+    "neo4j": "docker-compose up -d neo",
     "build": "tsc --module commonjs",
     "dev": "nodemon --config nodemon.json src/server.ts",
-    "prod": "node ."
+    "prod": "node .",
+    "seed": "node -r ts-node/register ./src/database/seed"
   },
   "author": "",
   "license": "ISC",
@@ -19,7 +21,7 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
-    "cypher-query-builder": "^6.0.4",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "neo4j-driver": "^4.2.3"
   }
 }

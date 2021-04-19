@@ -17,30 +17,26 @@ Photon is an application capable of:
 * [Twitter API](https://developer.twitter.com/en/docs/twitter-api/api-reference-index)
 ### News API's
 * [Usearch API](https://usearch.com/)
-### Patents API's
-* [European Patent Office API](https://developers.epo.org/)
 
 ## Requirements
-* Docker + docker-compose
+* Docker
 * NPM
-* .env in api/ with the following information:
-> DATABASE_URI=neo4j://localhost:7687
-> DATABASE_USERNAME=neo4j
-> DATABASE_PASSWORD=test
-> DATABASE_HTTP=7474
-> DATABASE_BOLT=7687
-> SERVER_PORT=5000
+* .env similar do .env.example in api/
 
 ## Usage
 ### API Usage 
 * cd api
-* docker-compose up -d neo (localhost:7474)
 * npm install
-* npm run build
+* npm run neo4j
+* [npm run seed]
 * npm run dev
+
+**Note:** If you want to use mock data, instead of real data, you can use *npm run seed* to test our application. If not, just skip that instruction.
 
 ## Developers
 * [Eduardo Ribeiro](https://github.com/EduRibeiro00)
 * [Martim Pinto da Silva](https://github.com/motapinto)
 * [Miguel Pinto](https://github.com/MiguelDelPinto)
 * [Nuno Cardoso](https://github.com/nmtc01)
+
+**Note:** This project was done in close collaboration with the [Research Center for Assistive Information and Communication Solutions – AICOS](https://www.aicos.fraunhofer.pt/en/home.html) from [Fraunhofer Portugal](https://www.fraunhofer.pt/en/about_us.html).
