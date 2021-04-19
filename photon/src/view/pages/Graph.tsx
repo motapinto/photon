@@ -30,6 +30,9 @@ export default function Graph(): JSX.Element {
         
             setFocusedNode(node);
         }
+        function defocusNode() {
+            setFocusedNode(undefined);
+        }
         let element = document.getElementById("graph");
         if (element) {
             myGraph(element).onNodeHover(node => {
@@ -37,17 +40,25 @@ export default function Graph(): JSX.Element {
                             })
                             .onNodeClick(focusNode)
                             .nodeAutoColorBy('type')
+                            .onBackgroundClick(defocusNode)
                             .graphData(resource);
         }
         // eslint-disable-next-line
     }, [resource]);
+
+    const popup = focusedNode === undefined ? (
+        <div />
+    ) :
+    (
+        <div>
+            <Popup node={focusedNode} />
+        </div>
+    );
     
     return (
         <div>
             <div id="graph" />
-            <div>
-                <Popup node={focusedNode} />
-            </div>
+            {popup}
         </div>
     );
 }
