@@ -32,11 +32,12 @@ export default function Graph(): JSX.Element {
         }
         let element = document.getElementById("graph");
         if (element) {
-            myGraph(element).graphData(resource)
-                            .onNodeHover(node => {
+            myGraph(element).onNodeHover(node => {
                                 if (element) element.style.cursor = node ? "pointer" : "auto"
                             })
-                            .onNodeClick(focusNode);
+                            .onNodeClick(focusNode)
+                            .nodeAutoColorBy('type')
+                            .graphData(resource);
         }
         // eslint-disable-next-line
     }, [resource]);

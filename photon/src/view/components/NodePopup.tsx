@@ -38,13 +38,13 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
     if (node === undefined)
         content = (<CardContent />);
     else {   
-        switch(node.label) {
+        switch(node.type) {
             case labels.article: {
                 const article = node as Article;
                 content = (
                     <CardContent>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
-                            {article.id} - {article.label}
+                            {article.id} - {article.type}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
                             Title: {article.title}
@@ -68,7 +68,7 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                 content = (
                     <CardContent>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
-                            {area.id} - {area.label}
+                            {area.id} - {area.type}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
                             Name: {area.name}
@@ -88,7 +88,7 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                 content = (
                     <CardContent>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
-                            {country.id} - {country.label}
+                            {country.id} - {country.type}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
                             Name: {country.name}
