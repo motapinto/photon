@@ -15,7 +15,15 @@ export default function Graph(): JSX.Element {
     const resource = useGetResource(getGraphData).data as GraphData;
     const myGraph = ForceGraph3D();
     const [focusedNodeId, setFocusedNodeId] = useState(1);
-    console.log(resource);
+
+    function getNodeById(id: number): Node | undefined {
+        if (resource)
+            resource.nodes.forEach(node => {
+                if (node.id === id)
+                    return node;
+            });
+        return undefined
+    }
 
     useEffect(() => {
         function focusNode(node: any) {
@@ -46,7 +54,7 @@ export default function Graph(): JSX.Element {
         <div>
             <div id="graph" />
             <div>
-                <Popup nodeId={focusedNodeId} />
+                <Popup node={getNodeById(focusedNodeId)} />
             </div>
         </div>
     );

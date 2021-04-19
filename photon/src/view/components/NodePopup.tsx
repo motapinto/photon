@@ -5,6 +5,7 @@ import {
     Typography,
 } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
+import Node from "../../model/node";
 
 const useStyles = makeStyles({
     root: {
@@ -23,25 +24,31 @@ const useStyles = makeStyles({
 });
 
 interface PopupProps {
-    nodeId: number;
+    node: Node | undefined;
 }
 
-export default function NodePopup({nodeId}: PopupProps): JSX.Element {
+export default function NodePopup({node}: PopupProps): JSX.Element {
     const classes = useStyles();
+    const card = node === undefined ? (
+        <CardContent />
+    ) :
+    (
+        <CardContent>
+            <Typography className={classes.title} color="textSecondary" gutterBottom>
+                Node id {node.id}
+            </Typography>
+            <Typography className={classes.pos} color="textSecondary">
+                adjective
+            </Typography>
+            <Typography variant="body2" component="p">
+                well meaning and kindly.
+            </Typography>
+        </CardContent>
+    );
 
     return (
         <Card className={classes.root} variant="outlined">
-            <CardContent>
-                <Typography className={classes.title} color="textSecondary" gutterBottom>
-                    Node id {nodeId}
-                </Typography>
-                <Typography className={classes.pos} color="textSecondary">
-                    adjective
-                </Typography>
-                <Typography variant="body2" component="p">
-                    well meaning and kindly.
-                </Typography>
-            </CardContent>
+            {card}
         </Card>
     );
 }

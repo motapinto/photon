@@ -13,7 +13,7 @@ function parseNode(node: any): Node {
     const properties = node["properties"];
     const publishedAt = properties["publishedAt"];
     const scoreProp = properties["score"];
-    let score = 0;
+    let score;
     if (scoreProp)
         score = properties["score"]["low"] + properties["score"]["high"];
     const title = properties["title"];
