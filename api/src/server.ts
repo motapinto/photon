@@ -6,14 +6,6 @@ import cors from 'cors';
     const app = express();
     app.use(cors());
 
-    app.get('/', (req: Request, res: Response) => {
-        const initData = {
-            nodes: [ { id: 0 }, { id: 1 }, { id: 2 } ],
-            links: [ { source: 0, target: 1 }, { source: 0, target: 2 }, { source: 1, target: 2 }]
-        };
-        res.send(initData);
-    });
-
     app.get('/graph', async(_req: Request, res: Response) => {
         const records = await Database.getInstance().getGraph() ?? [];
         res.status(200).json(records);
