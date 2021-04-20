@@ -1,8 +1,10 @@
 import express, { Request, Response } from 'express';
 import Database from './database/Database';
+import cors from 'cors';
 
 (async () => {
     const app = express();
+    app.use(cors());
 
     app.get('/graph', async(_req: Request, res: Response) => {
         const records = await Database.getInstance().getGraph() ?? [];
