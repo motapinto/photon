@@ -1,9 +1,9 @@
 export default class Node {
     id: number;
-    type: string;
+    label: string;
 
-    constructor(id: number, type: string) {
+    constructor(id: number, label: string) {
         this.id = id;
-        this.type = type;
+        this.label = label;
     }
 }

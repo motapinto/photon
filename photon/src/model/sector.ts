@@ -1,6 +1,6 @@
 import Node from "./node";
 
-export default class Area extends Node {
+export default class Sector extends Node {
     growth: number;
     name: string;
     numNews: number;

@@ -2,7 +2,7 @@ import axios from "axios";
 import Link from "../../model/link";
 import Node from "../../model/node";
 import Article from "../../model/article";
-import Area from "../../model/area";
+import Sector from "../../model/sector";
 import Country from "../../model/country";
 import labels from "../../model/labels.json";
 
@@ -16,17 +16,14 @@ function parseArticle(node: any): Article {
     const label = node["labels"][0];
     const properties = node["properties"];
     const publishedAt = properties["publishedAt"];
-    const scoreProp = properties["score"];
-    let score;
-    if (scoreProp)
-        score = properties["score"]["low"] + properties["score"]["high"];
+    const score = properties["score"]["low"] + properties["score"]["high"];
     const title = properties["title"];
     const url = properties["url"];
 
     return new Article(id, label, publishedAt, score, title, url);
 }
 
-function parseArea(node: any): Area {
+function parseSector(node: any): Sector {
     const id = node["identity"]["high"] + node["identity"]["low"];
     const label = node["labels"][0];
     const properties = node["properties"];
@@ -34,7 +31,7 @@ function parseArea(node: any): Area {
     const name = properties["name"];
     const numNews = properties["numNews"]["low"] + properties["numNews"]["high"];
 
-    return new Area(id, label, growth, name, numNews);
+    return new Sector(id, label, growth, name, numNews);
 }
 
 function parseCountry(node: any): Country {
@@ -56,7 +53,7 @@ function parseNode(node: any): Node {
         }
         case labels.majorArea:
         case labels.subArea: {
-            return parseArea(node);
+            return parseSector(node);
         }
         case labels.country: {
             return parseCountry(node);
@@ -75,10 +72,8 @@ function parseLink(link: any): Link {
 }
 
 function handleGraphData(graphData: any): GraphData {
-    let nodes: Node[];
-    nodes = [];
-    let links: Link[];
-    links = [];
+    let nodes: Node[] = [];
+    let links: Link[] = [];
 
     graphData.forEach((element: any) => {   
         const fields = element["_fields"];

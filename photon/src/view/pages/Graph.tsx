@@ -39,7 +39,7 @@ export default function Graph(): JSX.Element {
                                 if (element) element.style.cursor = node ? "pointer" : "auto"
                             })
                             .onNodeClick(focusNode)
-                            .nodeAutoColorBy('type')
+                            .nodeAutoColorBy('label')
                             .onBackgroundClick(defocusNode)
                             .graphData(resource);
         }

@@ -7,7 +7,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import Node from "../../model/node";
 import Article from "../../model/article";
-import Area from "../../model/area";
+import Sector from "../../model/sector";
 import Country from "../../model/country";
 import labels from "../../model/labels.json";
 
@@ -38,13 +38,13 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
     if (node === undefined)
         content = (<CardContent />);
     else {   
-        switch(node.type) {
+        switch(node.label) {
             case labels.article: {
                 const article = node as Article;
                 content = (
                     <CardContent>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
-                            {article.id} - {article.type}
+                            {article.id} - {article.label}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
                             Title: {article.title}
@@ -64,20 +64,20 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
             }
             case labels.majorArea:
             case labels.subArea: {
-                const area = node as Area;
+                const sector = node as Sector;
                 content = (
                     <CardContent>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
-                            {area.id} - {area.type}
+                            {sector.id} - {sector.label}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
-                            Name: {area.name}
+                            Name: {sector.name}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
-                            Growth: {area.growth}
+                            Growth: {sector.growth}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
-                            Number of news: {area.numNews}
+                            Number of news: {sector.numNews}
                         </Typography>
                     </CardContent>
                 );
@@ -88,7 +88,7 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                 content = (
                     <CardContent>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
-                            {country.id} - {country.type}
+                            {country.id} - {country.label}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
                             Name: {country.name}

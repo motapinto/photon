@@ -33,6 +33,15 @@ Photon is an application capable of:
 
 **Note:** If you want to use mock data, instead of real data, you can use *npm run seed* to test our application. If not, just skip that instruction.
 
+### Frontend Usage
+* cd photon
+* npm install
+* npm start
+* [npm build]
+* [npm eject]
+
+**Note:** Check README.md file inside photon folder to see in more detail *npm start, npm build and npm eject* commands results.
+
 ## Developers
 * [Eduardo Ribeiro](https://github.com/EduRibeiro00)
 * [Martim Pinto da Silva](https://github.com/motapinto)
