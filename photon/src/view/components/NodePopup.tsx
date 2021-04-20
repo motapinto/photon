@@ -62,6 +62,7 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                 );
                 break;
             }
+            case labels.origin:
             case labels.majorArea:
             case labels.subArea: {
                 const sector = node as Sector;

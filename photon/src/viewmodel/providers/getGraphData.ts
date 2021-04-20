@@ -51,6 +51,7 @@ function parseNode(node: any): Node {
         case labels.article: {
             return parseArticle(node);
         }
+        case labels.origin:
         case labels.majorArea:
         case labels.subArea: {
             return parseSector(node);
