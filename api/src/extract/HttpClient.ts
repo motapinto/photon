@@ -1,14 +1,14 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 declare module 'axios' {
   interface AxiosResponse<T = any> extends Promise<T> {}
 }
 
-abstract class HttpClient {
+export default abstract class HttpClient {
   protected readonly instance: AxiosInstance;
 
-  public constructor(url: string, headers?: any) {
-    this.instance = axios.create({ url, headers });
+  public constructor(headers?: any) {
+    this.instance = axios.create({ headers });
     this._initializeResponseInterceptor();
   }
 

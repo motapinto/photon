@@ -8,7 +8,7 @@
     "build": "tsc --module commonjs",
     "dev": "nodemon --config nodemon.json src/server.ts",
     "prod": "node .",
-    "extract:news": "node -r ts-node/register ./src/database/seed",
+    "extract:news": "node -r ts-node/register ./src/extract/NewsExtractor.ts",
     "seed": "node -r ts-node/register ./src/database/seed"
   },
   "author": "",
