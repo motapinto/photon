@@ -13,6 +13,6 @@ import cors from 'cors';
 
     const PORT = process.env.SERVER_PORT || 5000;
     app.listen(PORT, async() => {
-        console.log(`Server started at http://localhost:${PORT}`);
+        console.log(`Server started at port ${PORT}`);
     });
 })();

@@ -1,10 +1,9 @@
 {
-  "name": "api",
+  "name": "backend",
   "version": "1.0.0",
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "neo4j": "docker-compose up -d neo",
     "build": "tsc --module commonjs",
     "dev": "nodemon --config nodemon.json src/server.ts",
     "prod": "node .",
