@@ -2,10 +2,12 @@ import express, { Request, Response } from 'express';
 import Database from './database/Database';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import morgan from 'morgan';
 
 (async () => {
   const app = express();
   app.use(cors());
+  app.use(morgan('dev'));
 
   dotenv.config();
   if (!process.env.DATABASE_URI) {
