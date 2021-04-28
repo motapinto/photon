@@ -1,5 +1,5 @@
-import Database from "../Database";
-import { Edge } from "../../model/Edge";
+import Database from "@database/Database";
+import { Edge } from "@model/Edge";
 import { countries } from "./countries";
 import { energy, nonRenewableEnergy, renewableEnergy } from "./sectors";
 import { articles } from "./articles";

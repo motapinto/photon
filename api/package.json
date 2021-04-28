@@ -30,6 +30,7 @@
     "express": "^4.17.1",
     "morgan": "^1.10.0",
     "neo4j-driver": "^4.2.3",
+    "tsc-alias": "^1.2.10",
     "winston": "^3.3.3"
   }
 }

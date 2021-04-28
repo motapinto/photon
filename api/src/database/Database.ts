@@ -1,7 +1,7 @@
 import neo4j, { Driver, Record } from 'neo4j-driver'
-import Utils from '../utils/Utils';
-import { Edge } from './../model/Edge';
-import { Node } from './../model/Node';
+import Utils from '@utils/Utils';
+import { Edge } from '@model/Edge';
+import { Node } from '@model/Node';
 
 export default class Database {
   private static instance: Database;

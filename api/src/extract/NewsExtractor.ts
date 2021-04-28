@@ -1,4 +1,4 @@
-import { Article } from '../model/Article';
+import { Article } from '@model/Article';
 import HttpClient from './HttpClient';
 import dotenv from 'dotenv';
 

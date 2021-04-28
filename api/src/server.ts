@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import Database from './database/Database';
+import Database from '@database/Database';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
