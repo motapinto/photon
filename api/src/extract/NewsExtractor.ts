@@ -1,5 +1,13 @@
-import axios from 'axios';
+import { Article } from '../model/Article';
 import HttpClient from './HttpClient';
+
+interface NewsApiResponse {
+  _type: string,
+  didUMean: string,
+  totalCount: number,
+  relatedSearch: string[],
+  value: Article[]
+}
 
 export default class NewsExtractor extends HttpClient {
   private url: string;
@@ -30,7 +38,7 @@ export default class NewsExtractor extends HttpClient {
 
   public async getAll() {    
     NewsExtractor.energyTopics.forEach(async (topic: string) => {            
-      const data = await this.instance.get<any>(this.url, {
+      const news = await this.instance.get<NewsApiResponse>(this.url, {
         params: {
           q: topic,
           pageNumber: '1',
@@ -41,13 +49,14 @@ export default class NewsExtractor extends HttpClient {
         }
       });
 
-      console.log(data);
-    });      
+      news.value.forEach(async (article) => this.processArticle(article));
+
+    });  
   }
 
-  /*private assembleTopicData(AxiosResponse) {
-
-  }*/
+  private async processArticle(article: Article) {
+    console.log(article);
+  }
 }
 
 (async () => {  
