@@ -3,6 +3,7 @@ import Database from '@database/Database';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
+import winston from 'winston';
 
 (async () => {
   const app = express();
@@ -34,9 +35,20 @@ import morgan from 'morgan';
     throw new Error('SERVER_PORT must be defined');
   }
 
+  const logger = winston.createLogger({
+    format: winston.format.json(),
+    transports: [
+      new winston.transports.File({ filename: 'error.log' }),
+    ],
+  });
+
   app.get('/graph', async(_req: Request, res: Response) => {
-    const records = await Database.getInstance().getGraph() ?? [];
-    return res.status(200).json(records);
+    try {
+      const records = await Database.getInstance().getGraph() ?? [];
+      return res.status(200).json(records);
+    } catch (err) {
+      logger.error(err);
+    }
   });
 
   const PORT = process.env.SERVER_PORT || 5000;
