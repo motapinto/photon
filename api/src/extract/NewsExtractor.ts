@@ -1,5 +1,6 @@
 import { Article } from '../model/Article';
 import HttpClient from './HttpClient';
+import dotenv from 'dotenv';
 
 interface NewsApiResponse {
   _type: string,
@@ -29,7 +30,7 @@ export default class NewsExtractor extends HttpClient {
 
   constructor() {
     super({
-      'x-rapidapi-key': '8b7d7f7584msh443e1aa33106021p179eaejsn0518b148a684',
+      'x-rapidapi-key': process.env.NEWS_API_KEY,
       'x-rapidapi-host': 'contextualwebsearch-websearch-v1.p.rapidapi.com',
     });
 
@@ -57,6 +58,11 @@ export default class NewsExtractor extends HttpClient {
   private async processArticle(article: Article) {
     console.log(article);
   }
+}
+
+dotenv.config();
+if (!process.env.NEWS_API_KEY) {
+  throw new Error('NEWS_API_KEY must be defined');
 }
 
 (async () => {  

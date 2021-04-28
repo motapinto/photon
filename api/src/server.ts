@@ -1,10 +1,36 @@
 import express, { Request, Response } from 'express';
 import Database from './database/Database';
 import cors from 'cors';
+import dotenv from 'dotenv';
 
 (async () => {
   const app = express();
   app.use(cors());
+
+  dotenv.config();
+  if (!process.env.DATABASE_URI) {
+    throw new Error('DATABASE_URI must be defined');
+  }
+
+  if (!process.env.DATABASE_USERNAME) {
+    throw new Error('DATABASE_USERNAME must be defined');
+  }
+
+  if (!process.env.DATABASE_PASSWORD) {
+    throw new Error('DATABASE_PASSWORD must be defined');
+  }
+
+  if (!process.env.DATABASE_HTTP) {
+    throw new Error('DATABASE_HTTP must be defined');
+  }
+
+  if (!process.env.DATABASE_BOLT) {
+    throw new Error('DATABASE_BOLT must be defined');
+  }
+
+  if (!process.env.SERVER_PORT) {
+    throw new Error('SERVER_PORT must be defined');
+  }
 
   app.get('/graph', async(_req: Request, res: Response) => {
     const records = await Database.getInstance().getGraph() ?? [];
