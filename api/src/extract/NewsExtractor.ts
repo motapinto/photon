@@ -11,7 +11,8 @@ interface NewsApiResponse {
 }
 
 export default class NewsExtractor extends HttpClient {
-  private url: string;
+  private static instance: NewsExtractor;
+  private static url = 'https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/search/NewsSearchAPI'; 
   private static energyTopics = [
     'Energy',
     /*'Renewable Energy',
@@ -28,18 +29,24 @@ export default class NewsExtractor extends HttpClient {
     'Hydro Energy'*/
   ];
 
-  constructor() {
-    super({
+  private constructor() {
+    super(NewsExtractor.url, {
       'x-rapidapi-key': process.env.NEWS_API_KEY,
       'x-rapidapi-host': 'contextualwebsearch-websearch-v1.p.rapidapi.com',
     });
-
-    this.url = 'https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/search/NewsSearchAPI';
   }
+
+  public static getInstance(): NewsExtractor {
+    if (!NewsExtractor.instance) {
+      NewsExtractor.instance = new NewsExtractor();
+    }        
+
+    return NewsExtractor.instance;
+  };
 
   public async getAll() {    
     NewsExtractor.energyTopics.forEach(async (topic: string) => {            
-      const news = await this.instance.get<NewsApiResponse>(this.url, {
+      const news = await super.get<NewsApiResponse>({
         params: {
           q: topic,
           pageNumber: '1',
@@ -51,7 +58,6 @@ export default class NewsExtractor extends HttpClient {
       });
 
       news.value.forEach(async (article) => this.processArticle(article));
-
     });  
   }
 
@@ -66,9 +72,8 @@ if (!process.env.NEWS_API_KEY) {
 }
 
 (async () => {  
-  const extractor = new NewsExtractor();
   try {
-    await extractor.getAll();
+    await NewsExtractor.getInstance().getAll();
   } catch (error) {
     console.log(error);
   }

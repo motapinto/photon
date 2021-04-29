@@ -5,9 +5,11 @@ declare module 'axios' {
 }
 
 export default abstract class HttpClient {
-  protected readonly instance: AxiosInstance;
+  private readonly instance: AxiosInstance;
+  private readonly url: string;
 
-  public constructor(headers?: any) {
+  public constructor(url: string, headers?: any) {
+    this.url = url;
     this.instance = axios.create({ headers });
     this._initializeResponseInterceptor();
   }
@@ -17,6 +19,10 @@ export default abstract class HttpClient {
       this._handleResponse,
       this._handleError,
     );
+  };
+
+  protected async get<T>(params: { params: Object }) {
+    return this.instance.get<T>(this.url, params);
   };
 
   private _handleResponse = ({ data }: AxiosResponse) => data;
