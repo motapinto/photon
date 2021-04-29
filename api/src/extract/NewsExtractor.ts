@@ -15,7 +15,7 @@ export default class NewsExtractor extends HttpClient {
   private static url = 'https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/search/NewsSearchAPI'; 
   private static energyTopics = [
     'Energy',
-    /*'Renewable Energy',
+    'Renewable Energy',
     'Non Renewable Energy',
     'Fossil fuels',
     'Solar energy',
@@ -26,7 +26,7 @@ export default class NewsExtractor extends HttpClient {
     'Coal',
     'Geothermal',
     'Biomass',
-    'Hydro Energy'*/
+    'Hydro Energy'
   ];
 
   private constructor() {
@@ -50,7 +50,7 @@ export default class NewsExtractor extends HttpClient {
         params: {
           q: topic,
           pageNumber: '1',
-          pageSize: '1',
+          pageSize: '50',
           autoCorrect: 'true',
           fromPublishedDate: 'null',
           toPublishedDate: 'null',
@@ -65,16 +65,3 @@ export default class NewsExtractor extends HttpClient {
     console.log(article);
   }
 }
-
-dotenv.config();
-if (!process.env.NEWS_API_KEY) {
-  throw new Error('NEWS_API_KEY must be defined');
-}
-
-(async () => {  
-  try {
-    await NewsExtractor.getInstance().getAll();
-  } catch (error) {
-    console.log(error);
-  }
-})();

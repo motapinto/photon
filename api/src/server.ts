@@ -10,30 +10,19 @@ import winston from 'winston';
   app.use(cors());
   app.use(morgan('dev'));
 
+  let map = new Map();
   dotenv.config();
-  if (!process.env.DATABASE_URI) {
-    throw new Error('DATABASE_URI must be defined');
-  }
-
-  if (!process.env.DATABASE_USERNAME) {
-    throw new Error('DATABASE_USERNAME must be defined');
-  }
-
-  if (!process.env.DATABASE_PASSWORD) {
-    throw new Error('DATABASE_PASSWORD must be defined');
-  }
-
-  if (!process.env.DATABASE_HTTP) {
-    throw new Error('DATABASE_HTTP must be defined');
-  }
-
-  if (!process.env.DATABASE_BOLT) {
-    throw new Error('DATABASE_BOLT must be defined');
-  }
-
-  if (!process.env.SERVER_PORT) {
-    throw new Error('SERVER_PORT must be defined');
-  }
+  map.set('DATABASE_URI', process.env.DATABASE_URI)
+    .set('DATABASE_USERNAME', process.env.DATABASE_USERNAME)
+    .set('DATABASE_PASSWORD', process.env.DATABASE_PASSWORD)
+    .set('DATABASE_HTTP', process.env.DATABASE_HTTP)
+    .set('DATABASE_BOLT', process.env.DATABASE_BOLT)
+    .set('SERVER_PORT', process.env.SERVER_PORT)
+    .forEach((envValue: string, envName: string) => {
+      if(!envValue) {
+        throw new Error(`${envName} must be defined`);
+      }
+    });
 
   const logger = winston.createLogger({
     format: winston.format.json(),
