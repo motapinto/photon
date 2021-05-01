@@ -3,7 +3,7 @@ import Database from '@database/Database';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
-import winston from 'winston';
+import { errorLogger } from '@logger';
 
 (async () => {
   const app = express();
@@ -24,19 +24,12 @@ import winston from 'winston';
       }
     });
 
-  const logger = winston.createLogger({
-    format: winston.format.json(),
-    transports: [
-      new winston.transports.File({ filename: 'error.log' }),
-    ],
-  });
-
   app.get('/graph', async(_req: Request, res: Response) => {
     try {
       const records = await Database.getInstance().getGraph() ?? [];
       return res.status(200).json(records);
     } catch (err) {
-      logger.error(err);
+      errorLogger.error(err);
     }
   });
 
