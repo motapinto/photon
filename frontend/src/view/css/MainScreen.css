@@ -1,0 +1,20 @@
+#TopBar{
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: black;
+}
+
+#TopBar img{
+    padding-left: 1rem;
+    max-width: 3rem;
+}
+
+#GridWrapper{
+    height: 100%;
+    flex-wrap: nowrap;
+}
+
+#AppName{
+    padding-left: 1rem;
+}

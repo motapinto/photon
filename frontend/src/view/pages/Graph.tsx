@@ -5,6 +5,7 @@ import { getGraphData } from "../../viewmodel/providers/getGraphData";
 import Popup from "../components/NodePopup";
 import Node from "../../model/node";
 import Link from "../../model/link";
+import MainScreen from "./templates/MainScreen";
 
 type GraphData = {
     nodes: Node[],
@@ -56,9 +57,9 @@ export default function Graph(): JSX.Element {
     );
     
     return (
-        <div>
+        <MainScreen>
             <div id="graph" />
             {popup}
-        </div>
+        </MainScreen>
     );
 }
