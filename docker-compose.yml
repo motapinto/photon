@@ -1,0 +1,58 @@
+version: "3.7"
+services:
+  photon-db:
+    container_name: photon-db
+    image: neo4j:4.0
+    ports:
+      - "${DATABASE_HTTP}:7474"
+      - "${DATABASE_BOLT}:7687"
+    env_file:
+      - ./neo4j/.env  
+    volumes:
+      - data:/data
+      - plugins:/plugins
+      - import:/import
+    networks:
+      - photon-network
+    restart: unless-stopped
+
+  photon-backend:
+    build: ./backend
+    container_name: photon-backend
+    volumes:
+      - ./backend/src:/home/node/app/src
+      - ./backend/nodemon.json:/home/node/app/nodemon.json
+    ports:
+      - '5000:5000'
+    env_file:
+      - ./backend/.env  
+    depends_on:
+      - photon-db
+    networks:
+      - photon-network
+    command: npm run dev
+
+  photon-frontend:
+    build: ./frontend
+    container_name: photon-frontend
+    volumes:
+      - ./frontend/src:/home/node/app/src
+      - ./frontend/nodemon.json:/home/node/app/nodemon.json
+    ports:
+      - '3000:3000'
+    env_file:
+      - ./frontend/.env
+    depends_on:
+      - photon-backend
+    networks:
+      - photon-network
+    command: npm run start
+
+networks:
+  photon-network:
+    driver: bridge
+
+volumes:
+  data:
+  plugins:
+  import:
