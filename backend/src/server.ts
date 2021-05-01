@@ -3,7 +3,7 @@ import Database from '@database/Database';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
-import { errorLogger } from '@logger';
+import { errorLogger, infoLogger } from '@logger';
 
 (async () => {
   const app = express();
@@ -35,6 +35,6 @@ import { errorLogger } from '@logger';
 
   const PORT = process.env.SERVER_PORT || 5000;
   app.listen(PORT, async() => {
-    console.log(`Server started at http://localhost:${PORT}`);
+    infoLogger.info(`Server started at http://localhost:${PORT}`);
   });
 })();

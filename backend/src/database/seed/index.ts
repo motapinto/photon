@@ -3,6 +3,7 @@ import { Edge } from "@model/Edge";
 import { countries } from "./countries";
 import { energy, nonRenewableEnergy, renewableEnergy } from "./sectors";
 import { articles } from "./articles";
+import { errorLogger, infoLogger } from "@logger";
 
 
 
@@ -73,9 +74,9 @@ import { articles } from "./articles";
         db.createEdge(articles[3], countries[1], fromLocation),
       ]);
 
-      console.log("DB is now populated!");
+      infoLogger.info("DB is now populated!");
       process.exit();
   } catch (error) {
-      console.error(error);
+      errorLogger.error(error);
   }
 })();

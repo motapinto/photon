@@ -2,6 +2,7 @@ import neo4j, { Driver, Record } from 'neo4j-driver'
 import Utils from '@utils/Utils';
 import { Edge } from '@model/Edge';
 import { Node } from '@model/Node';
+import { errorLogger } from '@logger';
 
 export default class Database {
   private static instance: Database;
@@ -39,7 +40,7 @@ export default class Database {
       if(populate) {
         this.query(statement, populate);
       } else {
-        console.error(error);
+        errorLogger.error(error);
       }
     } finally {
       session.close();
@@ -79,7 +80,7 @@ export default class Database {
       try {
         Database.neo.close();
       } catch (error) {
-        console.error(error);
+        errorLogger.error(error);
       }
     }
   }
