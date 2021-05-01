@@ -99,7 +99,7 @@ function handleGraphData(graphData: any): GraphData {
 export function getGraphData(): Promise<GraphData> {
     
     return axios.get(
-        "http://localhost:5000/graph",
+        `${process.env.REACT_APP_BACKEND_URL}/graph`,
     ).then((response) =>
         handleGraphData(response.data),
     ).catch((err) => {

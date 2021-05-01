@@ -21,11 +21,11 @@ Photon is an application capable of:
 ## Requirements
 * Docker
 * NPM
-* .env similar do .env.example in api/
+* .env similar do .env.example in backend/
 
 ## Usage
 ### API Usage 
-* cd api
+* cd backend
 * npm install
 * npm run neo4j
 * [npm run seed]

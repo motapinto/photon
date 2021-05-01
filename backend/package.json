@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "backend",
   "version": "1.0.0",
   "description": "Photon project",
   "author": "Photon",
@@ -10,7 +10,7 @@
   },
   "main": "build/server.js",
   "scripts": {
-    "neo4j": "docker-compose up -d neo",
+    "neo4j": "docker-compose up -d photon-db",
     "start": "ts-node --transpile-only -r tsconfig-paths/register ./src/server.ts",
     "dev": "nodemon",
     "seed": "ts-node -r tsconfig-paths/register ./src/database/seed"
