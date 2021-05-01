@@ -1,29 +1,52 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/server.js",
-  "scripts": {
-    "build": "tsc --module commonjs",
-    "dev": "nodemon --config nodemon.json src/server.ts",
-    "prod": "node .",
-    "seed": "node -r ts-node/register ./src/database/seed"
-  },
-  "author": "",
+  "description": "Photon project",
+  "author": "Photon",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://https://github.com/EduRibeiro00/feup-lapd.git"
+  },
+  "main": "build/server.js",
+  "scripts": {
+    "neo4j": "docker-compose up -d photon-db",
+    "start": "ts-node --transpile-only -r tsconfig-paths/register ./src/server.ts",
+    "dev": "nodemon",
+    "seed": "ts-node -r tsconfig-paths/register ./src/database/seed"
+  },
   "devDependencies": {
     "@types/cors": "^2.8.10",
     "@types/express": "^4.17.11",
+    "@types/morgan": "^1.9.2",
     "@types/node": "^14.14.35",
+    "concurrently": "^6.0.2",
     "nodemon": "^2.0.4",
     "ts-node": "^9.1.1",
-    "ts-node-dev": "^1.1.6",
-    "typescript": "^4.2.3"
+    "ts-node-dev": "^1.1.6"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "cors": "^2.8.5",
-    "cypher-query-builder": "^6.0.4",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "neo4j-driver": "^4.2.3"
+    "morgan": "^1.10.0",
+    "neo4j-driver": "^4.2.3",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.2.4",
+    "winston": "^3.3.3"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      ".git",
+      "node_modules"
+    ],
+    "watch": [
+      "src"
+    ],
+    "exec": "node -r tsconfig-paths/register -r ts-node/register ./src/server.ts",
+    "ext": "ts, js"
   }
 }

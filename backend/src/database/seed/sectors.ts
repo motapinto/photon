@@ -1,4 +1,4 @@
-import { Sector } from "../../model/Sector";
+import { Sector } from "@model/Sector";
 
 export const energy: Sector[] = [
   { 
