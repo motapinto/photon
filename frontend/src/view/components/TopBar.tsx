@@ -5,7 +5,7 @@ import {
     AppBar,
     Grid,
 } from "@material-ui/core";
-import logo from "../../images/photon-logo.jpg";
+import logo from "../../images/photon-logo.png";
 
 export default function TopBar(): JSX.Element {
     return (

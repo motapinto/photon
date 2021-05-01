@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 
 import Graph from "./Graph";
+import Home from "./Home";
 import { Typography } from "@material-ui/core";
 import routes from  "../../routes.json";
 
@@ -15,6 +16,9 @@ export default function AppRouter(): JSX.Element {
             {/* A <Switch> looks through its children <Route>s and
                     renders the first one that matches the current URL. */}
             <Switch>
+                <Route exact path={routes.home}>
+                    <Home />
+                </Route>
                 <Route exact path={routes.graph}>
                     <Graph />
                 </Route>

@@ -5,6 +5,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: radial-gradient(circle, rgb(8, 62, 105) 0%, rgba(8,4,20,1) 40%, rgba(8,4,20,1) 100%);
+}
+
+body#changeColor {
+  background: radial-gradient(circle, rgba(198,216,231,1) 15%, rgba(5,39,67,1) 100%, rgba(8,4,20,1) 100%) !important;
+  transition: all 1s ease-in-out;
 }
 
 code {
