@@ -1,0 +1,13 @@
+#homeLogo:hover ~ h1#rightLogo {
+    transform: translate(80%,-50%);
+    transition: all 1s ease-in-out;
+    opacity: 100%;
+    color: rgb(8, 62, 105);
+}
+
+#homeLogo:hover ~ h1#leftLogo {
+    transform: translate(-180%,-50%);
+    transition: all 1s ease-in-out;
+    opacity: 100%;
+    color: rgb(8, 62, 105);
+}
