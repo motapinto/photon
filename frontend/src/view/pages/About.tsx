@@ -37,18 +37,18 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function Home(): JSX.Element {
+export default function About(): JSX.Element {
     const classes = useStyles();
     const path = routes.graph;
 
     useEffect(() => {   
-        const homeLogo = document.getElementById("homeLogo");
+        const homeLogo = document.getElementById('homeLogo');
         const body = document.body;
         if (homeLogo) homeLogo.onmouseover = function() {
-            body.id = "changeColor";
+            body.id = 'changeColor';
         }
         if (homeLogo) homeLogo.onmouseout = function() {
-            body.id = "";
+            body.id = '';
         }
     });
 

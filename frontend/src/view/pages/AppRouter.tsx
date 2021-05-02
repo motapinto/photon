@@ -4,7 +4,7 @@ import {
     Switch,
     Route,
 } from "react-router-dom";
-
+import About from "./About";
 import Graph from "./Graph";
 import Home from "./Home";
 import { Typography } from "@material-ui/core";
@@ -22,9 +22,12 @@ export default function AppRouter(): JSX.Element {
                 <Route exact path={routes.graph}>
                     <Graph />
                 </Route>
+                <Route exact path={routes.about}>
+                    <About />
+                </Route>
                 <Route path="*">
                     <Typography>
-                        404 no page found
+                        <Home />
                     </Typography>
                 </Route>
             </Switch>
