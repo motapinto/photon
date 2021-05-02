@@ -34,6 +34,7 @@ const useStyles = makeStyles(() => ({
         zIndex: 0,
         opacity: "0%",
         transition: "all 1s ease-in-out",
+        color: "rgb(8, 62, 105)",
     },
 }));
 
@@ -44,11 +45,16 @@ export default function Home(): JSX.Element {
     useEffect(() => {   
         const homeLogo = document.getElementById("homeLogo");
         const body = document.body;
-        if (homeLogo) homeLogo.onmouseover = function() {
-            body.id = "changeColor";
-        }
-        if (homeLogo) homeLogo.onmouseout = function() {
-            body.id = "";
+        if (homeLogo) {
+            homeLogo.onmouseover = function() {
+                body.id = 'changeColor';
+            }
+            homeLogo.onmouseout = function() {
+                body.id = '';
+            }
+            homeLogo.onclick = function() {
+                body.id = '';
+            }
         }
     });
 
