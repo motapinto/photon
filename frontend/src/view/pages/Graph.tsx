@@ -19,6 +19,10 @@ export default function Graph(): JSX.Element {
 
     useEffect(() => {
         function focusNode(node: any) {
+            // Display popup
+            const popup = document.getElementById("popup");
+            if (popup) popup.setAttribute("style", "display: block");
+
             // Aim at node from outside it
             const distance = 70;
             const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
