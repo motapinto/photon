@@ -10,6 +10,8 @@ import {
     ListItem
 } from "@material-ui/core";
 import logo from "../../images/photon-logo.png";
+import collaborationLogo1 from "../../images/Fraunhofer_Portugal_logo.png";
+import collaborationLogo2 from "../../images/FEUP.png";
 
 const useStyles = makeStyles(() => ({
     aboutContent: {
@@ -22,7 +24,7 @@ const useStyles = makeStyles(() => ({
         flexWrap: "nowrap",
     },
     aboutHeader: {
-        marginTop: "7rem",
+        marginTop: "6rem",
         paddingBottom: "1rem",
     },
     list: {
@@ -36,6 +38,18 @@ const useStyles = makeStyles(() => ({
             filter: "hue-rotate(360deg) brightness(200%)",
             transition: "all 1s ease-in-out",
         }
+    },
+    collaborationLogos: {
+        width: "8rem",
+        marginLeft: "auto",
+    },
+    collaborationDiv: {
+        backgroundColor: "white",
+        padding: "1rem",
+        marginTop: "3rem",
+    },
+    colabHeader: {
+        color: "black",
     },
 }));
 
@@ -114,6 +128,15 @@ export default function About(): JSX.Element {
                         </ListItemText>
                     </ListItem>
                 </List>
+                <div className={classes.collaborationDiv}>
+                    <Grid container direction="row">
+                        <Typography variant="h5" className={classes.colabHeader}>
+                            In collaboration with
+                        </Typography> 
+                        <img src={collaborationLogo1} alt="FEUP Logo" className={classes.collaborationLogos} />
+                        <img src={collaborationLogo2} alt="Fraunhofer Logo" className={classes.collaborationLogos} />
+                    </Grid>
+                </div>
             </Grid>
         </MainScreen>
     );

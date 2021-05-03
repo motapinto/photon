@@ -25,8 +25,8 @@ Photon is an application capable of:
 
 ## Usage
 ### Docker Usage - Both Frontend and Backend
-* docker-compose exec photon-backend npm run seed
 * docker-compose up
+* docker-compose exec photon-backend npm run seed
 
 ### Backend Usage 
 * cd backend
