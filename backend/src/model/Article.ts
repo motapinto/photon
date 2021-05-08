@@ -4,7 +4,9 @@ export interface Article extends Node {
   readonly properties: {
     title: string,
     url: string,
-    publishedAt: string,
+    description: string,
+    body: string,
+    datePublished: string,
     score: number,
   };
 }
