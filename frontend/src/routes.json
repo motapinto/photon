@@ -1,3 +1,5 @@
 {
-    "graph": "/graph"
+    "home": "/",
+    "graph": "/graph",
+    "about": "/about"
 }

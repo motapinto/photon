@@ -1,0 +1,20 @@
+body {
+    background: radial-gradient(circle, rgb(8, 62, 105) 0%, rgba(8,4,20,1) 40%, rgba(8,4,20,1) 100%);
+}
+
+body#changeColor {
+    background: radial-gradient(circle, rgba(198,216,231,1) 15%, rgba(5,39,67,1) 100%, rgba(8,4,20,1) 100%) !important;
+    transition: all 1s ease-in-out;
+}
+
+#homeLogo:hover ~ h1#rightLogo {
+    transform: translate(80%,-50%);
+    transition: all 1s ease-in-out;
+    opacity: 100%;
+}
+
+#homeLogo:hover ~ h1#leftLogo {
+    transform: translate(-180%,-50%);
+    transition: all 1s ease-in-out;
+    opacity: 100%;
+}

@@ -5,6 +5,7 @@ import { getGraphData } from "../../viewmodel/providers/getGraphData";
 import Popup from "../components/NodePopup";
 import Node from "../../model/node";
 import Link from "../../model/link";
+import MainScreen from "./templates/MainScreen";
 
 type GraphData = {
     nodes: Node[],
@@ -18,6 +19,10 @@ export default function Graph(): JSX.Element {
 
     useEffect(() => {
         function focusNode(node: any) {
+            // Display popup
+            const popup = document.getElementById("popup");
+            if (popup) popup.setAttribute("style", "display: block");
+
             // Aim at node from outside it
             const distance = 70;
             const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
@@ -56,9 +61,9 @@ export default function Graph(): JSX.Element {
     );
     
     return (
-        <div>
+        <MainScreen>
             <div id="graph" />
             {popup}
-        </div>
+        </MainScreen>
     );
 }

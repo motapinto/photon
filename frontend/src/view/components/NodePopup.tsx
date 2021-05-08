@@ -3,8 +3,9 @@ import {
     Card,
     CardContent,
     Typography,
+    makeStyles,
+    Button,
 } from '@material-ui/core/';
-import { makeStyles } from '@material-ui/core/styles';
 import Node from "../../model/node";
 import Article from "../../model/article";
 import Sector from "../../model/sector";
@@ -25,6 +26,13 @@ const useStyles = makeStyles({
     pos: {
         marginBottom: 12,
     },
+    closeButton: {
+        float: "right",
+        backgroundColor: "#b57c80",
+        "&:hover": {
+            backgroundColor: "#a46c80",
+        },
+    },
 });
 
 interface PopupProps {
@@ -33,8 +41,8 @@ interface PopupProps {
 
 export default function NodePopup({node}: PopupProps): JSX.Element {
     const classes = useStyles();
+
     let content;
-    
     if (node === undefined)
         content = (<CardContent />);
     else {   
@@ -101,8 +109,16 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
         }
     }
 
+    function closePopup() {
+        const popup = document.getElementById("popup");
+        if (popup) popup.setAttribute("style", "display: none");
+    }
+
     return (
-        <Card className={classes.root} variant="outlined">
+        <Card className={classes.root} variant="outlined" id="popup">
+            <Button className={classes.closeButton} onClick={closePopup}>
+                X
+            </Button>
             {content}
         </Card>
     );

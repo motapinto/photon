@@ -1,0 +1,31 @@
+#TopBar{
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 10%);
+}
+
+#TopBar:hover{
+    background-color: rgba(0, 0, 0, 100%);
+    transition: all 1s ease-in-out;
+}
+
+#TopBar:hover img{
+    filter: hue-rotate(180deg);
+    transition: all 1s ease-in-out;
+}
+
+#TopBar img{
+    padding-left: 1rem;
+    max-width: 3rem;
+}
+
+#GridWrapper{
+    height: 100%;
+    flex-wrap: nowrap;
+}
+
+#AppName{
+    padding-left: 1rem;
+    align-self: center;
+}

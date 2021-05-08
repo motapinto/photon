@@ -24,7 +24,11 @@ Photon is an application capable of:
 * .env similar do .env.example in backend/
 
 ## Usage
-### API Usage 
+### Docker Usage - Both Frontend and Backend
+* docker-compose up
+* docker-compose exec photon-backend npm run seed
+
+### Backend Usage 
 * cd backend
 * npm install
 * npm run neo4j
@@ -34,7 +38,7 @@ Photon is an application capable of:
 **Note:** If you want to use mock data, instead of real data, you can use *npm run seed* to test our application. If not, just skip that instruction.
 
 ### Frontend Usage
-* cd photon
+* cd frontend
 * npm install
 * npm start
 * [npm build]
