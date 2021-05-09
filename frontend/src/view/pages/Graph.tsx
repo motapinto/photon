@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ForceGraph3D from '3d-force-graph';
+import ForceGraph3D from "3d-force-graph";
 import { useGetResource } from "../../viewmodel/hooks/getResource";
 import { getGraphData } from "../../viewmodel/providers/getGraphData";
 import Popup from "../components/NodePopup";
@@ -44,9 +44,11 @@ export default function Graph(): JSX.Element {
                                 if (element) element.style.cursor = node ? "pointer" : "auto"
                             })
                             .onNodeClick(focusNode)
-                            .nodeAutoColorBy('label')
+                            .nodeAutoColorBy("label")
                             .onBackgroundClick(defocusNode)
                             .graphData(resource);
+            // @ts-ignore
+            myGraph.forceEngine('d3').d3Force('link')?.distance(200);
         }
         // eslint-disable-next-line
     }, [resource]);

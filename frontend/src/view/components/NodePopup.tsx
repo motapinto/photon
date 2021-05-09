@@ -83,7 +83,7 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                             Name: {sector.name}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
-                            Growth: {sector.growth}
+                            Growth: {sector.val}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
                             Number of news: {sector.numNews}

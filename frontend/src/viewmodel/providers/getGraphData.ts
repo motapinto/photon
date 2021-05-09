@@ -60,7 +60,7 @@ function parseNode(node: any): Node {
             return parseCountry(node);
         }
     }
-    return new Node(id, label);
+    return new Node(id, label, 4);
 }
 
 function parseLink(link: any): Link {
