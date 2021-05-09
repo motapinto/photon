@@ -44,7 +44,7 @@ export default class NewsExtractor extends HttpClient {
     return NewsExtractor.instance;
   };
 
-  public async getAll() {    
+  public async processAll() {    
     NewsExtractor.energyTopics.forEach(async (topic: string) => {   
       try {
         const news = await super.get<NewsApiResponse>({
@@ -69,3 +69,5 @@ export default class NewsExtractor extends HttpClient {
     infoLogger.info(article);
   }
 }
+
+NewsExtractor.getInstance().processAll();

@@ -43,7 +43,7 @@ export default class TwitterExtractor extends HttpClient {
     return TwitterExtractor.instance;
   };
 
-  public async getAll() {    
+  public async processAll() {    
     TwitterExtractor.energyTopics.forEach(async (topic: string) => {   
       try {
         const Twitter = await super.get<TwitterApiResponse>({
@@ -66,4 +66,4 @@ export default class TwitterExtractor extends HttpClient {
   }
 }
 
-TwitterExtractor.getInstance().getAll();
+TwitterExtractor.getInstance().processAll();
