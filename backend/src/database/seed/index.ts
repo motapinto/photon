@@ -5,8 +5,8 @@ import { energy, nonRenewableEnergy, renewableEnergy } from "./sectors";
 import { articles } from "./articles";
 import { tweets } from "./tweets";
 import { errorLogger, infoLogger } from "@logger";
-
-
+import { TweetModel } from "@model/Tweet";
+import { HasTweet } from "@model/edges/HasTweet";
 
 (async () => {
   try {        
@@ -20,7 +20,7 @@ import { errorLogger, infoLogger } from "@logger";
       renewableEnergy.map(async (sector) => db.createNode(sector)),
       articles.map(async (article) => db.createNode(article)),
       countries.map(async (country) => db.createNode(country)),
-      tweets.map(async (tweet) => db.createNode(tweet)),
+      tweets.map(async (tweet) => new TweetModel(tweet).add()),
     ]);
 
     const majorAreaEdge: Edge = {
@@ -64,6 +64,8 @@ import { errorLogger, infoLogger } from "@logger";
       await db.createEdge(articles[3], countries[1], fromLocation);
 
       /** ENERGY-TWEETS EDGES */
+      const hasTweet: HasTweet = { label: 'HAS_TWEET' };
+      await (new TweetModel(tweets[0])).linkToEnergy(energy[1], hasTweet);
 
       infoLogger.info("DB is now populated!");
       process.exit();
