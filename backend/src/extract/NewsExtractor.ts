@@ -1,6 +1,5 @@
 import { Article } from '@model/Article';
 import HttpClient from './HttpClient';
-import dotenv from 'dotenv';
 
 interface NewsApiResponse {
   _type: string,
