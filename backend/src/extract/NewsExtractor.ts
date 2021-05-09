@@ -1,3 +1,4 @@
+import { errorLogger, infoLogger } from '@logger';
 import { Article } from '@model/Article';
 import HttpClient from './HttpClient';
 
@@ -44,23 +45,27 @@ export default class NewsExtractor extends HttpClient {
   };
 
   public async getAll() {    
-    NewsExtractor.energyTopics.forEach(async (topic: string) => {            
-      const news = await super.get<NewsApiResponse>({
-        params: {
-          q: topic,
-          pageNumber: '1',
-          pageSize: '50',
-          autoCorrect: 'true',
-          fromPublishedDate: 'null',
-          toPublishedDate: 'null',
-        }
-      });
-
-      news.value.forEach(async (article) => this.processArticle(article));
+    NewsExtractor.energyTopics.forEach(async (topic: string) => {   
+      try {
+        const news = await super.get<NewsApiResponse>({
+          params: {
+            q: topic,
+            pageNumber: '1',
+            pageSize: '50',
+            autoCorrect: 'true',
+            fromPublishedDate: 'null',
+            toPublishedDate: 'null',
+          }
+        });
+  
+        news.value.forEach(async (article) => this.processArticle(article));
+      } catch (err) {
+        errorLogger.error(err);
+      }         
     });  
   }
 
   private async processArticle(article: Article) {
-    console.log(article);
+    infoLogger.info(article);
   }
 }

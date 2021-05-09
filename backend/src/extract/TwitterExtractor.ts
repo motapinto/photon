@@ -1,5 +1,7 @@
+import { errorLogger, infoLogger } from '@logger';
 import { Tweet } from '@model/Tweet';
 import HttpClient from './HttpClient';
+import dotenv from 'dotenv';
 
 interface TwitterApiResponse {
   data: Tweet[],
@@ -27,6 +29,7 @@ export default class TwitterExtractor extends HttpClient {
   ];
 
   private constructor() {
+    dotenv.config();
     super(TwitterExtractor.url, {
       'Authorization': `Bearer ${process.env.TWITTER_AUTHORIZATION}`,
     });
@@ -41,21 +44,25 @@ export default class TwitterExtractor extends HttpClient {
   };
 
   public async getAll() {    
-    TwitterExtractor.energyTopics.forEach(async (topic: string) => {            
-      const Twitter = await super.get<TwitterApiResponse>({
-        params: {
-          query: topic,
-          max_results: 100,
-          'tweet.fields': 'author_id,context_annotations,created_at,entities,id,public_metrics,text'
-        }
-      });
-
-      Twitter.data.forEach(async (tweet) => this.processTweet(tweet));
+    TwitterExtractor.energyTopics.forEach(async (topic: string) => {   
+      try {
+        const Twitter = await super.get<TwitterApiResponse>({
+          params: {
+            query: topic,
+            max_results: 10,
+            'tweet.fields': 'author_id,context_annotations,created_at,entities,id,public_metrics,text'
+          }
+        });
+  
+        Twitter.data.forEach(async (tweet) => this.processTweet(tweet));
+      } catch (err) {
+        errorLogger.error(err);
+      }         
     });  
   }
 
   private async processTweet(tweet: Tweet) {
-    console.log(tweet);
+    infoLogger.info(tweet);
   }
 }
 
