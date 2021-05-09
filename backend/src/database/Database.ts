@@ -26,6 +26,15 @@ export default class Database {
     );
   };
 
+  private session() {
+    const session = Database.neo.session();
+    if(session === undefined) {
+      throw new Error("Session is undefined!");
+    }
+
+    return session;
+  }
+
   public async query(statement: string, populate?: boolean): Promise<Record[] | undefined> {
     const session = Database.neo.session();
     if(session === undefined) {
@@ -34,7 +43,6 @@ export default class Database {
 
     try {
       const res = await session.run(statement);
-      session.close();
       return res.records;    
     } catch (error) {
       if(populate) {
@@ -47,14 +55,29 @@ export default class Database {
     }
   }
 
-  public async createNode<T extends Node>(node: T) {
-    return await this.query(`
+  public async transactionQuery(statement: string): Promise<Record[] | undefined> {
+    const session = this.session();
+    const tx = session.beginTransaction();
+
+    try {
+      const res = await session.run(statement);
+      await tx.commit();
+      return res.records;  
+    } catch (err) {
+      await tx.rollback();
+    } finally {
+      await session.close();
+    }
+  }
+
+  public async createNode<T extends Node>(node: T) {    
+    return this.query(`
       CREATE (n: ${node.label} ${Utils.stringify(node.properties)})
     `);
   }
 
-  public async createEdge<T1 extends Node, E extends Edge, T2 extends Node>(origin: T1, dest: T2, edge: E) {
-    return await this.query(`
+  public async createEdge<T1 extends Node, E extends Edge, T2 extends Node>(origin: T1, dest: T2, edge: E) {        
+    return this.query(`
       MATCH (origin: ${origin.label} ${Utils.stringify(origin.properties)}), (dest: ${dest.label} ${Utils.stringify(dest.properties)})
       MERGE (origin)-[e: ${edge.label} ${Utils.stringify(edge.properties)}]->(dest)
       RETURN origin, e, dest
@@ -62,14 +85,14 @@ export default class Database {
   }
 
   public async getGraph(): Promise<Record[] | undefined> {
-    return await this.query(`
+    return this.query(`
       MATCH (origin)-[edge]-(dest) 
       RETURN origin, edge, dest;
     `);
   }
 
   public async dropDB() {
-    return await this.query(`
+    return this.query(`
       MATCH(n) 
       DETACH DELETE n
     `);
