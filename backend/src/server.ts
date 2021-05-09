@@ -5,13 +5,20 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import { errorLogger, infoLogger } from '@logger';
 import routes from '@routes';
+import loggerMiddleware from '@middleware/loggerMiddleware';
 
 (async () => {
   const app = express();
-  checkEnvVars();
+
+  try {
+    checkEnvVars();
+  } catch (err) {
+    errorLogger.error(err);
+  }
 
   app.use(cors());
   app.use(morgan('dev'));
+  app.use(loggerMiddleware);
   app.use('/', routes);
 
   const PORT = process.env.SERVER_PORT || 5000;
