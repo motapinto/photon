@@ -4,12 +4,23 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import { errorLogger, infoLogger } from '@logger';
+import routes from '@routes';
 
 (async () => {
   const app = express();
+  checkEnvVars();
+
   app.use(cors());
   app.use(morgan('dev'));
+  app.use('/', routes);
 
+  const PORT = process.env.SERVER_PORT || 5000;
+  app.listen(PORT, async() => {
+    infoLogger.info(`Server started at http://localhost:${PORT}`);
+  });
+})();
+
+function checkEnvVars() {
   let map = new Map();
   dotenv.config();
   map.set('DATABASE_URI', process.env.DATABASE_URI)
@@ -23,18 +34,4 @@ import { errorLogger, infoLogger } from '@logger';
         throw new Error(`${envName} must be defined`);
       }
     });
-
-  app.get('/graph', async(_req: Request, res: Response) => {
-    try {
-      const records = await Database.getInstance().getGraph() ?? [];
-      return res.status(200).json(records);
-    } catch (err) {
-      errorLogger.error(err);
-    }
-  });
-
-  const PORT = process.env.SERVER_PORT || 5000;
-  app.listen(PORT, async() => {
-    infoLogger.info(`Server started at http://localhost:${PORT}`);
-  });
-})();
+}
