@@ -24,7 +24,7 @@ export default function Graph(): JSX.Element {
             if (popup) popup.setAttribute("style", "display: block");
 
             // Aim at node from outside it
-            const distance = 70;
+            const distance = 170;
             const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
         
             myGraph.cameraPosition(
@@ -48,7 +48,7 @@ export default function Graph(): JSX.Element {
                             .onBackgroundClick(defocusNode)
                             .graphData(resource);
             // @ts-ignore
-            myGraph.forceEngine('d3').d3Force('link')?.distance(200);
+            myGraph.d3Force('link')?.distance(200);
         }
         // eslint-disable-next-line
     }, [resource]);

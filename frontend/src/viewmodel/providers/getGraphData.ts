@@ -15,7 +15,7 @@ function parseArticle(node: any): Article {
     const id = node["identity"]["high"] + node["identity"]["low"];
     const label = node["labels"][0];
     const properties = node["properties"];
-    const publishedAt = properties["publishedAt"];
+    const publishedAt = properties["datePublished"];
     const score = properties["score"]["low"] + properties["score"]["high"];
     const title = properties["title"];
     const url = properties["url"];
@@ -46,7 +46,6 @@ function parseCountry(node: any): Country {
 function parseNode(node: any): Node {
     const id = node["identity"]["high"] + node["identity"]["low"];
     const label = node["labels"][0];
-
     switch(label) {
         case labels.article: {
             return parseArticle(node);
