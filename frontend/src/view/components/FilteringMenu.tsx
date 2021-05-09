@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../css/MainScreen.css";
 import {
     Typography,
@@ -10,23 +10,40 @@ import Form from 'react-bootstrap/Form';
 const useStyles = makeStyles(() => ({
     rangeLabel: {
         marginRight: "1rem",
-    }
+    },
+    displayCol: {
+        display: "flex",
+        flexDirection: "column",
+    },
 }));
 
 export default function FilteringMenu(): JSX.Element {
     const classes = useStyles();
+    const newsSlider = document.getElementById("relatedNews");
+    const postsSlider = document.getElementById("relatedPosts");
+    const growthSlider = document.getElementById("valueGrowth");
+    
     //@ts-ignore
-    let newsValue = document.getElementById("relatedNews")?.value;
+    const [newsValue, setNews] = useState(0);
     //@ts-ignore
-    let postsValue = document.getElementById("relatedPosts")?.value;
+    const [postsValue, setPosts] = useState(0);
     //@ts-ignore
-    let growthValue = document.getElementById("valueGrowth")?.value;
+    const [growthValue, setGrowth] = useState(0);
 
-    /*const newsSlider = document.getElementById("relatedNews");
-    newsSlider?.onchange = function() {
-        //@ts-ignore
-        //newsValue = newsSlider?.value;
-    }*/
+    useEffect(() => {
+        if (newsSlider) newsSlider.oninput = function() {
+            //@ts-ignore
+            setNews(newsSlider?.value);
+        }
+        if (postsSlider) postsSlider.oninput = function() {
+            //@ts-ignore
+            setPosts(postsSlider?.value);
+        }
+        if (growthSlider) growthSlider.oninput = function() {
+            //@ts-ignore
+            setGrowth(growthSlider?.value);
+        }
+    }, [newsSlider, postsSlider, growthSlider]);
 
     return (
         <div id="FilteringMenu">
@@ -48,27 +65,27 @@ export default function FilteringMenu(): JSX.Element {
                 </div>
             </Form>
             <Form>
-                <Form.Group controlId="relatedNews">
+                <Form.Group controlId="relatedNews" className={classes.displayCol}>
                     <Form.Label className={classes.rangeLabel}>
                         Min Number of Related News: <span id="outputNews">{newsValue}</span>
                     </Form.Label>
-                    <Form.Control type="range" min="0" max="10000" step="500"/>
+                    <Form.Control type="range" min="0" max="10000" step="500" defaultValue="0"/>
                 </Form.Group>
             </Form>
             <Form>
-                <Form.Group controlId="relatedPosts">
+                <Form.Group controlId="relatedPosts" className={classes.displayCol}>
                     <Form.Label className={classes.rangeLabel}>
                         Min Number of Related Posts: <span id="outputPosts">{postsValue}</span>
                     </Form.Label>
-                    <Form.Control type="range" min="0" max="10000" step="500"/>
+                    <Form.Control type="range" min="0" max="10000" step="500" defaultValue="0"/>
                 </Form.Group>
             </Form>
             <Form>
-                <Form.Group controlId="valueGrowth">
+                <Form.Group controlId="valueGrowth" className={classes.displayCol}>
                     <Form.Label className={classes.rangeLabel}>
                         Min Value of Growth: <span id="outputGrowth">{growthValue}</span>
                     </Form.Label>
-                    <Form.Control type="range" min="0" max="10000" step="500"/>
+                    <Form.Control type="range" min="0" max="10000" step="500" defaultValue="0"/>
                 </Form.Group>
             </Form>
             <Form.Group controlId="formGridState">
