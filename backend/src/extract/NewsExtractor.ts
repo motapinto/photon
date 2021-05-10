@@ -1,6 +1,6 @@
+import { errorLogger, infoLogger } from '@logger';
 import { Article } from '@model/Article';
 import HttpClient from './HttpClient';
-import dotenv from 'dotenv';
 
 interface NewsApiResponse {
   _type: string,
@@ -44,24 +44,30 @@ export default class NewsExtractor extends HttpClient {
     return NewsExtractor.instance;
   };
 
-  public async getAll() {    
-    NewsExtractor.energyTopics.forEach(async (topic: string) => {            
-      const news = await super.get<NewsApiResponse>({
-        params: {
-          q: topic,
-          pageNumber: '1',
-          pageSize: '50',
-          autoCorrect: 'true',
-          fromPublishedDate: 'null',
-          toPublishedDate: 'null',
-        }
-      });
-
-      news.value.forEach(async (article) => this.processArticle(article));
+  public async processAll() {    
+    NewsExtractor.energyTopics.forEach(async (topic: string) => {   
+      try {
+        const news = await super.get<NewsApiResponse>({
+          params: {
+            q: topic,
+            pageNumber: '1',
+            pageSize: '50',
+            autoCorrect: 'true',
+            fromPublishedDate: 'null',
+            toPublishedDate: 'null',
+          }
+        });
+  
+        news.value.forEach(async (article) => this.processArticle(article));
+      } catch (err) {
+        errorLogger.error(err);
+      }         
     });  
   }
 
   private async processArticle(article: Article) {
-    console.log(article);
+    infoLogger.info(article);
   }
 }
+
+NewsExtractor.getInstance().processAll();

@@ -3,9 +3,10 @@ import { Edge } from "@model/Edge";
 import { countries } from "./countries";
 import { energy, nonRenewableEnergy, renewableEnergy } from "./sectors";
 import { articles } from "./articles";
+import { tweets } from "./tweets";
 import { errorLogger, infoLogger } from "@logger";
-
-
+import { TweetModel } from "@model/Tweet";
+import { HasTweet } from "@model/edges/HasTweet";
 
 (async () => {
   try {        
@@ -14,65 +15,57 @@ import { errorLogger, infoLogger } from "@logger";
     await db.dropDB();
     
     await Promise.all([
-      countries.map(async (country) => db.createNode(country)),
+      energy.map(async (sector) => db.createNode(sector)),
+      nonRenewableEnergy.map(async (sector) => db.createNode(sector)),
+      renewableEnergy.map(async (sector) => db.createNode(sector)),
       articles.map(async (article) => db.createNode(article)),
-      energy.map(async (country) => db.createNode(country)),
-      nonRenewableEnergy.map(async (country) => db.createNode(country)),
-      renewableEnergy.map(async (country) => db.createNode(country)),
+      countries.map(async (country) => db.createNode(country)),
+      tweets.map(async (tweet) => new TweetModel(tweet).add()),
     ]);
 
     const majorAreaEdge: Edge = {
-      label: 'majorArea',
+      label: 'HAS_MAJOR_AREA',
     }
 
     const subAreaEdge: Edge = {
-        label: 'subArea',
+      label: 'HAS_SUB_AREA',
     }
 
-    await Promise.all([
-      db.createEdge(energy[0], energy[1], majorAreaEdge),
-      db.createEdge(energy[0], energy[2], majorAreaEdge),
-      db.createEdge(energy[1], renewableEnergy[0], subAreaEdge),
-      db.createEdge(energy[1], renewableEnergy[1], subAreaEdge),
-      db.createEdge(energy[1], renewableEnergy[2], subAreaEdge),
-      db.createEdge(energy[1], renewableEnergy[3], subAreaEdge),
-      db.createEdge(energy[1], renewableEnergy[4], subAreaEdge),
-      db.createEdge(energy[2], nonRenewableEnergy[0], subAreaEdge),
-      db.createEdge(energy[2], nonRenewableEnergy[1], subAreaEdge),
-      db.createEdge(energy[2], nonRenewableEnergy[2], subAreaEdge),
-      db.createEdge(energy[2], nonRenewableEnergy[3], subAreaEdge),
-      db.createEdge(energy[2], nonRenewableEnergy[4], subAreaEdge),
-    ]);
-
-    await Promise.all([
-      db.createNode(articles[0]),
-      db.createNode(articles[1]),
-      db.createNode(articles[2]),
-      db.createNode(articles[3]),
-    ]);
+    await db.createEdge(energy[0], energy[1], majorAreaEdge);
+    await db.createEdge(energy[0], energy[2], majorAreaEdge);
+    await db.createEdge(energy[1], renewableEnergy[0], subAreaEdge);
+    await db.createEdge(energy[1], renewableEnergy[1], subAreaEdge);
+    await db.createEdge(energy[1], renewableEnergy[2], subAreaEdge);
+    await db.createEdge(energy[1], renewableEnergy[3], subAreaEdge);
+    await db.createEdge(energy[1], renewableEnergy[4], subAreaEdge);
+    await db.createEdge(energy[2], nonRenewableEnergy[0], subAreaEdge);
+    await db.createEdge(energy[2], nonRenewableEnergy[1], subAreaEdge);
+    await db.createEdge(energy[2], nonRenewableEnergy[2], subAreaEdge);
+    await db.createEdge(energy[2], nonRenewableEnergy[3], subAreaEdge);
+    await db.createEdge(energy[2], nonRenewableEnergy[4], subAreaEdge);
 
     /** ENERGY-ARTICLE EDGES */
-    const fromArticle: Edge = {
-      label: 'about',
+    const hasArticle: Edge = {
+      label: 'HAS_ARTICLE',
     }
     
-    await Promise.all([
-      db.createEdge(energy[1], articles[0], fromArticle),
-      db.createEdge(renewableEnergy[1], articles[1], fromArticle),
-      db.createEdge(renewableEnergy[2], articles[2], fromArticle),
-      db.createEdge(nonRenewableEnergy[1], articles[3], fromArticle),
-    ]);
+    await db.createEdge(energy[1], articles[0], hasArticle);
+    await db.createEdge(renewableEnergy[1], articles[1], hasArticle);
+    await db.createEdge(renewableEnergy[2], articles[2], hasArticle);
+    await db.createEdge(nonRenewableEnergy[1], articles[3], hasArticle);
 
       /** COUNTRY-ARTICLE EDGES */
       const fromLocation: Edge = {
-        label: 'from',
+        label: 'FROM_LOCATION',
       }
 
-      await Promise.all([
-        db.createEdge(articles[1], countries[2], fromLocation),
-        db.createEdge(articles[2], countries[0], fromLocation),
-        db.createEdge(articles[3], countries[1], fromLocation),
-      ]);
+      await db.createEdge(articles[1], countries[2], fromLocation);
+      await db.createEdge(articles[2], countries[0], fromLocation);
+      await db.createEdge(articles[3], countries[1], fromLocation);
+
+      /** ENERGY-TWEETS EDGES */
+      const hasTweet: HasTweet = { label: 'HAS_TWEET' };
+      await (new TweetModel(tweets[0])).linkToEnergy(energy[1], hasTweet);
 
       infoLogger.info("DB is now populated!");
       process.exit();
