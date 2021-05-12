@@ -1,12 +1,16 @@
 import Database from "@database/Database";
+import { errorLogger, infoLogger } from "@logger";
 import { Edge } from "@model/Edge";
 import { countries } from "./countries";
 import { energy, nonRenewableEnergy, renewableEnergy } from "./sectors";
 import { articles } from "./articles";
 import { tweets } from "./tweets";
-import { errorLogger, infoLogger } from "@logger";
 import { TweetModel } from "@model/Tweet";
 import { HasTweet } from "@model/edges/HasTweet";
+import { redditSubmissions, redditComments } from './reddit_content';
+import { RedditSubmissionModel } from '@model/RedditSubmission';
+import { RedditCommentModel } from '@model/RedditComment';
+import { HasRedditContent } from "@model/edges/HasRedditContent";
 
 (async () => {
   try {        
@@ -21,6 +25,8 @@ import { HasTweet } from "@model/edges/HasTweet";
       articles.map(async (article) => db.createNode(article)),
       countries.map(async (country) => db.createNode(country)),
       tweets.map(async (tweet) => new TweetModel(tweet).add()),
+      redditSubmissions.map(async (sub) => new RedditSubmissionModel(sub).add()),
+      redditComments.map(async (comment) => new RedditCommentModel(comment).add()),
     ]);
 
     const majorAreaEdge: Edge = {
@@ -66,6 +72,11 @@ import { HasTweet } from "@model/edges/HasTweet";
       /** ENERGY-TWEETS EDGES */
       const hasTweet: HasTweet = { label: 'HAS_TWEET' };
       await (new TweetModel(tweets[0])).linkToEnergy(energy[1], hasTweet);
+
+      /** ENERGY-REDDIT_CONTENT EDGES */
+      const hasRedditContent: HasRedditContent = { label: 'HAS_REDDIT_CONTENT' }; 
+      await (new RedditSubmissionModel(redditSubmissions[0])).linkToEnergy(renewableEnergy[1], hasRedditContent);
+      await (new RedditCommentModel(redditComments[0])).linkToEnergy(energy[0], hasRedditContent);
 
       infoLogger.info("DB is now populated!");
       process.exit();

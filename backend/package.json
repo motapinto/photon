@@ -15,7 +15,7 @@
     "extract:reddit": "ts-node --transpile-only -r tsconfig-paths/register ./src/extract/RedditExtractor.ts",
     "neo4j": "docker-compose up -d photon-db",
     "start": "ts-node --transpile-only -r tsconfig-paths/register ./src/server.ts",
-    "dev": "nodemon",
+    "dev": "nodemon --config nodemon.json ./src/server.ts",
     "seed": "ts-node -r tsconfig-paths/register ./src/database/seed"
   },
   "devDependencies": {

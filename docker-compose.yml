@@ -21,7 +21,7 @@ services:
     container_name: photon-backend
     volumes:
       - ./backend/src:/home/node/app/src
-      - ./backend/nodemon.json:/home/node/app/nodemon.json
+      # - /home/node/app/node_modules
     ports:
       - '5000:5000'
     env_file:
@@ -37,7 +37,7 @@ services:
     container_name: photon-frontend
     volumes:
       - ./frontend/src:/home/node/app/src
-      - ./frontend/nodemon.json:/home/node/app/nodemon.json
+      # - /home/node/app/node_modules
     ports:
       - '3000:3000'
     env_file:
