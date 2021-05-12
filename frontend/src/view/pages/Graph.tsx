@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import ForceGraph3D from '3d-force-graph';
+import ForceGraph3D from "3d-force-graph";
 import { useGetResource } from "../../viewmodel/hooks/getResource";
 import { getGraphData } from "../../viewmodel/providers/getGraphData";
 import Popup from "../components/NodePopup";
 import Node from "../../model/node";
 import Link from "../../model/link";
 import MainScreen from "./templates/MainScreen";
+import FilteringMenu from "../components/FilteringMenu";
 
 type GraphData = {
     nodes: Node[],
@@ -24,7 +25,7 @@ export default function Graph(): JSX.Element {
             if (popup) popup.setAttribute("style", "display: block");
 
             // Aim at node from outside it
-            const distance = 70;
+            const distance = 170;
             const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
         
             myGraph.cameraPosition(
@@ -44,9 +45,11 @@ export default function Graph(): JSX.Element {
                                 if (element) element.style.cursor = node ? "pointer" : "auto"
                             })
                             .onNodeClick(focusNode)
-                            .nodeAutoColorBy('label')
+                            .nodeAutoColorBy("label")
                             .onBackgroundClick(defocusNode)
                             .graphData(resource);
+            // @ts-ignore
+            myGraph.d3Force('link')?.distance(200);
         }
         // eslint-disable-next-line
     }, [resource]);
@@ -62,6 +65,7 @@ export default function Graph(): JSX.Element {
     
     return (
         <MainScreen>
+            <FilteringMenu />
             <div id="graph" />
             {popup}
         </MainScreen>
