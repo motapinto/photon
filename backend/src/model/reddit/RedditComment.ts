@@ -1,8 +1,8 @@
 import Database from "@database/Database";
 import Utils from "@utils/Utils";
-import { Sector } from "./Sector";
-import { Node } from "./Node";
-import { HasRedditContent } from "./edges/HasRedditContent";
+import { Sector } from "../Sector";
+import { Node } from "../Node";
+import { HasRedditContent } from "../edges/HasRedditContent";
 
 export interface RedditComment extends Node {
 	readonly properties: {

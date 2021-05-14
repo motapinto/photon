@@ -1,20 +1,35 @@
 import { errorLogger, infoLogger } from '@logger';
-import { RedditSubmission } from '@model/RedditSubmission';
-import { RedditComment } from '@model/RedditComment';
+import { RedditSubmission } from '@model/reddit/RedditSubmission';
+import { RedditComment } from '@model/reddit/RedditComment';
 import HttpClient from './HttpClient';
 import dotenv from 'dotenv';
 
 interface RedditCommentsApiResponse {
-    data: any[],
+    data: RedditComment[],
 }
 
 interface RedditSubmissionsApiResponse {
-    data: any[],
+    data: RedditSubmission[],
 }
 
 abstract class RedditExtractor extends HttpClient {
     protected static energySubreddits = [
         'energy',
+        'Futurology',
+        'environment',
+        'RenewableEnergy',
+        'worldnews',
+        'science',
+        'solar',
+        'climate',
+        'NuclearPower',
+        'Green',
+        'electricvehicles',
+        'fusion',
+        'HydrogenSocieties',
+        'oil',
+        'biomass',
+        'Petroleum',
     ];
   
     public constructor(url: string) {

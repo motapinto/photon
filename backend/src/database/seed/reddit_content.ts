@@ -1,5 +1,5 @@
-import { RedditSubmission } from '@model/RedditSubmission';
-import { RedditComment } from '@model/RedditComment';
+import { RedditSubmission } from '@model/reddit/RedditSubmission';
+import { RedditComment } from '@model/reddit/RedditComment';
 
 export const redditSubmissions: RedditSubmission[] = [
   { 

@@ -8,8 +8,8 @@ import { tweets } from "./tweets";
 import { TweetModel } from "@model/Tweet";
 import { HasTweet } from "@model/edges/HasTweet";
 import { redditSubmissions, redditComments } from './reddit_content';
-import { RedditSubmissionModel } from '@model/RedditSubmission';
-import { RedditCommentModel } from '@model/RedditComment';
+import { RedditSubmissionModel } from '@model/reddit/RedditSubmission';
+import { RedditCommentModel } from '@model/reddit/RedditComment';
 import { HasRedditContent } from "@model/edges/HasRedditContent";
 
 (async () => {
