@@ -84,6 +84,22 @@ export default class Database {
     `);
   }
 
+  public async loadOntology() {
+    if(Database.neo) {
+      const session = Database.neo.session();
+
+      try {
+        const result = await session.run(
+          'CALL n10s.onto.import.fetch("https://github.com/neo4j-labs/neosemantics/raw/3.5/docs/rdf/vw.owl","Turtle");'
+        );
+
+        console.log(result);
+      } finally {
+        session.close();
+      }
+    }
+  }
+
   public async getGraph(): Promise<Record[] | undefined> {
     return this.query(`
       MATCH (origin)-[edge]-(dest) 

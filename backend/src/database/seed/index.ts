@@ -37,6 +37,8 @@ import { HasRedditContent } from "@model/edges/HasRedditContent";
       label: 'HAS_SUB_AREA',
     }
 
+    // await db.loadOntology();
+
     await db.createEdge(energy[0], energy[1], majorAreaEdge);
     await db.createEdge(energy[0], energy[2], majorAreaEdge);
     await db.createEdge(energy[1], renewableEnergy[0], subAreaEdge);

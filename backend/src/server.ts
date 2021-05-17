@@ -36,7 +36,7 @@ function checkEnvVars() {
     .set('DATABASE_HTTP', process.env.DATABASE_HTTP)
     .set('DATABASE_BOLT', process.env.DATABASE_BOLT)
     .set('SERVER_PORT', process.env.SERVER_PORT)
-    .forEach((envValue: string, envName: string) => {
+    .forEach((envName: string, envValue: string) => {
       if(!envValue) {
         throw new Error(`${envName} must be defined`);
       }
