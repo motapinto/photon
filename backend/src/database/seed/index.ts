@@ -11,12 +11,14 @@ import { redditSubmissions, redditComments } from './reddit_content';
 import { RedditSubmissionModel } from '@model/reddit/RedditSubmission';
 import { RedditCommentModel } from '@model/reddit/RedditComment';
 import { HasRedditContent } from "@model/edges/HasRedditContent";
+import dotenv from 'dotenv';
 
 (async () => {
   try {        
     const db = Database.getInstance();
 
     await db.dropDB();
+    dotenv.config();
     
     await Promise.all([
       energy.map(async (sector) => db.createNode(sector)),
@@ -37,7 +39,7 @@ import { HasRedditContent } from "@model/edges/HasRedditContent";
       label: 'HAS_SUB_AREA',
     }
 
-    // await db.loadOntology();
+    await db.loadOntology();
 
     await db.createEdge(energy[0], energy[1], majorAreaEdge);
     await db.createEdge(energy[0], energy[2], majorAreaEdge);

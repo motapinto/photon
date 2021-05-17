@@ -85,18 +85,12 @@ export default class Database {
   }
 
   public async loadOntology() {
-    if(Database.neo) {
-      const session = Database.neo.session();
-
-      try {
-        const result = await session.run(
-          'CALL n10s.onto.import.fetch("https://github.com/neo4j-labs/neosemantics/raw/3.5/docs/rdf/vw.owl","Turtle");'
-        );
-
-        console.log(result);
-      } finally {
-        session.close();
-      }
+    try {
+      await this.query(`CALL n10s.graphconfig.init()`);
+      await this.query(`CREATE CONSTRAINT n10s_unique_uri ON (r:Resource) ASSERT r.uri IS UNIQUE;`);
+      await this.query(`CALL n10s.onto.import.fetch("${process.env.ONTOLOGY_LINK}","Turtle");`);
+    } catch(err) {
+      console.error(err);
     }
   }
 

@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-import Database from '@database/Database';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
@@ -36,6 +35,7 @@ function checkEnvVars() {
     .set('DATABASE_HTTP', process.env.DATABASE_HTTP)
     .set('DATABASE_BOLT', process.env.DATABASE_BOLT)
     .set('SERVER_PORT', process.env.SERVER_PORT)
+    .set('ONTOLOGY_LINK', process.env.ONTOLOGY_LINK)
     .forEach((envName: string, envValue: string) => {
       if(!envValue) {
         throw new Error(`${envName} must be defined`);
