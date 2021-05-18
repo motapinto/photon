@@ -1,92 +1,98 @@
 import axios from "axios";
 import Link from "../../model/link";
 import Node from "../../model/node";
-import Article from "../../model/article";
+// import Article from "../../model/article";
 import Sector from "../../model/sector";
-import Country from "../../model/country";
-import labels from "../../model/labels.json";
+// import Country from "../../model/country";
+// import labels from "../../model/labels.json";
 
 type GraphData = {
     nodes: Node[],
     links: Link[],
 }
 
-function parseArticle(node: any): Article {
-    const id = node["identity"]["high"] + node["identity"]["low"];
-    const label = node["labels"][0];
-    const properties = node["properties"];
-    const publishedAt = properties["datePublished"];
-    const score = properties["score"]["low"] + properties["score"]["high"];
-    const title = properties["title"];
-    const url = properties["url"];
+// function parseArticle(id: string, labels: string[], node: any): Article {
+//     const properties = node["properties"];
+//     const publishedAt = properties["datePublished"];
+//     const score = properties["score"]["low"] + properties["score"]["high"];
+//     const title = properties["title"];
+//     const url = properties["url"];
 
-    return new Article(id, label, publishedAt, score, title, url);
+//     return new Article(id, labels, publishedAt, score, title, url);
+// }
+
+// function parseCountry(id: string, labels: string[], node: any): Country {
+//     const properties = node["properties"];
+//     const name = properties["name"];
+
+//     return new Country(id, labels, name);
+// }
+
+function parseSector(id: string, labels: string[], node: any): Sector {
+    const properties = node["properties"];
+    const name = properties["rdfs__label"];
+    const uri = properties["uri"];
+    const growth = 0;
+    const numArticles = 0;
+
+    return new Sector(id, labels, growth, name, uri, numArticles);
 }
 
-function parseSector(node: any): Sector {
-    const id = node["identity"]["high"] + node["identity"]["low"];
-    const label = node["labels"][0];
-    const properties = node["properties"];
-    const growth = properties["growth"]["low"] + properties["growth"]["high"];
-    const name = properties["name"];
-    const numNews = properties["numNews"]["low"] + properties["numNews"]["high"];
+function parseNode(node: any): Node | null {
+    const id = `${node["identity"]["high"]}_${node["identity"]["low"]}`;    
+    const labels = node["labels"];
+    const mainLabel = labels.length >= 2 ? labels[1] : "N/A";
 
-    return new Sector(id, label, growth, name, numNews);
-}
-
-function parseCountry(node: any): Country {
-    const id = node["identity"]["high"] + node["identity"]["low"];
-    const label = node["labels"][0];
-    const properties = node["properties"];
-    const name = properties["name"];
-
-    return new Country(id, label, name);
-}
-
-function parseNode(node: any): Node {
-    const id = node["identity"]["high"] + node["identity"]["low"];
-    const label = node["labels"][0];
-    switch(label) {
-        case labels.article: {
-            return parseArticle(node);
-        }
-        case labels.origin:
-        case labels.majorArea:
-        case labels.subArea: {
-            return parseSector(node);
-        }
-        case labels.country: {
-            return parseCountry(node);
-        }
+    switch(mainLabel) {
+        case "Class":
+            return parseSector(id, labels, node);
+        case "Relationship":
+            // TODO: parse relationships?
+            break;
+        default:
+            break;
     }
-    return new Node(id, label, 4);
+    return null;
 }
 
 function parseLink(link: any): Link {
-    const id = link["identity"]["high"] + link["identity"]["low"];
-    const start = link["start"]["high"] + link["start"]["low"];
-    const end = link["end"]["high"] + link["end"]["low"];
+    const id = `${link["identity"]["high"]}_${link["identity"]["low"]}`;
+    const source = `${link["start"]["high"]}_${link["start"]["low"]}`;
+    const target = `${link["end"]["high"]}_${link["end"]["low"]}`;
     const type = link["type"];
 
-    return new Link(id, start, end, type);
+    return new Link(id, source, target, type);
 }
 
 function handleGraphData(graphData: any): GraphData {
     let nodes: Node[] = [];
     let links: Link[] = [];
+    let processedIds: Set<string> = new Set();
 
     graphData.forEach((element: any) => {   
         const fields = element["_fields"];
 
         //Origin
         const origin = parseNode(fields[0]);
-        nodes.push(origin);
+        if (!origin) return;
+
+        //Dest
+        const dest = parseNode(fields[2]);
+        if (!dest) return; 
+
+        // Insert nodes (avoiding duplicates)
+        if (!processedIds.has(origin.id)) {
+            nodes.push(origin);
+            processedIds.add(origin.id);
+        }
+        if (!processedIds.has(dest.id)) {
+            nodes.push(dest);
+            processedIds.add(dest.id);
+        }
+
         //Link
         const link = parseLink(fields[1]);
         links.push(link);
-        //Dest
-        const dest = parseNode(fields[2]);
-        nodes.push(dest);
     });
 
     let data: GraphData;

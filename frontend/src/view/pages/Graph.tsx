@@ -19,6 +19,8 @@ export default function Graph(): JSX.Element {
     const [focusedNode, setFocusedNode] = useState(undefined);
 
     useEffect(() => {
+        console.log(resource);
+
         function focusNode(node: any) {
             // Display popup
             const popup = document.getElementById("popup");
@@ -41,7 +43,7 @@ export default function Graph(): JSX.Element {
         }
         let element = document.getElementById("graph");
         if (element) {
-            myGraph(element).onNodeHover(node => {
+            myGraph(element).onNodeHover((node: any) => {
                                 if (element) element.style.cursor = node ? "pointer" : "auto"
                             })
                             .onNodeClick(focusNode)
