@@ -36,6 +36,7 @@ function checkEnvVars() {
     .set('DATABASE_BOLT', process.env.DATABASE_BOLT)
     .set('SERVER_PORT', process.env.SERVER_PORT)
     .set('ONTOLOGY_LINK', process.env.ONTOLOGY_LINK)
+    .set('ONTOLOGY_FORMAT', process.env.ONTOLOGY_FORMAT)
     .forEach((envName: string, envValue: string) => {
       if(!envValue) {
         throw new Error(`${envName} must be defined`);
