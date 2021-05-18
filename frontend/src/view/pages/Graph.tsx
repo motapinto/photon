@@ -19,8 +19,6 @@ export default function Graph(): JSX.Element {
     const [focusedNode, setFocusedNode] = useState(undefined);
 
     useEffect(() => {
-        console.log(resource);
-
         function focusNode(node: any) {
             // Display popup
             const popup = document.getElementById("popup");
