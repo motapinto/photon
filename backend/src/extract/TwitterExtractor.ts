@@ -71,7 +71,7 @@ export default class TwitterExtractor extends HttpClient {
       return;
     }
 
-    records.forEach(async (record: any) => {   
+    await Promise.all(records.map(async (record: any) => {   
       try {
         const node = record._fields[0];
         if(!node.properties.rdfs__label) return;
@@ -92,7 +92,7 @@ export default class TwitterExtractor extends HttpClient {
       } catch (err) {
         errorLogger.error(err);
       }         
-    });  
+    }));  
   }
 
   private async processTweet(tweet: Tweet) {

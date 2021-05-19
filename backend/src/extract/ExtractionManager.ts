@@ -21,9 +21,7 @@ export default class ExtractionManager {
   public static async extract(args: String[]) {
     await ExtractionManager.fetchOntologyNodes();
 
-    infoLogger.info("EXTRACTION INITIATED");
-
-    args.forEach(async (arg) => {
+    for(const arg of args) {
       switch(arg) {
         case '-t': case '--twitter':
           infoLogger.info("Extracting twitter data...");
@@ -38,9 +36,9 @@ export default class ExtractionManager {
           );
           break;
       }
-    });
-    
-    infoLogger.info("EXTRACTION COMPLETED");
+    }
+
+    process.exit();
   }
 }
 
