@@ -1,5 +1,6 @@
 import { errorLogger, infoLogger } from '@logger';
 import { Article } from '@model/Article';
+import { Record } from 'neo4j-driver';
 import HttpClient from './HttpClient';
 
 interface NewsApiResponse {
@@ -30,6 +31,7 @@ export default class NewsExtractor extends HttpClient {
   ];
 
   private constructor() {
+    console.log("OH QUE CARALHO"); 
     super(NewsExtractor.url, {
       'x-rapidapi-key': process.env.NEWS_API_KEY,
       'x-rapidapi-host': 'contextualwebsearch-websearch-v1.p.rapidapi.com',
@@ -65,9 +67,16 @@ export default class NewsExtractor extends HttpClient {
     });  
   }
 
+  public async processNodes(records: Record[] | undefined) {
+    if(!records) {
+      errorLogger.error('Received empty records on News extraction');
+      return;
+    }
+
+    // TODO: send request for each ontology node record
+  }
+
   private async processArticle(article: Article) {
     infoLogger.info(article);
   }
 }
-
-NewsExtractor.getInstance().processAll();

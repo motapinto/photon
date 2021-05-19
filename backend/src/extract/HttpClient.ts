@@ -1,5 +1,6 @@
 import { errorLogger } from '@logger';
 import { Node } from '@model/Node';
+import { Record } from 'neo4j-driver';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 declare module 'axios' {
@@ -28,6 +29,8 @@ export default abstract class HttpClient {
   };
 
   protected abstract processAll(): void;
+
+  protected abstract processNodes(records: Record[] | undefined): void;
 
   private _handleResponse = ({ data }: AxiosResponse) => data;
 

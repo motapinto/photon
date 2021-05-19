@@ -1,11 +1,15 @@
 import { errorLogger, infoLogger } from '@logger';
 import { Tweet } from '@model/Tweet';
 import HttpClient from './HttpClient';
+import { Integer, Record } from 'neo4j-driver';
 import dotenv from 'dotenv';
 
 interface TwitterApiResponse {
   data: Tweet[],
-  meta: object
+  meta: {
+    result_count: number,
+    [key: string]: any
+  }
 }
 
 export default class TwitterExtractor extends HttpClient {
@@ -61,9 +65,38 @@ export default class TwitterExtractor extends HttpClient {
     });  
   }
 
+  public async processNodes(records: Record[] | undefined) {
+    if(!records) {
+      errorLogger.error('Received empty records on Twitter extraction');
+      return;
+    }
+
+    records.forEach(async (record: any) => {   
+      try {
+        const node = record._fields[0];
+        if(!node.properties.rdfs__label) return;
+
+        console.log(node.properties.rdfs__label);
+
+        const Twitter = await super.get<TwitterApiResponse>({
+          params: {
+            query: node.properties.rdfs__label,
+            max_results: 10,
+            'tweet.fields': 'author_id,context_annotations,created_at,entities,id,public_metrics,text'
+          }
+        });
+
+        if(Twitter.meta.result_count > 0)
+          Twitter.data.forEach(async (tweet) => this.processTweet(tweet));
+
+      } catch (err) {
+        errorLogger.error(err);
+      }         
+    });  
+  }
+
   private async processTweet(tweet: Tweet) {
-    infoLogger.info(tweet);
+    console.log(tweet);
+    //infoLogger.info(tweet);
   }
 }
-
-TwitterExtractor.getInstance().processAll();

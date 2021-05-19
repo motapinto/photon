@@ -22,6 +22,12 @@ import dotenv from 'dotenv';
 
     await db.loadOntology();
 
+    // get all classes
+
+    // extract twitter and create nodes & edges
+    // extract reddit and create nodes & edges
+    // extract newsapi and create nodes & edges
+
     /*
     await Promise.all([
       energy.map(async (sector) => db.createNode(sector)),
