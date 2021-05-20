@@ -1,7 +1,6 @@
 import { errorLogger, infoLogger } from '@logger';
 import { Tweet, TweetModel } from '@model/Tweet';
 import HttpClient from './HttpClient';
-import { Integer, Record } from 'neo4j-driver';
 import dotenv from 'dotenv';
 
 interface TwitterApiResponse {
@@ -15,22 +14,6 @@ interface TwitterApiResponse {
 export default class TwitterExtractor extends HttpClient {
   private static instance: TwitterExtractor;
   private static url = 'https://api.twitter.com/2/tweets/search/recent'; 
-
-  private static energyTopics = [
-    'Energy',
-    'Renewable Energy',
-    'Non Renewable Energy',
-    'Fossil fuels',
-    'Solar energy',
-    'Hydrogen energy',
-    'Wind energy',
-    'Natural Gas',
-    'Nuclear energy',
-    'Coal',
-    'Geothermal',
-    'Biomass',
-    'Hydro Energy'
-  ];
 
   private constructor() {
     dotenv.config();
@@ -70,19 +53,9 @@ export default class TwitterExtractor extends HttpClient {
   }
 
   private async processTweet(energyLabel: string, tweet: Tweet) {
-    console.log(energyLabel);
-    console.log(tweet);
-    console.log("PROCESS");
-
     const tweetModel = new TweetModel(tweet);
-    console.log("FUCK");
-
     await tweetModel.add();
-    console.log("MADAFAKA");
-
     await tweetModel.linkToEnergy(energyLabel);
-    console.log("PENIS");
-
     //infoLogger.info(tweet);
   }
 }
