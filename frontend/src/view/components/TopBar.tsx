@@ -9,6 +9,7 @@ import {
 import logo from "../../images/photon-logo.png";
 import { Link } from "react-router-dom";
 import routes from  "../../routes.json";
+import FilteringMenu from "../components/FilteringMenu";
 
 const useStyles = makeStyles(() => ({
     navigationLinks: {
@@ -31,8 +32,17 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function TopBar(): JSX.Element {
+interface TopBarProps {
+    hasFilteringMenu?: boolean;
+}
+
+export default function TopBar({hasFilteringMenu = false}: TopBarProps): JSX.Element {
     const classes = useStyles();
+    const menu = hasFilteringMenu ? (
+        <div className={classes.link}>
+            <FilteringMenu />
+        </div>
+    ) : "";
 
     return (
         <AppBar position="fixed" color="primary" id={"TopBar"}>
@@ -44,6 +54,7 @@ export default function TopBar(): JSX.Element {
                     </Typography>
                 </Link>
                 <Grid className={classes.navigationLinks} container direction="row">
+                    {menu}
                     <Link to={routes.home} className={classes.link}>
                         <Typography variant="h5">
                             Home

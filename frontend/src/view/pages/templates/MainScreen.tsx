@@ -17,11 +17,12 @@ const useStyles = makeStyles(() => ({
 type MainScreenProps = {
     children: React.ReactChild | React.ReactFragment | React.ReactPortal | boolean;
     hasTopBar?: boolean;
+    hasFilteringMenu?: boolean;
 }
 
-export default function MainScreen({ children, hasTopBar = true } : MainScreenProps): JSX.Element {
+export default function MainScreen({ children, hasTopBar = true, hasFilteringMenu = false } : MainScreenProps): JSX.Element {
     const classes = useStyles();
-    const topBar = hasTopBar ? <TopBar /> : "";
+    const topBar = hasTopBar ? <TopBar hasFilteringMenu={hasFilteringMenu} /> : "";
     return (
         <Grid id={"GridWrapper"}>
             {topBar}

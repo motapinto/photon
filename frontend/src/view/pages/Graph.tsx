@@ -6,7 +6,6 @@ import Popup from "../components/NodePopup";
 import Node from "../../model/node";
 import Link from "../../model/link";
 import MainScreen from "./templates/MainScreen";
-import FilteringMenu from "../components/FilteringMenu";
 
 type GraphData = {
     nodes: Node[],
@@ -64,8 +63,7 @@ export default function Graph(): JSX.Element {
     );
     
     return (
-        <MainScreen>
-            <FilteringMenu />
+        <MainScreen hasFilteringMenu={true}>
             <div id="graph" />
             {popup}
         </MainScreen>
