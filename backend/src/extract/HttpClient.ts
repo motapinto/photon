@@ -28,9 +28,7 @@ export default abstract class HttpClient {
     return this.instance.get<T>(this.url, params);
   };
 
-  protected abstract processAll(): void;
-
-  protected abstract processNodes(records: string[]): void;
+  protected abstract processNodes(labels: string[]): void;
 
   private _handleResponse = ({ data }: AxiosResponse) => data;
 

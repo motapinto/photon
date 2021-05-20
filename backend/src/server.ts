@@ -12,7 +12,7 @@ import loggerMiddleware from '@middleware/loggerMiddleware';
   try {
     checkEnvVars();
   } catch (err) {
-    errorLogger.error(err);
+    errorLogger.error(err.message);
   }
 
   app.use(cors());

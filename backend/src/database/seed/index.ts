@@ -11,8 +11,9 @@ import { errorLogger, infoLogger } from '@logger';
     await db.loadOntology();
   
     infoLogger.info('Ontology loaded!');
-    process.exit(1);
+    process.exit(0);
   } catch (error) {
-    errorLogger.error(error);
+    console.log(error);
+    errorLogger.error(error.message);
   }
 })();

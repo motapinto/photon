@@ -10,8 +10,6 @@ export interface Tweet extends Node {
     created_at: string,
     author_id: string
     text: string,
-    entities?: object,
-    context_annotations?: object,
     public_metrics: {
       retweet_count: number,
       reply_count: number,
@@ -38,7 +36,8 @@ export class TweetModel {
   private tweetLabel: string;
 
   public constructor(tweet: Tweet) {
-    const { public_metrics, entities, context_annotations, ...properties } = tweet.properties;
+    console.log(tweet.properties); // AQUI !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    const { public_metrics, ...properties } = tweet.properties;
     Object.assign(properties, { 
       retweet_count: public_metrics.retweet_count,
       reply_count: public_metrics.reply_count,
@@ -55,13 +54,13 @@ export class TweetModel {
   }
 
   public add(): Promise<any> {
-    return this.db.createNode(this.getData());
+    return this.db.createOrGetNode(this.getData());
   }
 
-  public linkToEnergy(energy: Sector, edge: HasTweet) {    
+  public linkToEnergy(energyLabel: string) {
     return this.db.query(`
-      MATCH (origin: ${energy.label} { name: "${energy.properties.name }" }), (dest: ${this.tweetLabel} {id: "${this.tweetProperties.id}"})
-      MERGE (origin)-[e: ${edge.label} ${Utils.stringify(edge.properties)}]->(dest)
+      MATCH (origin: ${energyLabel}), (dest: ${this.tweetLabel} {id: "${this.tweetProperties.id}"})
+      MERGE (origin)-[e: HasTweet]->(dest)
       RETURN origin, e, dest
     `);
   }

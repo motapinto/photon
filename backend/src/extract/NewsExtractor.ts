@@ -62,13 +62,13 @@ export default class NewsExtractor extends HttpClient {
   
         news.value.forEach(async (article) => this.processArticle(article));
       } catch (err) {
-        errorLogger.error(err);
+        errorLogger.error(err.message);
       }         
     });  
   }
 
-  public async processNodes(records: string[]) {
-    console.log(records);
+  public async processNodes(labels: string[]) {
+    console.log(labels);
     
     // TODO: send request for each ontology node record
   }

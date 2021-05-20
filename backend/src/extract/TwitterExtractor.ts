@@ -1,5 +1,5 @@
 import { errorLogger, infoLogger } from '@logger';
-import { Tweet } from '@model/Tweet';
+import { Tweet, TweetModel } from '@model/Tweet';
 import HttpClient from './HttpClient';
 import { Integer, Record } from 'neo4j-driver';
 import dotenv from 'dotenv';
@@ -47,48 +47,42 @@ export default class TwitterExtractor extends HttpClient {
     return TwitterExtractor.instance;
   };
 
-  public async processAll() {    
-    TwitterExtractor.energyTopics.forEach(async (topic: string) => {   
+  public async processNodes(labels: string[]) {
+    return Promise.all(labels.map(async label => {   
       try {
-        const Twitter = await super.get<TwitterApiResponse>({
-          params: {
-            query: topic,
-            max_results: 10,
-            'tweet.fields': 'author_id,context_annotations,created_at,entities,id,public_metrics,text'
-          }
-        });
-  
-        Twitter.data.forEach(async (tweet) => this.processTweet(tweet));
-      } catch (err) {
-        errorLogger.error(err);
-      }         
-    });  
-  }
-
-  public async processNodes(records: string[]) {
-    return Promise.all(records.map(async record => {   
-      try {
-        console.log(record);
+        console.log(label);
 
         const Twitter = await super.get<TwitterApiResponse>({
           params: {
-            query: record,
+            query: label,
             max_results: 10,
-            'tweet.fields': 'author_id,context_annotations,created_at,entities,id,public_metrics,text'
+            'tweet.fields': 'author_id,created_at,id,public_metrics,text'
           }
         });
 
         if(Twitter.meta.result_count > 0)
-          Twitter.data.forEach(async (tweet) => this.processTweet(tweet));
+          await Promise.all(Twitter.data.map(async (tweet) => await this.processTweet(label, tweet)));
 
       } catch (err) {
-        errorLogger.error(err);
+        errorLogger.error(err.message);
       }         
     }));  
   }
 
-  private async processTweet(tweet: Tweet) {
+  private async processTweet(energyLabel: string, tweet: Tweet) {
+    console.log(energyLabel);
     console.log(tweet);
+    console.log("PROCESS");
+
+    const tweetModel = new TweetModel(tweet);
+    console.log("FUCK");
+
+    await tweetModel.add();
+    console.log("MADAFAKA");
+
+    await tweetModel.linkToEnergy(energyLabel);
+    console.log("PENIS");
+
     //infoLogger.info(tweet);
   }
 }

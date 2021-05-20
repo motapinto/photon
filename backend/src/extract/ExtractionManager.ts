@@ -22,7 +22,8 @@ export default class ExtractionManager {
     await ExtractionManager.fetchOntologyNodes();
 
     const energySectors = [] as string[];
-    ExtractionManager.ontologyNodes?.forEach(node => {
+    ExtractionManager.ontologyNodes?.forEach((record: any) => {
+      const node = record._fields[0];
       if (node.properties.rdfs__label) {
         energySectors.push(node.properties.rdfs__label);
       }
