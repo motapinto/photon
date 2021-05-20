@@ -5,5 +5,7 @@ export interface Sector extends Node {
     name: string,
     growth: number,
     numArticles: number,
+    numTweets: number,
+    numRedditPosts: number,
   };
 }

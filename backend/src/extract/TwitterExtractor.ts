@@ -71,7 +71,7 @@ export default class TwitterExtractor extends HttpClient {
       return;
     }
 
-    await Promise.all(records.map(async (record: any) => {   
+    return Promise.all(records.map(async (record: any) => {   
       try {
         const node = record._fields[0];
         if(!node.properties.rdfs__label) return;

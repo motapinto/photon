@@ -44,14 +44,10 @@ export default class Database {
     try {
       const res = await session.run(statement);
       return res.records;    
-    } catch (error) {
-      if(populate) {
-        this.query(statement, populate);
-      } else {
-        errorLogger.error(error);
-      }
+    } catch (err) {
+      throw new Error(err.message);
     } finally {
-      session.close();
+      await session.close();
     }
   }
 
@@ -88,9 +84,9 @@ export default class Database {
     try {
       await this.query(`CALL n10s.graphconfig.init()`);
       await this.query(`CREATE CONSTRAINT n10s_unique_uri ON (r:Resource) ASSERT r.uri IS UNIQUE;`);
-      await this.query(`CALL n10s.onto.import.fetch("${process.env.ONTOLOGY_LINK}","${process.env.ONTOLOGY_FORMAT}");`);
+      await this.query(`CALL n10s.onto.import.fetch("${process.env.ONTOLOGY_LINK}","${process.env.ONTOLOGY_FORMAT}");`);      
     } catch(err) {
-      console.error(err);
+      throw new Error(err.message);
     }
   }
 

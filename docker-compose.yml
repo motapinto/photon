@@ -24,7 +24,7 @@ services:
     ports:
       - '5000:5000'
     env_file:
-      - ./backend/.env  
+      - ./.env  
     depends_on:
       - photon-db
     networks:
@@ -39,7 +39,7 @@ services:
     ports:
       - '3000:3000'
     env_file:
-      - ./frontend/.env
+      - ./.env
     depends_on:
       - photon-backend
     networks:

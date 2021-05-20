@@ -73,6 +73,9 @@ export default class NewsExtractor extends HttpClient {
       return;
     }
 
+    console.log(records);
+    
+
     // TODO: send request for each ontology node record
   }
 

@@ -7,11 +7,11 @@ import { infoLogger } from '@logger';
 export default class ExtractionManager {
   private static ontologyNodes: Record[] | undefined;
 
-  public static getOngologyNodes() {
+  public static getOntologyNodes() {
     return ExtractionManager.ontologyNodes;
   }
   
-  public static async fetchOntologyNodes() {
+  public static async fetchOntologyNodes() {    
     if(ExtractionManager.ontologyNodes) return;
     ExtractionManager.ontologyNodes = await Database.getInstance().query(
       'MATCH (n:Class) RETURN n ORDER BY n.rdfs__label LIMIT 3'
@@ -26,13 +26,13 @@ export default class ExtractionManager {
         case '-t': case '--twitter':
           infoLogger.info("Extracting twitter data...");
           await TwitterExtractor.getInstance().processNodes(
-            ExtractionManager.getOngologyNodes()
+            ExtractionManager.getOntologyNodes()
           );
           break;
         case '-n': case '--news':
           infoLogger.info("Extracting news data...");
           await NewsExtractor.getInstance().processNodes(
-            ExtractionManager.getOngologyNodes()
+            ExtractionManager.getOntologyNodes()
           );
           break;
       }
@@ -42,4 +42,6 @@ export default class ExtractionManager {
   }
 }
 
-ExtractionManager.extract(process.argv.slice(2));
+(async () => {
+  await ExtractionManager.extract(process.argv.slice(2));
+})();
