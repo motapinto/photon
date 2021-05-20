@@ -7,7 +7,7 @@ import { infoLogger } from '@logger';
 export default class ExtractionManager {
   private static ontologyNodes: Record[] | undefined;
 
-  public static getOntologyNodes() {
+  public static getOntologyNodes(): Record[] | undefined {
     return ExtractionManager.ontologyNodes;
   }
   
@@ -21,19 +21,22 @@ export default class ExtractionManager {
   public static async extract(args: String[]) {
     await ExtractionManager.fetchOntologyNodes();
 
+    const energySectors = [] as string[];
+    ExtractionManager.ontologyNodes?.forEach(node => {
+      if (node.properties.rdfs__label) {
+        energySectors.push(node.properties.rdfs__label);
+      }
+    });
+
     for(const arg of args) {
       switch(arg) {
         case '-t': case '--twitter':
-          infoLogger.info("Extracting twitter data...");
-          await TwitterExtractor.getInstance().processNodes(
-            ExtractionManager.getOntologyNodes()
-          );
+          infoLogger.info("Extracting Twitter data...");
+          await TwitterExtractor.getInstance().processNodes(energySectors);
           break;
         case '-n': case '--news':
           infoLogger.info("Extracting news data...");
-          await NewsExtractor.getInstance().processNodes(
-            ExtractionManager.getOntologyNodes()
-          );
+          await NewsExtractor.getInstance().processNodes(energySectors);
           break;
       }
     }

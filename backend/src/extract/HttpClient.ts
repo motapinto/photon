@@ -30,7 +30,7 @@ export default abstract class HttpClient {
 
   protected abstract processAll(): void;
 
-  protected abstract processNodes(records: Record[] | undefined): void;
+  protected abstract processNodes(records: string[]): void;
 
   private _handleResponse = ({ data }: AxiosResponse) => data;
 

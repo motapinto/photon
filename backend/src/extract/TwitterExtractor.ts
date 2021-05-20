@@ -65,22 +65,14 @@ export default class TwitterExtractor extends HttpClient {
     });  
   }
 
-  public async processNodes(records: Record[] | undefined) {
-    if(!records) {
-      errorLogger.error('Received empty records on Twitter extraction');
-      return;
-    }
-
-    return Promise.all(records.map(async (record: any) => {   
+  public async processNodes(records: string[]) {
+    return Promise.all(records.map(async record => {   
       try {
-        const node = record._fields[0];
-        if(!node.properties.rdfs__label) return;
-
-        console.log(node.properties.rdfs__label);
+        console.log(record);
 
         const Twitter = await super.get<TwitterApiResponse>({
           params: {
-            query: node.properties.rdfs__label,
+            query: record,
             max_results: 10,
             'tweet.fields': 'author_id,context_annotations,created_at,entities,id,public_metrics,text'
           }

@@ -67,15 +67,9 @@ export default class NewsExtractor extends HttpClient {
     });  
   }
 
-  public async processNodes(records: Record[] | undefined) {
-    if(!records) {
-      errorLogger.error('Received empty records on News extraction');
-      return;
-    }
-
+  public async processNodes(records: string[]) {
     console.log(records);
     
-
     // TODO: send request for each ontology node record
   }
 
