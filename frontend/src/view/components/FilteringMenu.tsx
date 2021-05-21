@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "../css/MainScreen.css";
 import {
     makeStyles,
 } from "@material-ui/core";
 import Form from 'react-bootstrap/Form';
 import { DropdownButton, ButtonGroup } from 'react-bootstrap';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 const useStyles = makeStyles(() => ({
     label: {
@@ -19,31 +21,8 @@ const useStyles = makeStyles(() => ({
 
 export default function FilteringMenu(): JSX.Element {
     const classes = useStyles();
-    const newsSlider = document.getElementById("relatedNews");
-    const postsSlider = document.getElementById("relatedPosts");
-    const growthSlider = document.getElementById("valueGrowth");
-    
-    //@ts-ignore
-    const [newsValue, setNews] = useState(0);
-    //@ts-ignore
-    const [postsValue, setPosts] = useState(0);
-    //@ts-ignore
-    const [growthValue, setGrowth] = useState(0);
-
-    useEffect(() => {
-        if (newsSlider) newsSlider.oninput = function() {
-            //@ts-ignore
-            setNews(newsSlider?.value);
-        }
-        if (postsSlider) postsSlider.oninput = function() {
-            //@ts-ignore
-            setPosts(postsSlider?.value);
-        }
-        if (growthSlider) growthSlider.oninput = function() {
-            //@ts-ignore
-            setGrowth(growthSlider?.value);
-        }
-    }, [newsSlider, postsSlider, growthSlider]);
+    const { createSliderWithTooltip } = Slider;
+    const Range = createSliderWithTooltip(Slider.Range);
 
     return (
         <DropdownButton
@@ -51,7 +30,7 @@ export default function FilteringMenu(): JSX.Element {
             key={"down"}
             id={"dropdown-button-drop-down"}
             drop={"down"}
-            variant="secondary"
+            variant={"secondary"}
             title={"Filtering Menu"}
         >
             <div>
@@ -69,25 +48,40 @@ export default function FilteringMenu(): JSX.Element {
                 <Form>
                     <Form.Group controlId="relatedNews" className={classes.displayCol}>
                         <Form.Label className={classes.label}>
-                            Min/Max Number of Related News: <span id="outputNews">{newsValue}</span>
+                            Range Number of Related News:
                         </Form.Label>
-                        <Form.Control type="range" min="0" max="10000" step="500" defaultValue="0"/>
+                        <Range min={0} max={10000} defaultValue={[0, 10000]} step={500} 
+                            tipFormatter={value => `${value}`}
+                            pushable
+                            trackStyle={[{ backgroundColor: '#0d6efd' }]}
+                            handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]}
+                        />
                     </Form.Group>
                 </Form>
                 <Form>
                     <Form.Group controlId="relatedPosts" className={classes.displayCol}>
                         <Form.Label className={classes.label}>
-                            Min/Max Number of Related Posts: <span id="outputPosts">{postsValue}</span>
+                            Range Number of Related Posts:
                         </Form.Label>
-                        <Form.Control type="range" min="0" max="10000" step="500" defaultValue="0"/>
+                        <Range min={0} max={10000} defaultValue={[0, 10000]} step={500} 
+                            tipFormatter={value => `${value}`}
+                            pushable
+                            trackStyle={[{ backgroundColor: '#0d6efd' }]}
+                            handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]} 
+                        />
                     </Form.Group>
                 </Form>
                 <Form>
                     <Form.Group controlId="valueGrowth" className={classes.displayCol}>
                         <Form.Label className={classes.label}>
-                            Min/Max Value of Growth: <span id="outputGrowth">{growthValue}</span>
+                            Range Value of Growth:
                         </Form.Label>
-                        <Form.Control type="range" min="0" max="10000" step="500" defaultValue="0"/>
+                        <Range min={0} max={10000} defaultValue={[0, 10000]} step={500} 
+                            tipFormatter={value => `${value}`}
+                            pushable
+                            trackStyle={[{ backgroundColor: '#0d6efd' }]}
+                            handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]} 
+                        />
                     </Form.Group>
                 </Form>
                 <Form.Group controlId="formGridState">
