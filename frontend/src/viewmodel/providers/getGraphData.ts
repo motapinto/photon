@@ -41,7 +41,7 @@ function parseSector(id: string, labels: string[], node: any): Sector {
 function parseNode(node: any): Node | null {
     const id = `${node["identity"]["high"]}_${node["identity"]["low"]}`;    
     const labels = node["labels"];
-    const mainLabel = labels.length >= 2 ? labels[1] : "N/A";
+    const mainLabel = (labels.length >= 2 ? labels[1] : "N/A").substring(7);
 
     switch(mainLabel) {
         case "Class":
@@ -75,10 +75,10 @@ function handleGraphData(graphData: any): GraphData {
         //Origin
         const origin = parseNode(fields[0]);
         if (!origin) return;
-
+        
         //Dest
         const dest = parseNode(fields[2]);
-        if (!dest) return; 
+        if (!dest) return;
 
         // Insert nodes (avoiding duplicates)
         if (!processedIds.has(origin.id)) {
@@ -96,13 +96,12 @@ function handleGraphData(graphData: any): GraphData {
     });
 
     let data: GraphData;
-    data =  {nodes, links};
-
+    data = {nodes, links};
     return data;
 }
 
 export function getGraphData(): Promise<GraphData> {
-    
+
     return axios.get(
         `${process.env.REACT_APP_BACKEND_URL}/graph`,
     ).then((response) =>
