@@ -1,10 +1,10 @@
 export default class Link {
-    id: number;
-    source: number;
-    target: number;
+    id: string;
+    source: string;
+    target: string;
     type: string;
 
-    constructor(id: number, source: number, target: number, type: string) {
+    constructor(id: string, source: string, target: string, type: string) {
         this.id = id;
         this.source = source;
         this.target = target;

@@ -64,7 +64,7 @@ class RedditCommentsExtractor extends RedditExtractor {
 
             RedditComments.data.forEach(async (comment) => this.processComment(comment));
         } catch (err) {
-            errorLogger.error(err);
+            errorLogger.error(err.message);
         }         
     }
   
@@ -99,7 +99,7 @@ class RedditSubmissionExtractor extends RedditExtractor {
 
             RedditSubmissions.data.forEach(async (submission) => this.processSubmission(submission));
         } catch (err) {
-            errorLogger.error(err);
+            errorLogger.error(err.message);
         }         
     }
   

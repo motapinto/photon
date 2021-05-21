@@ -10,9 +10,10 @@
   },
   "main": "build/server.js",
   "scripts": {
-    "extract:news": "ts-node --transpile-only -r tsconfig-paths/register ./src/extract/NewsExtractor.ts",
-    "extract:twitter": "ts-node --transpile-only -r tsconfig-paths/register ./src/extract/TwitterExtractor.ts",
+    "extract:news": "ts-node --transpile-only -r tsconfig-paths/register ./src/extract/ExtractionManager.ts -n",
+    "extract:twitter": "ts-node --transpile-only -r tsconfig-paths/register ./src/extract/ExtractionManager.ts -t",
     "extract:reddit": "ts-node --transpile-only -r tsconfig-paths/register ./src/extract/RedditExtractor.ts",
+    "extract:all": "ts-node --transpile-only -r tsconfig-paths/register ./src/extract/ExtractionManager.ts -t -n -r",
     "neo4j": "docker-compose up -d photon-db",
     "start": "ts-node --transpile-only -r tsconfig-paths/register ./src/server.ts",
     "dev": "nodemon --config nodemon.json ./src/server.ts",

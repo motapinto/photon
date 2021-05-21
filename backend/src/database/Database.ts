@@ -44,14 +44,10 @@ export default class Database {
     try {
       const res = await session.run(statement);
       return res.records;    
-    } catch (error) {
-      if(populate) {
-        this.query(statement, populate);
-      } else {
-        errorLogger.error(error);
-      }
+    } catch (err) {
+      throw new Error(err.message);
     } finally {
-      session.close();
+      await session.close();
     }
   }
 
@@ -76,12 +72,29 @@ export default class Database {
     `);
   }
 
+  public async createOrGetNode<T extends Node>(node: T) {
+    return this.query(`
+      MERGE (n: ${node.label} ${Utils.stringify(node.properties)})
+    `);
+  }
+
   public async createEdge<T1 extends Node, E extends Edge, T2 extends Node>(origin: T1, dest: T2, edge: E) {        
     return this.query(`
       MATCH (origin: ${origin.label} ${Utils.stringify(origin.properties)}), (dest: ${dest.label} ${Utils.stringify(dest.properties)})
       MERGE (origin)-[e: ${edge.label} ${Utils.stringify(edge.properties)}]->(dest)
       RETURN origin, e, dest
     `);
+  }
+
+  public async loadOntology() {
+    try {
+      await this.query(`DROP CONSTRAINT n10s_unique_uri`);
+      await this.query(`CALL n10s.graphconfig.init()`);
+      await this.query(`CREATE CONSTRAINT n10s_unique_uri ON (r:Resource) ASSERT r.uri IS UNIQUE;`);
+      await this.query(`CALL n10s.onto.import.fetch("${process.env.ONTOLOGY_LINK}","${process.env.ONTOLOGY_FORMAT}");`);      
+    } catch(err) {
+      throw new Error(err.message);
+    }
   }
 
   public async getGraph(): Promise<Record[] | undefined> {
@@ -103,7 +116,7 @@ export default class Database {
       try {
         Database.neo.close();
       } catch (error) {
-        errorLogger.error(error);
+        errorLogger.error(error.message);
       }
     }
   }
