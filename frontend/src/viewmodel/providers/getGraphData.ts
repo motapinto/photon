@@ -1,53 +1,39 @@
 import axios from "axios";
 import Link from "../../model/link";
 import Node from "../../model/node";
-// import Article from "../../model/article";
 import Sector from "../../model/sector";
-// import Country from "../../model/country";
-// import labels from "../../model/labels.json";
+import mainLabels from "../../model/labels.json";
 
 type GraphData = {
     nodes: Node[],
     links: Link[],
 }
 
-// function parseArticle(id: string, labels: string[], node: any): Article {
-//     const properties = node["properties"];
-//     const publishedAt = properties["datePublished"];
-//     const score = properties["score"]["low"] + properties["score"]["high"];
-//     const title = properties["title"];
-//     const url = properties["url"];
-
-//     return new Article(id, labels, publishedAt, score, title, url);
-// }
-
-// function parseCountry(id: string, labels: string[], node: any): Country {
-//     const properties = node["properties"];
-//     const name = properties["name"];
-
-//     return new Country(id, labels, name);
-// }
-
-function parseSector(id: string, labels: string[], node: any): Sector {
-    const properties = node["properties"];
-    const name = properties["rdfs__label"];
+function parseClass(id: string, properties: any): Sector {
+    const label = "Ontology Class";
+    const name = properties["n4sch__label"] ? properties["n4sch__label"] : properties["n4sch__name"];
     const uri = properties["uri"];
-    const growth = 0;
-    const numArticles = 0;
 
-    return new Sector(id, labels, growth, name, uri, numArticles);
+    return new Sector(id, label, name, uri);
 }
 
 function parseNode(node: any): Node | null {
     const id = `${node["identity"]["high"]}_${node["identity"]["low"]}`;    
     const labels = node["labels"];
     const mainLabel = (labels.length >= 2 ? labels[1] : "N/A").substring(7);
+    const properties = node["properties"];
 
     switch(mainLabel) {
-        case "Class":
-            return parseSector(id, labels, node);
-        case "Relationship":
+        case mainLabels.class:
+            return parseClass(id, properties);
+        case mainLabels.relationship:
             // TODO: parse relationships?
+            break;
+        case mainLabels.twitter:
+            // TODO: parse twitter?
+            break;
+        case mainLabels.reddit:
+            // TODO: parse reddit?
             break;
         default:
             break;
@@ -69,7 +55,8 @@ function handleGraphData(graphData: any): GraphData {
     let links: Link[] = [];
     let processedIds: Set<string> = new Set();
 
-    graphData.forEach((element: any) => {   
+    graphData.forEach((element: any) => {
+        console.log(element);
         const fields = element["_fields"];
 
         //Origin

@@ -8,10 +8,8 @@ import {
     Grid,
 } from '@material-ui/core/';
 import Node from "../../model/node";
-// import Article from "../../model/article";
 import Sector from "../../model/sector";
-// import Country from "../../model/country";
-// import labels from "../../model/labels.json";
+// import mainLabels from "../../model/labels.json";
 
 const useStyles = makeStyles({
     root: {
@@ -61,7 +59,6 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
     const classes = useStyles();
 
     let cardContent = (<CardContent />);
-    let labels;
     let content;
     if (node !== undefined) {
         const sector = node as Sector;
@@ -72,9 +69,6 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                 </Typography>
                 <Typography className={classes.pos}>
                     URI: {sector.uri}
-                </Typography>
-                <Typography className={classes.pos}>
-                    Num Articles: {sector.numArticles}
                 </Typography>
             </div>
         );
@@ -145,7 +139,7 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                         {node.id}
                     </Typography>
                     <Typography gutterBottom className={classes.label}>
-                        {labels}
+                        {node.label}
                     </Typography>
                 </Grid>
                 {content}
