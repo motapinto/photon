@@ -28,7 +28,7 @@ export class ArticleModel {
     return this.db.createOrGetNode(this.getData());
   }
 
-  public linkToEnergy(energyLabel: string) {
+  public async linkToEnergy(energyLabel: string) {
     return this.db.query(`
       MATCH (origin:Resource {rdfs__label: "${energyLabel}"})
       MERGE (dest: ${ArticleModel.label} ${Utils.stringify(this.article)})

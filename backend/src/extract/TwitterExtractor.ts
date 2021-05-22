@@ -31,7 +31,7 @@ export default class TwitterExtractor extends HttpClient {
         const tweets = await super.get<TwitterApiResponse>({
           params: {
             query: label,
-            max_results: 10,
+            max_results: 50,
             'tweet.fields': 'author_id,created_at,id,public_metrics,text'
           }
         });
