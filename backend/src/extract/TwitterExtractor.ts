@@ -33,8 +33,6 @@ export default class TwitterExtractor extends HttpClient {
   public async processNodes(labels: string[]) {
     return Promise.all(labels.map(async label => {   
       try {
-        console.log(label);
-
         const Twitter = await super.get<TwitterApiResponse>({
           params: {
             query: label,

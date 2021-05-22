@@ -91,7 +91,6 @@ export default class NewsExtractor extends HttpClient {
   }
 
   private async processArticle(energyLabel: string, article: Article) {
-    console.log(article);
     const articleModel = new ArticleModel(article);
     await articleModel.add();
     await articleModel.linkToEnergy(energyLabel);

@@ -2,15 +2,13 @@ import Database from "@database/Database";
 import { Node } from "./Node";
 
 export interface Article extends Node {
-  readonly properties: {
-    id: string,
-    title: string,
-    url: string,
-    description: string,
-    body: string,
-    datePublished: string,
-    score: number,
-  };
+  id: string,
+  title: string,
+  url: string,
+  description: string,
+  body: string,
+  datePublished: string,
+  score: number,
 }
 
 interface ArticleProperties {
@@ -29,7 +27,7 @@ export class ArticleModel {
   private static articleLabel = "Article";
 
   public constructor(article: Article) {
-    this.articleProperties = article.properties;
+    this.articleProperties = article;
   }
 
   public getData(): Node {
@@ -41,6 +39,8 @@ export class ArticleModel {
   }
 
   public linkToEnergy(energyLabel: string) {
+    console.log(this.articleProperties.id);
+    
     return this.db.query(`
       MATCH (origin:Resource {rdfs__label: "${energyLabel}"}), (dest:Tweet {id: "${this.articleProperties.id}"})
       MERGE (origin)-[e:HasArticle]->(dest)
