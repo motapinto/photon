@@ -5,10 +5,7 @@ import dotenv from 'dotenv';
 
 interface TwitterApiResponse {
   data: Tweet[],
-  meta: {
-    result_count: number,
-    [key: string]: any
-  }
+  meta: { result_count: number }
 }
 
 export default class TwitterExtractor extends HttpClient {
@@ -16,7 +13,6 @@ export default class TwitterExtractor extends HttpClient {
   private static url = 'https://api.twitter.com/2/tweets/search/recent'; 
 
   private constructor() {
-    dotenv.config();
     super(TwitterExtractor.url, {
       'Authorization': `Bearer ${process.env.TWITTER_AUTHORIZATION}`,
     });
@@ -33,17 +29,17 @@ export default class TwitterExtractor extends HttpClient {
   public async processNodes(labels: string[]) {
     return Promise.all(labels.map(async label => {   
       try {
-        const Twitter = await super.get<TwitterApiResponse>({
+        const tweets = await super.get<TwitterApiResponse>({
           params: {
             query: label,
             max_results: 10,
             'tweet.fields': 'author_id,created_at,id,public_metrics,text'
           }
-        });
+        }) as TwitterApiResponse;
 
-        if(Twitter.meta.result_count > 0)
-          await Promise.all(Twitter.data.map(async (tweet) => await this.processTweet(label, tweet)));
-
+        if(tweets.meta.result_count > 0) {
+          return Promise.all(tweets.data.map(async (tweet) => await this.processTweet(label, tweet)));
+        }
       } catch (err) {
         errorLogger.error(err.message);
       }         
@@ -52,8 +48,6 @@ export default class TwitterExtractor extends HttpClient {
 
   private async processTweet(energyLabel: string, tweet: Tweet) {
     const tweetModel = new TweetModel(tweet);
-    await tweetModel.add();
     await tweetModel.linkToEnergy(energyLabel);
-    //infoLogger.info(tweet);
   }
 }

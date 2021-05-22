@@ -30,13 +30,13 @@ interface TweetProperties {
 
 export class TweetModel {
   private db: Database = Database.getInstance();
-  private tweetProperties: TweetProperties;
-  private static tweetLabel = "Tweet";
+  private tweet: TweetProperties;
+  private static label = "Tweet";
 
   public constructor(tweet: Tweet) {
     const { public_metrics, ...properties } = tweet;
     
-    this.tweetProperties = {
+    this.tweet = {
       ...properties,
       retweet_count: public_metrics.retweet_count,
       reply_count: public_metrics.reply_count,
@@ -46,7 +46,7 @@ export class TweetModel {
   }
 
   public getData(): Node {
-    return { label: TweetModel.tweetLabel, properties: this.tweetProperties };
+    return { label: TweetModel.label, properties: this.tweet };
   }
 
   public add(): Promise<any> {
@@ -55,7 +55,8 @@ export class TweetModel {
 
   public linkToEnergy(energyLabel: string) {
     return this.db.query(`
-      MATCH (origin:Resource {rdfs__label: "${energyLabel}"}), (dest:Tweet {id: "${this.tweetProperties.id}"})
+      MATCH (origin:Resource {rdfs__label: "${energyLabel}"})
+      MERGE (dest: ${TweetModel.label} ${Utils.stringify(this.tweet)})
       MERGE (origin)-[e:HasTweet]->(dest)
       RETURN origin, e, dest
     `);

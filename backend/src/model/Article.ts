@@ -5,33 +5,22 @@ export interface Article extends Node {
   id: string,
   title: string,
   url: string,
-  description: string,
-  body: string,
+  snippet: string,
   datePublished: string,
-  score: number,
-}
-
-interface ArticleProperties {
-  id: string,
-  title: string,
-  url: string,
-  description: string,
-  body: string,
-  datePublished: string,
-  score: number,
+  source: string,
 }
 
 export class ArticleModel {
   private db: Database = Database.getInstance();
-  private articleProperties: ArticleProperties;
-  private static articleLabel = "Article";
+  private article: Article;
+  private static label = "Article";
 
   public constructor(article: Article) {
-    this.articleProperties = article;
+    this.article = article;
   }
 
   public getData(): Node {
-    return { label: ArticleModel.articleLabel, properties: this.articleProperties };
+    return { label: ArticleModel.label, properties: this.article };
   }
 
   public add(): Promise<any> {
@@ -39,10 +28,8 @@ export class ArticleModel {
   }
 
   public linkToEnergy(energyLabel: string) {
-    console.log(this.articleProperties.id);
-    
     return this.db.query(`
-      MATCH (origin:Resource {rdfs__label: "${energyLabel}"}), (dest:Tweet {id: "${this.articleProperties.id}"})
+      MATCH (origin:Resource {rdfs__label: "${energyLabel}"}), (dest:${ArticleModel.label} {id: "${this.article.id}"})
       MERGE (origin)-[e:HasArticle]->(dest)
       RETURN origin, e, dest
     `);
