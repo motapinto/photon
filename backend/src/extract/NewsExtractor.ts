@@ -1,37 +1,28 @@
 import { errorLogger, infoLogger } from '@logger';
-import { Article } from '@model/Article';
-import { Record } from 'neo4j-driver';
+import { Article, ArticleModel } from '@model/Article';
+import { TweetModel } from '@model/Tweet';
 import HttpClient from './HttpClient';
 
 interface NewsApiResponse {
-  _type: string,
-  didUMean: string,
+  value: Array<NewsApiArticle>
   totalCount: number,
-  relatedSearch: string[],
-  value: Article[]
 }
+
+type NewsApiArticle = TweetModel & {
+    description: string, 
+    body: string, 
+    keywords: string, 
+    language: string, 
+    isSafe: boolean, 
+    provider: { name: string }, 
+    image: object
+  };
 
 export default class NewsExtractor extends HttpClient {
   private static instance: NewsExtractor;
   private static url = 'https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/search/NewsSearchAPI'; 
-  private static energyTopics = [
-    'Energy',
-    'Renewable Energy',
-    'Non Renewable Energy',
-    'Fossil fuels',
-    'Solar energy',
-    'Hydrogen energy',
-    'Wind energy',
-    'Natural Gas',
-    'Nuclear energy',
-    'Coal',
-    'Geothermal',
-    'Biomass',
-    'Hydro Energy'
-  ];
 
   private constructor() {
-    console.log("OH QUE CARALHO"); 
     super(NewsExtractor.url, {
       'x-rapidapi-key': process.env.NEWS_API_KEY,
       'x-rapidapi-host': 'contextualwebsearch-websearch-v1.p.rapidapi.com',
@@ -46,12 +37,12 @@ export default class NewsExtractor extends HttpClient {
     return NewsExtractor.instance;
   };
 
-  public async processAll() {    
-    NewsExtractor.energyTopics.forEach(async (topic: string) => {   
+  public async processNodes(labels: string[]) {
+    return Promise.all(labels.map(async label => {   
       try {
         const news = await super.get<NewsApiResponse>({
           params: {
-            q: topic,
+            q: label,
             pageNumber: '1',
             pageSize: '50',
             autoCorrect: 'true',
@@ -59,21 +50,21 @@ export default class NewsExtractor extends HttpClient {
             toPublishedDate: 'null',
           }
         });
-  
-        news.value.forEach(async (article) => this.processArticle(article));
+
+        if(news.totalCount > 0) {
+          return Promise.all(news.value.map(async (article: NewsApiArticle) => {
+            const { description, body, keywords, language, isSafe, provider, image, ...properties } = article;
+            return this.processArticle(label, properties as Article);
+          }));
+        }
       } catch (err) {
         errorLogger.error(err.message);
       }         
-    });  
+    })); 
   }
 
-  public async processNodes(labels: string[]) {
-    console.log(labels);
-    
-    // TODO: send request for each ontology node record
-  }
-
-  private async processArticle(article: Article) {
-    infoLogger.info(article);
+  private async processArticle(energyLabel: string, article: Article) {
+    const articleModel = new ArticleModel(article);
+    return articleModel.linkToEnergy(energyLabel);
   }
 }

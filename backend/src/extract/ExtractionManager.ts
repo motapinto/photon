@@ -3,49 +3,50 @@ import TwitterExtractor from './TwitterExtractor';
 import NewsExtractor from './NewsExtractor';
 import { Record } from 'neo4j-driver';
 import { infoLogger } from '@logger';
+import { RedditCommentsExtractor, RedditSubmissionExtractor } from './RedditExtractor';
 
 export default class ExtractionManager {
-  private static ontologyNodes: Record[] | undefined;
+  private static ontologyNodes: Record[];
 
-  public static getOntologyNodes(): Record[] | undefined {
+  public static async getOntologyNodes(): Promise<Record[]> {
+    if(!ExtractionManager.ontologyNodes) {
+      await ExtractionManager.fetchOntologyNodes();
+    }
+
     return ExtractionManager.ontologyNodes;
   }
   
   public static async fetchOntologyNodes() {    
-    if(ExtractionManager.ontologyNodes) return;
+    if(ExtractionManager.ontologyNodes) {
+      return
+    };
+
     ExtractionManager.ontologyNodes = await Database.getInstance().query(
       'MATCH (n:Class) RETURN n ORDER BY n.rdfs__label LIMIT 3'
-    );
+    ) ?? [];
   }
 
   public static async extract(args: String[]) {
     await ExtractionManager.fetchOntologyNodes();
 
-    const energySectors = [] as string[];
-    ExtractionManager.ontologyNodes?.forEach((record: any) => {
-      const node = record._fields[0];
-      if (node.properties.rdfs__label) {
-        energySectors.push(node.properties.rdfs__label);
-      }
-    });
+    const energySectors = ExtractionManager.ontologyNodes.map((record: Record) => 
+      record.get('n').properties.rdfs__label as string
+    );
 
     for(const arg of args) {
       switch(arg) {
-        case '-t': case '--twitter':
-          infoLogger.info("Extracting Twitter data...");
-          await TwitterExtractor.getInstance().processNodes(energySectors);
-          break;
         case '-n': case '--news':
           infoLogger.info("Extracting news data...");
-          await NewsExtractor.getInstance().processNodes(energySectors);
-          break;
+          return NewsExtractor.getInstance().processNodes(energySectors);
+        case '-t': case '--twitter':
+          infoLogger.info("Extracting Twitter data...");
+          return TwitterExtractor.getInstance().processNodes(energySectors);
       }
     }
-
-    process.exit();
   }
 }
 
 (async () => {
   await ExtractionManager.extract(process.argv.slice(2));
+  process.exit();
 })();
