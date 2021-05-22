@@ -1,8 +1,6 @@
 import Database from "@database/Database";
 import Utils from "@utils/Utils";
-import { HasTweet } from "./edges/HasTweet";
 import { Node } from "./Node";
-import { Sector } from "./Sector";
 
 export interface Tweet extends Node {
   id: string,
@@ -42,7 +40,7 @@ export class TweetModel {
       reply_count: public_metrics.reply_count,
       like_count: public_metrics.like_count,
       quote_count: public_metrics.quote_count,
-    }
+    };
   }
 
   public getData(): Node {

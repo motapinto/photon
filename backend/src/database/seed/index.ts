@@ -13,7 +13,6 @@ import { errorLogger, infoLogger } from '@logger';
     infoLogger.info('Ontology loaded!');
     process.exit(0);
   } catch (error) {
-    console.log(error);
     errorLogger.error(error.message);
   }
 })();

@@ -1,7 +1,6 @@
 import { errorLogger, infoLogger } from '@logger';
 import { Tweet, TweetModel } from '@model/Tweet';
 import HttpClient from './HttpClient';
-import dotenv from 'dotenv';
 
 interface TwitterApiResponse {
   data: Tweet[],
@@ -35,7 +34,7 @@ export default class TwitterExtractor extends HttpClient {
             max_results: 10,
             'tweet.fields': 'author_id,created_at,id,public_metrics,text'
           }
-        }) as TwitterApiResponse;
+        });
 
         if(tweets.meta.result_count > 0) {
           return Promise.all(tweets.data.map(async (tweet) => await this.processTweet(label, tweet)));

@@ -1,4 +1,5 @@
 import Database from "@database/Database";
+import Utils from "@utils/Utils";
 import { Node } from "./Node";
 
 export interface Article extends Node {
@@ -29,7 +30,8 @@ export class ArticleModel {
 
   public linkToEnergy(energyLabel: string) {
     return this.db.query(`
-      MATCH (origin:Resource {rdfs__label: "${energyLabel}"}), (dest:${ArticleModel.label} {id: "${this.article.id}"})
+      MATCH (origin:Resource {rdfs__label: "${energyLabel}"})
+      MERGE (dest: ${ArticleModel.label} ${Utils.stringify(this.article)})
       MERGE (origin)-[e:HasArticle]->(dest)
       RETURN origin, e, dest
     `);

@@ -1,11 +1,22 @@
 import { errorLogger, infoLogger } from '@logger';
 import { Article, ArticleModel } from '@model/Article';
+import { TweetModel } from '@model/Tweet';
 import HttpClient from './HttpClient';
 
 interface NewsApiResponse {
-  value: Article[]
+  value: Array<NewsApiArticle>
   totalCount: number,
 }
+
+type NewsApiArticle = TweetModel & {
+    description: string, 
+    body: string, 
+    keywords: string, 
+    language: string, 
+    isSafe: boolean, 
+    provider: { name: string }, 
+    image: object
+  };
 
 export default class NewsExtractor extends HttpClient {
   private static instance: NewsExtractor;
@@ -33,15 +44,18 @@ export default class NewsExtractor extends HttpClient {
           params: {
             q: label,
             pageNumber: '1',
-            pageSize: '2', // TODO: change back to 50
+            pageSize: '50',
             autoCorrect: 'true',
             fromPublishedDate: 'null',
             toPublishedDate: 'null',
           }
-        }) as NewsApiResponse;
+        });
 
         if(news.totalCount > 0) {
-          return Promise.all(news.value.map(async (article) => await this.processArticle(label, article)));
+          return Promise.all(news.value.map(async (article: NewsApiArticle) => {
+            const { description, body, keywords, language, isSafe, provider, image, ...properties } = article;
+            return this.processArticle(label, properties as Article);
+          }));
         }
       } catch (err) {
         errorLogger.error(err.message);
@@ -51,7 +65,6 @@ export default class NewsExtractor extends HttpClient {
 
   private async processArticle(energyLabel: string, article: Article) {
     const articleModel = new ArticleModel(article);
-    await articleModel.add();
-    await articleModel.linkToEnergy(energyLabel);
+    return articleModel.linkToEnergy(energyLabel);
   }
 }
