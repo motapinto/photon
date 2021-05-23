@@ -13,51 +13,33 @@ export interface RedditComment extends Node {
 	subreddit: string,
 	subreddit_id: string,
 	link_id: string,
-	[x: string]: any // allows any additional properties
 }
-
-interface RedditCommentProperties {
-	id: string,
-	parent_id: string,
-	author: string,
-	created_utc: number,
-	body: string,
-	score: number,
-	permalink: string,
-	subreddit: string,
-	subreddit_id: string,
-	link_id: string,
-}
-
 
 export class RedditCommentModel {
+	private static wantedFields = [
+		'id', 'parent_id', 'author', 'created_utc', 'body', 'score', 
+		'permalink', 'subreddit', 'subreddit_id', 'link_id',
+	];
+
 	private db: Database = Database.getInstance();
 	private commentLabel: string;
-	private properties: RedditCommentProperties;
+	private properties: any;
   
-	public constructor(comment: RedditComment) {
+	public constructor(submission: RedditComment) {
 	  this.commentLabel = "RedditComment";
-	  this.properties = comment as RedditCommentProperties;
-	}
-
-	public getData(): Node {
-	  return { label: this.commentLabel, properties: this.properties };
-	}
-  
-	public add(): Promise<any> {
-	  return this.db.createNode(this.getData());
-	}
-
-	private removeEmpty(obj: Object) {
-		return Object.entries(obj)
-		  .filter(([_, v]) => v != null)
-		  .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
-  }
+	  this.properties = {};
+	  for (const key in submission) {
+		if (RedditCommentModel.wantedFields.includes(key)) {
+		  const fieldKey = key as keyof typeof submission;
+		  this.properties[key] = submission[fieldKey];
+		}
+	  }
+  	}
   
 	public linkToEnergy(energyLabel: string) {
 		return this.db.query(`
 			MATCH (origin:Resource {rdfs__label: "${energyLabel}"})
-			MERGE (dest: ${this.commentLabel} ${Utils.stringify(this.removeEmpty(this.properties))})
+			MERGE (dest: ${this.commentLabel} ${Utils.stringify(this.properties)})
 			MERGE (origin)-[e:HasRedditContent]->(dest)
 			RETURN origin, e, dest
 		`);
