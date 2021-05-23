@@ -1,6 +1,6 @@
 import { errorLogger, infoLogger } from '@logger';
-import { RedditSubmission } from '@model/reddit/RedditSubmission';
-import { RedditComment } from '@model/reddit/RedditComment';
+import { RedditSubmission, RedditSubmissionModel } from '@model/reddit/RedditSubmission';
+import { RedditComment, RedditCommentModel } from '@model/reddit/RedditComment';
 import HttpClient from './HttpClient';
 
 interface RedditCommentsApiResponse {
@@ -14,23 +14,23 @@ interface RedditSubmissionsApiResponse {
 abstract class BaseRedditExtractor extends HttpClient {
     protected static energySubreddits = [
         'energy',
-        'Futurology',
-        'environment',
-        'RenewableEnergy',
-        'worldnews',
-        'science',
-        'solar',
-        'climate',
-        'NuclearPower',
-        'Green',
-        'electricvehicles',
-        'fusion',
-        'HydrogenSocieties',
-        'oil',
-        'biomass',
-        'Petroleum',
+        // 'Futurology',
+        // 'environment',
+        // 'RenewableEnergy',
+        // 'worldnews',
+        // 'science',
+        // 'solar',
+        // 'climate',
+        // 'NuclearPower',
+        // 'Green',
+        // 'electricvehicles',
+        // 'fusion',
+        // 'HydrogenSocieties',
+        // 'oil',
+        // 'biomass',
+        // 'Petroleum',
     ];
-  
+
     public constructor(url: string) {
 		super(url);
     }
@@ -67,9 +67,16 @@ class RedditCommentsExtractor extends BaseRedditExtractor {
             errorLogger.error(err.message);
         }  
     }
-  
-    private async processComment(labels: string[], comment: RedditComment) {
-    	infoLogger.info(comment);
+
+    private async processComment(energyLabels: string[], comment: RedditComment) {
+        const text = comment.body;
+        if (!text) return;
+        for (const label of energyLabels) {
+            if (text.includes(label)) {
+                const redditCommentModel = new RedditCommentModel(comment);
+                await redditCommentModel.linkToEnergy(label);
+            }
+        }
     }
 } 
 
@@ -105,10 +112,17 @@ class RedditSubmissionExtractor extends BaseRedditExtractor {
         }  
     }
 
-    private async processSubmission(labels: string[], submission: RedditSubmission) {
-    	infoLogger.info(submission);
+    private async processSubmission(energyLabels: string[], submission: RedditSubmission) {
+        const text = submission.title + ' ' + submission.selftext;
+        if (!text) return;
+        for (const label of energyLabels) {
+            if (text.includes(label)) {
+                const redditSubmissionModel = new RedditSubmissionModel(submission);
+                await redditSubmissionModel.linkToEnergy(label);
+            }
+        }
     }
-} 
+}
 
 class RedditExtractor {
     public static async processNodes(labels: string[]) {
