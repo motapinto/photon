@@ -88,7 +88,7 @@ export default class Database {
 
   public async loadOntology() {
     try {
-      await this.query(`DROP CONSTRAINT n10s_unique_uri`);
+      await this.query(`DROP CONSTRAINT n10s_unique_uri IF EXISTS`);
       await this.query(`CALL n10s.graphconfig.init()`);
       await this.query(`CREATE CONSTRAINT n10s_unique_uri ON (r:Resource) ASSERT r.uri IS UNIQUE;`);
       await this.query(`CALL n10s.onto.import.fetch("${process.env.ONTOLOGY_LINK}","${process.env.ONTOLOGY_FORMAT}");`);      

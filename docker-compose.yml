@@ -2,7 +2,7 @@ version: "3.7"
 services:
   photon-db:
     container_name: photon-db
-    image: neo4j:4.0
+    image: neo4j:4.2
     ports:
       - "${DATABASE_HTTP}:7474"
       - "${DATABASE_BOLT}:7687"
