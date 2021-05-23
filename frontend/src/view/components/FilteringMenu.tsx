@@ -37,8 +37,7 @@ export default function FilteringMenu(): JSX.Element {
                 <Form>
                     <Form.Label className={classes.label}>Node labels</Form.Label>
                     <div key={"inline-checkbox1"} className="mb-3">
-                        <Form.Check inline label="Origin" type={"checkbox"} defaultChecked  />
-                        <Form.Check inline label="Energy Sector" type={"checkbox"} defaultChecked  />
+                        <Form.Check inline label="News Article" type={"checkbox"} defaultChecked  />
                         <Form.Check inline label="Twitter Post" type={"checkbox"} defaultChecked  />
                     </div>
                     <div key={"inline-checkbox2"} className="mb-3">
@@ -84,13 +83,6 @@ export default function FilteringMenu(): JSX.Element {
                         />
                     </Form.Group>
                 </Form>
-                <Form.Group controlId="formGridState">
-                    <Form.Label className={classes.label}>From Country</Form.Label>
-                    <Form.Control as="select" defaultValue="Choose...">
-                        <option>Choose...</option>
-                        <option>...</option>
-                    </Form.Control>
-                </Form.Group>
             </div>
         </DropdownButton>
     );

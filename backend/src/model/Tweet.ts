@@ -53,7 +53,7 @@ export class TweetModel {
 
   public async linkToEnergy(energyLabel: string) {
     return this.db.query(`
-      MATCH (origin:Resource {rdfs__label: "${energyLabel}"})
+      MATCH (origin:Resource {n4sch__label: "${energyLabel}"})
       MERGE (dest: ${TweetModel.label} ${Utils.stringify(this.tweet)})
       MERGE (origin)-[e:HasTweet]->(dest)
       RETURN origin, e, dest

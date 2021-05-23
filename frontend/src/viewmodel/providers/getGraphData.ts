@@ -2,6 +2,7 @@ import axios from "axios";
 import Link from "../../model/link";
 import Node from "../../model/node";
 import Sector from "../../model/sector";
+import Tweet from "../../model/tweet";
 import mainLabels from "../../model/labels.json";
 
 type GraphData = {
@@ -9,8 +10,22 @@ type GraphData = {
     links: Link[],
 }
 
+function parseTweet(id: string, properties: any): Tweet {
+    const label = "Tweet";
+    const authorId = properties["author_id"];
+    const createdAt = properties["created_at"];
+    const likeCount = properties["like_count"]["high"];
+    const dislikeCount = properties["like_count"]["low"];
+    const quoteCount = properties["quote_count"]["high"] + properties["quote_count"]["low"];
+    const replyCount = properties["reply_count"]["high"] + properties["reply_count"]["low"];
+    const retweetCount = properties["retweet_count"]["high"] + properties["retweet_count"]["low"];
+    const text = properties["text"];
+
+    return new Tweet(id, label, authorId, createdAt, likeCount, dislikeCount, quoteCount, replyCount, retweetCount, text);
+}
+
 function parseClass(id: string, properties: any): Sector {
-    const label = "Ontology Class";
+    const label = "Class";
     const name = properties["n4sch__label"] ? properties["n4sch__label"] : properties["n4sch__name"];
     const uri = properties["uri"];
 
@@ -20,7 +35,7 @@ function parseClass(id: string, properties: any): Sector {
 function parseNode(node: any): Node | null {
     const id = `${node["identity"]["high"]}_${node["identity"]["low"]}`;    
     const labels = node["labels"];
-    const mainLabel = (labels.length >= 2 ? labels[1] : "N/A").substring(7);
+    const mainLabel = labels.length >= 2 ? (labels[1]).substring(7) : labels[0];
     const properties = node["properties"];
 
     switch(mainLabel) {
@@ -30,8 +45,7 @@ function parseNode(node: any): Node | null {
             // TODO: parse relationships?
             break;
         case mainLabels.twitter:
-            // TODO: parse twitter?
-            break;
+            return parseTweet(id, properties);
         case mainLabels.reddit:
             // TODO: parse reddit?
             break;
@@ -56,7 +70,6 @@ function handleGraphData(graphData: any): GraphData {
     let processedIds: Set<string> = new Set();
 
     graphData.forEach((element: any) => {
-        console.log(element);
         const fields = element["_fields"];
 
         //Origin
@@ -73,6 +86,7 @@ function handleGraphData(graphData: any): GraphData {
             processedIds.add(origin.id);
         }
         if (!processedIds.has(dest.id)) {
+            console.log(dest);
             nodes.push(dest);
             processedIds.add(dest.id);
         }

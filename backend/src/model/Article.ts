@@ -29,8 +29,15 @@ export class ArticleModel {
   }
 
   public async linkToEnergy(energyLabel: string) {
+    console.log(`
+    MATCH (origin:Resource {n4sch__label: "${energyLabel}"})
+    MERGE (dest: ${ArticleModel.label} ${Utils.stringify(this.article)})
+    MERGE (origin)-[e:HasArticle]->(dest)
+    RETURN origin, e, dest
+  `);
+    
     return this.db.query(`
-      MATCH (origin:Resource {rdfs__label: "${energyLabel}"})
+      MATCH (origin:Resource {n4sch__label: "${energyLabel}"})
       MERGE (dest: ${ArticleModel.label} ${Utils.stringify(this.article)})
       MERGE (origin)-[e:HasArticle]->(dest)
       RETURN origin, e, dest

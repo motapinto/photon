@@ -9,11 +9,13 @@ import {
 } from '@material-ui/core/';
 import Node from "../../model/node";
 import Sector from "../../model/sector";
-// import mainLabels from "../../model/labels.json";
+import Tweet from "../../model/tweet";
+import mainLabels from "../../model/labels.json";
 
 const useStyles = makeStyles({
     root: {
         minWidth: 275,
+        maxWidth: "50%",
         position: "fixed",
         zIndex: 1,
         top: "20%",
@@ -60,77 +62,58 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
 
     let cardContent = (<CardContent />);
     let content;
+    let label;
     if (node !== undefined) {
-        const sector = node as Sector;
-        content = (
-            <div className={classes.contentDiv}>
-                <Typography className={classes.pos}>
-                    Name: {sector.name}
-                </Typography>
-                <Typography className={classes.pos}>
-                    URI: {sector.uri}
-                </Typography>
-            </div>
-        );
-
-        // switch(node.label) {
-        //     case labels.article: {
-        //         const article = node as Article;
-        //         label = "Article";
-        //         content = (
-        //             <div className={classes.contentDiv}>
-        //                 <Typography className={classes.pos}>
-        //                     Title: {article.title}
-        //                 </Typography>
-        //                 <Typography className={classes.pos}>
-        //                     Published at: {article.publishedAt}
-        //                 </Typography>
-        //                 <Typography className={classes.pos}>
-        //                     Score: {article.score}
-        //                 </Typography>
-        //                 <Typography className={classes.pos}>
-        //                     Visit the article <a href={article.url}>here</a>
-        //                 </Typography>
-        //             </div>
-        //         );
-        //         break;
-        //     }
-        //     case labels.origin:
-        //     case labels.majorArea:
-        //     case labels.subArea: {
-        //         const sector = node as Sector;
-        //         if (node.label === labels.origin)
-        //             label = "Origin";
-        //         else if (node.label === labels.majorArea)
-        //             label = "Major Sector";
-        //         else label = "Sub Sector";
-        //         content = (
-        //             <div className={classes.contentDiv}>
-        //                 <Typography className={classes.pos}>
-        //                     Name: {sector.name}
-        //                 </Typography>
-        //                 <Typography className={classes.pos}>
-        //                     Growth: {sector.val}
-        //                 </Typography>
-        //                 <Typography className={classes.pos}>
-        //                     Number of articles: {sector.numArticles}
-        //                 </Typography>
-        //             </div>
-        //         );
-        //         break;
-        //     }
-        //     case labels.country: {
-        //         const country = node as Country;
-        //         label = "Country";
-        //         content = (
-        //             <div className={classes.contentDiv}>
-        //                 <Typography className={classes.pos}>
-        //                     Name: {country.name}
-        //                 </Typography>
-        //             </div>
-        //         );
-        //         break;
-        //    }
+        switch(node.label) {
+            case mainLabels.class: {
+                const sector = node as Sector;
+                label = "Energy Sector";
+                content = (
+                    <div className={classes.contentDiv}>
+                        <Typography className={classes.pos}>
+                            Name: {sector.name}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            URI: {sector.uri}
+                        </Typography>
+                    </div>
+                );
+                break
+            }
+            case mainLabels.twitter: {
+                const tweet = node as Tweet;
+                label = "Tweet";
+                content = (
+                    <div className={classes.contentDiv}>
+                        <Typography className={classes.pos}>
+                            Content: "{tweet.text}"
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Author ID: {tweet.authorId}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Creation date: {tweet.createdAt}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Number of likes: {tweet.likeCount} | Number of dislikes: {tweet.dislikeCount}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Quote count: {tweet.quoteCount}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Reply count: {tweet.replyCount}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Retweet count: {tweet.retweetCount}
+                        </Typography>
+                    </div>
+                );
+                break
+            }
+            case mainLabels.reddit: {
+                break
+            }
+        }
 
         cardContent = (
             <CardContent>
@@ -139,7 +122,7 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                         {node.id}
                     </Typography>
                     <Typography gutterBottom className={classes.label}>
-                        {node.label}
+                        {label}
                     </Typography>
                 </Grid>
                 {content}
