@@ -14,21 +14,21 @@ interface RedditSubmissionsApiResponse {
 abstract class BaseRedditExtractor extends HttpClient {
     protected static energySubreddits = [
         'energy',
-        // 'Futurology',
-        // 'environment',
-        // 'RenewableEnergy',
-        // 'worldnews',
-        // 'science',
-        // 'solar',
-        // 'climate',
-        // 'NuclearPower',
-        // 'Green',
-        // 'electricvehicles',
-        // 'fusion',
-        // 'HydrogenSocieties',
-        // 'oil',
-        // 'biomass',
-        // 'Petroleum',
+        'Futurology',
+        'environment',
+        'RenewableEnergy',
+        'worldnews',
+        'science',
+        'solar',
+        'climate',
+        'NuclearPower',
+        'Green',
+        'electricvehicles',
+        'fusion',
+        'HydrogenSocieties',
+        'oil',
+        'biomass',
+        'Petroleum',
     ];
 
     public constructor(url: string) {
@@ -115,9 +115,8 @@ class RedditSubmissionExtractor extends BaseRedditExtractor {
     private async processSubmission(energyLabels: string[], submission: RedditSubmission) {
         const text = submission.title + ' ' + submission.selftext;
         if (!text) return;
-        for (const label of ["generator", "powerplant", "turbine", "transformer", "hardware", "methane", "solar energy"]) {
+        for (const label of energyLabels) {
             if (text.includes(label)) {
-                console.log("     ENCONTREI");
                 const redditSubmissionModel = new RedditSubmissionModel(submission);
                 await redditSubmissionModel.linkToEnergy(label);
             }
