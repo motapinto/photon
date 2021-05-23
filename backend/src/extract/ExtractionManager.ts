@@ -1,9 +1,10 @@
 import Database from '@database/Database';
+import { RedditExtractor } from './RedditExtractor';
 import TwitterExtractor from './TwitterExtractor';
 import NewsExtractor from './NewsExtractor';
 import { Record } from 'neo4j-driver';
 import { infoLogger } from '@logger';
-import { RedditCommentsExtractor, RedditSubmissionExtractor } from './RedditExtractor';
+import dotenv from 'dotenv';
 
 export default class ExtractionManager {
   private static ontologyNodes: Record[];
@@ -41,12 +42,16 @@ export default class ExtractionManager {
         case '-t': case '--twitter':
           infoLogger.info("Extracting Twitter data...");
           return TwitterExtractor.getInstance().processNodes(energySectors);
+        case '-r': case '--reddit':
+          infoLogger.info("Extracting Reddit data...");
+          return RedditExtractor.processNodes(energySectors);
       }
     }
   }
 }
 
 (async () => {
+  dotenv.config();
   await ExtractionManager.extract(process.argv.slice(2));
   process.exit();
 })();
