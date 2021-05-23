@@ -36,7 +36,7 @@ export class RedditCommentModel {
 	private properties: RedditCommentProperties;
   
 	public constructor(comment: RedditComment) {
-	  this.commentLabel = "Reddit Comment";
+	  this.commentLabel = "RedditComment";
 	  this.properties = comment as RedditCommentProperties;
 	}
 
@@ -47,13 +47,19 @@ export class RedditCommentModel {
 	public add(): Promise<any> {
 	  return this.db.createNode(this.getData());
 	}
+
+	private removeEmpty(obj: Object) {
+		return Object.entries(obj)
+		  .filter(([_, v]) => v != null)
+		  .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+  }
   
 	public linkToEnergy(energyLabel: string) {
 		return this.db.query(`
 			MATCH (origin:Resource {rdfs__label: "${energyLabel}"})
-			MERGE (dest: ${this.commentLabel} ${Utils.stringify(this.properties)})
+			MERGE (dest: ${this.commentLabel} ${Utils.stringify(this.removeEmpty(this.properties))})
 			MERGE (origin)-[e:HasRedditContent]->(dest)
 			RETURN origin, e, dest
 		`);
 	}
-  }
+}

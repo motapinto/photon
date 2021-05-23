@@ -115,8 +115,9 @@ class RedditSubmissionExtractor extends BaseRedditExtractor {
     private async processSubmission(energyLabels: string[], submission: RedditSubmission) {
         const text = submission.title + ' ' + submission.selftext;
         if (!text) return;
-        for (const label of energyLabels) {
+        for (const label of ["generator", "powerplant", "turbine", "transformer", "hardware", "methane", "solar energy"]) {
             if (text.includes(label)) {
+                console.log("     ENCONTREI");
                 const redditSubmissionModel = new RedditSubmissionModel(submission);
                 await redditSubmissionModel.linkToEnergy(label);
             }
