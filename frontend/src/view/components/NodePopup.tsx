@@ -6,7 +6,8 @@ import {
     makeStyles,
     Button,
     Grid,
-} from '@material-ui/core/';
+} from '@material-ui/core';
+import { ThumbDown, ThumbUp } from '@material-ui/icons';
 import Node from "../../model/node";
 import Sector from "../../model/sector";
 import Tweet from "../../model/tweet";
@@ -50,7 +51,10 @@ const useStyles = makeStyles({
     },
     contentDiv: {
         color: "rgba(8,4,20,1)",
-    }
+    },
+    dislike: {
+        marginLeft: "2rem",
+    },
 });
 
 interface PopupProps {
@@ -95,7 +99,8 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                             Creation date: {tweet.createdAt}
                         </Typography>
                         <Typography className={classes.pos}>
-                            Number of likes: {tweet.likeCount} | Number of dislikes: {tweet.dislikeCount}
+                            <ThumbUp />{tweet.likeCount}
+                            <ThumbDown className={classes.dislike}/>{tweet.dislikeCount}
                         </Typography>
                         <Typography className={classes.pos}>
                             Quote count: {tweet.quoteCount}
