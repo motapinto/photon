@@ -3,7 +3,6 @@ import TwitterExtractor from './TwitterExtractor';
 import NewsExtractor from './NewsExtractor';
 import { Record } from 'neo4j-driver';
 import { infoLogger } from '@logger';
-import { RedditCommentsExtractor, RedditSubmissionExtractor } from './RedditExtractor';
 
 export default class ExtractionManager {
   private static ontologyNodes: Record[];
@@ -22,15 +21,14 @@ export default class ExtractionManager {
     };
 
     ExtractionManager.ontologyNodes = await Database.getInstance().query(
-      'MATCH (n:Class) RETURN n ORDER BY n.rdfs__label LIMIT 3'
+      'MATCH (n:Resource) RETURN n ORDER BY n.n4sch__label LIMIT 3'
     ) ?? [];
   }
 
   public static async extract(args: String[]) {
     await ExtractionManager.fetchOntologyNodes();
-
     const energySectors = ExtractionManager.ontologyNodes.map((record: Record) => 
-      record.get('n').properties.rdfs__label as string
+      record.get('n').properties.n4sch__label as string
     );
 
     for(const arg of args) {

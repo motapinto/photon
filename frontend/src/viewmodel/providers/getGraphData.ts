@@ -30,7 +30,7 @@ type GraphData = {
 
 function parseSector(id: string, labels: string[], node: any): Sector {
     const properties = node["properties"];
-    const name = properties["rdfs__label"];
+    const name = properties["n4sch__label"];
     const uri = properties["uri"];
     const growth = 0;
     const numArticles = 0;

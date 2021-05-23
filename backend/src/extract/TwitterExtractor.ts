@@ -25,7 +25,7 @@ export default class TwitterExtractor extends HttpClient {
     return TwitterExtractor.instance;
   };
 
-  public async processNodes(labels: string[]) {
+  public async processNodes(labels: string[]) {    
     return Promise.all(labels.map(async label => {   
       try {
         const tweets = await super.get<TwitterApiResponse>({
@@ -35,8 +35,8 @@ export default class TwitterExtractor extends HttpClient {
             'tweet.fields': 'author_id,created_at,id,public_metrics,text'
           }
         });
-
-        if(tweets.meta.result_count > 0) {
+        
+        if(tweets.meta.result_count > 0) {          
           return Promise.all(tweets.data.map(async (tweet) => await this.processTweet(label, tweet)));
         }
       } catch (err) {
