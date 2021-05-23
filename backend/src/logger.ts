@@ -13,3 +13,12 @@ export const infoLogger = winston.createLogger({
     new winston.transports.File({ filename: 'info.log', level: 'info' }),
   ],
 });
+
+if (process.env.NODE_ENV !== 'prod') {
+  errorLogger.add(new winston.transports.Console({
+    format: winston.format.align(),
+  }));
+  infoLogger.add(new winston.transports.Console({
+    format: winston.format.align(),
+  }));
+}

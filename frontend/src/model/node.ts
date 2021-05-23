@@ -1,11 +1,11 @@
 export default class Node {
-    id: number;
-    label: string;
+    id: string;
+    labels: string[];
     val?: number;
 
-    constructor(id: number, label: string, val: number = 4) {
+    constructor(id: string, labels: string[], val: number = 4) {
         this.id = id;
-        this.label = label;
+        this.labels = labels;
         this.val = val * (val/2);
     }
 }

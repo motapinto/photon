@@ -6,8 +6,8 @@ export default class Article extends Node {
     title: string;
     url: string;
 
-    constructor(id: number, label: string, publishedAt: string, score: number, title: string, url: string) {
-        super(id, label);
+    constructor(id: string, labels: string[], publishedAt: string, score: number, title: string, url: string) {
+        super(id, labels);
         this.publishedAt = publishedAt;
         this.score = score;
         this.title = title;

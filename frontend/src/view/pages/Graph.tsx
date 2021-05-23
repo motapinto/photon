@@ -41,7 +41,7 @@ export default function Graph(): JSX.Element {
         }
         let element = document.getElementById("graph");
         if (element) {
-            myGraph(element).onNodeHover(node => {
+            myGraph(element).onNodeHover((node: any) => {
                                 if (element) element.style.cursor = node ? "pointer" : "auto"
                             })
                             .onNodeClick(focusNode)

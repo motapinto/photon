@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-import Database from '@database/Database';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
@@ -13,7 +12,7 @@ import loggerMiddleware from '@middleware/loggerMiddleware';
   try {
     checkEnvVars();
   } catch (err) {
-    errorLogger.error(err);
+    errorLogger.error(err.message);
   }
 
   app.use(cors());
@@ -36,7 +35,9 @@ function checkEnvVars() {
     .set('DATABASE_HTTP', process.env.DATABASE_HTTP)
     .set('DATABASE_BOLT', process.env.DATABASE_BOLT)
     .set('SERVER_PORT', process.env.SERVER_PORT)
-    .forEach((envValue: string, envName: string) => {
+    .set('ONTOLOGY_LINK', process.env.ONTOLOGY_LINK)
+    .set('ONTOLOGY_FORMAT', process.env.ONTOLOGY_FORMAT)
+    .forEach((envName: string, envValue: string) => {
       if(!envValue) {
         throw new Error(`${envName} must be defined`);
       }
