@@ -37,7 +37,7 @@ export class RedditSubmissionModel {
 	private properties: RedditSubmissionProperties;
   
 	public constructor(submission: RedditSubmission) {
-	  this.submissionLabel = "Reddit Submission";
+	  this.submissionLabel = "RedditSubmission";
 	  this.properties = submission as RedditSubmissionProperties;
 	}
 
@@ -50,9 +50,46 @@ export class RedditSubmissionModel {
 	}
 
 	public linkToEnergy(energyLabel: string) {
+    console.log(this.properties);
+
+    console.log("\n\n");  
+
+    const {	
+      id,
+      author,
+      created_utc,
+      title,
+      selftext,
+      score,
+      permalink,
+      subreddit,
+      subreddit_id,
+      subreddit_subscribers,
+      num_comments, 
+      ..._ 
+    } = this.properties;
+
+    const parsedProperties = {      
+      id,
+      author,
+      created_utc,
+      title,
+      selftext,
+      score,
+      permalink,
+      subreddit,
+      subreddit_id,
+      subreddit_subscribers,
+      num_comments, 
+    } as RedditSubmissionProperties;
+
+    console.log(parsedProperties);
+
+    console.log("\n\n\n\n\n\n\n");
+
 		return this.db.query(`
 			MATCH (origin:Resource {rdfs__label: "${energyLabel}"})
-			MERGE (dest: ${this.submissionLabel} ${Utils.stringify(this.properties)})
+			MERGE (dest: ${this.submissionLabel} ${Utils.stringify(parsedProperties)})
 			MERGE (origin)-[e:HasRedditContent]->(dest)
 			RETURN origin, e, dest
 		`);
