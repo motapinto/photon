@@ -1,23 +1,19 @@
 import Database from "@database/Database";
 import Utils from "@utils/Utils";
-import { Sector } from "../Sector";
 import { Node } from "../Node";
-import { HasRedditContent } from "../edges/HasRedditContent";
 
 export interface RedditComment extends Node {
-	readonly properties: {
-		id: string,
-		parent_id: string,
-		author: string,
-		created_utc: number,
-		body: string,
-		score: number,
-		permalink: string,
-		subreddit: string,
-		subreddit_id: string,
-		link_id: string,
-		[x: string]: any // allows any additional properties
-	};
+	id: string,
+	parent_id: string,
+	author: string,
+	created_utc: number,
+	body: string,
+	score: number,
+	permalink: string,
+	subreddit: string,
+	subreddit_id: string,
+	link_id: string,
+	[x: string]: any // allows any additional properties
 }
 
 interface RedditCommentProperties {
@@ -40,8 +36,8 @@ export class RedditCommentModel {
 	private properties: RedditCommentProperties;
   
 	public constructor(comment: RedditComment) {
-	  this.commentLabel = comment.label;
-	  this.properties = comment.properties as RedditCommentProperties;
+	  this.commentLabel = "Reddit Comment";
+	  this.properties = comment as RedditCommentProperties;
 	}
 
 	public getData(): Node {
@@ -52,11 +48,12 @@ export class RedditCommentModel {
 	  return this.db.createNode(this.getData());
 	}
   
-	public linkToEnergy(energy: Sector, edge: HasRedditContent) {
-	  return this.db.query(`
-		MATCH (origin: ${energy.label} { name: "${energy.properties.name }" }), (dest: ${this.commentLabel} {id: "${this.properties.id}"})
-		MERGE (origin)-[e: ${edge.label} ${Utils.stringify(edge.properties)}]->(dest)
-		RETURN origin, e, dest
-	  `);
+	public linkToEnergy(energyLabel: string) {
+		return this.db.query(`
+			MATCH (origin:Resource {rdfs__label: "${energyLabel}"})
+			MERGE (dest: ${this.commentLabel} ${Utils.stringify(this.properties)})
+			MERGE (origin)-[e:HasRedditContent]->(dest)
+			RETURN origin, e, dest
+		`);
 	}
   }
