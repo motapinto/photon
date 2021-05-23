@@ -2,7 +2,6 @@ import { errorLogger, infoLogger } from '@logger';
 import { RedditSubmission } from '@model/reddit/RedditSubmission';
 import { RedditComment } from '@model/reddit/RedditComment';
 import HttpClient from './HttpClient';
-import dotenv from 'dotenv';
 
 interface RedditCommentsApiResponse {
     data: RedditComment[],
@@ -12,7 +11,7 @@ interface RedditSubmissionsApiResponse {
     data: RedditSubmission[],
 }
 
-abstract class RedditExtractor extends HttpClient {
+abstract class BaseRedditExtractor extends HttpClient {
     protected static energySubreddits = [
         'energy',
         'Futurology',
@@ -33,12 +32,11 @@ abstract class RedditExtractor extends HttpClient {
     ];
   
     public constructor(url: string) {
-		dotenv.config();
 		super(url);
     }
 }
 
-class RedditCommentsExtractor extends RedditExtractor {
+class RedditCommentsExtractor extends BaseRedditExtractor {
     private static instance: RedditCommentsExtractor;
 	private static url = 'https://api.pushshift.io/reddit/comment/search';
 
@@ -54,26 +52,28 @@ class RedditCommentsExtractor extends RedditExtractor {
         return RedditCommentsExtractor.instance;
     };
 
-    public async processAll() {        
+    public async processNodes(labels: string[]) {
         try {
-            const RedditComments = await super.get<RedditCommentsApiResponse>({
+            const comments = await super.get<RedditCommentsApiResponse>({
                 params: {
-                    subreddit: RedditExtractor.energySubreddits.join(','), 
+                    subreddit: BaseRedditExtractor.energySubreddits.join(','), 
                 }
             });
 
-            RedditComments.data.forEach(async (comment) => this.processComment(comment));
+            return Promise.all(comments.data.map(async (comment) => {
+                await this.processComment(labels, comment)
+            }));
         } catch (err) {
             errorLogger.error(err.message);
-        }         
+        }  
     }
   
-    private async processComment(comment: RedditComment) {
+    private async processComment(labels: string[], comment: RedditComment) {
     	infoLogger.info(comment);
     }
 } 
 
-class RedditSubmissionExtractor extends RedditExtractor {
+class RedditSubmissionExtractor extends BaseRedditExtractor {
     private static instance: RedditSubmissionExtractor;
     private static url = 'https://api.pushshift.io/reddit/submission/search';
   
@@ -89,28 +89,33 @@ class RedditSubmissionExtractor extends RedditExtractor {
       return RedditSubmissionExtractor.instance;
     };
   
-    public async processAll() {        
+    public async processNodes(labels: string[]) {
         try {
-            const RedditSubmissions = await super.get<RedditSubmissionsApiResponse>({
+            const submissions = await super.get<RedditSubmissionsApiResponse>({
                 params: {
-                    subreddit: RedditExtractor.energySubreddits.join(','), 
+                    subreddit: BaseRedditExtractor.energySubreddits.join(','), 
                 }
             });
 
-            RedditSubmissions.data.forEach(async (submission) => this.processSubmission(submission));
+            return Promise.all(submissions.data.map(async (sub) => {
+                await this.processSubmission(labels, sub)
+            }));
         } catch (err) {
             errorLogger.error(err.message);
-        }         
+        }  
     }
-  
-    private async processSubmission(submission: RedditSubmission) {
+
+    private async processSubmission(labels: string[], submission: RedditSubmission) {
     	infoLogger.info(submission);
     }
 } 
 
-RedditSubmissionExtractor.getInstance().processAll();
-RedditCommentsExtractor.getInstance().processAll();
-
-export {
-	RedditCommentsExtractor,
+class RedditExtractor {
+    public static async processNodes(labels: string[]) {
+        await RedditSubmissionExtractor.getInstance().processNodes(labels);
+        await RedditCommentsExtractor.getInstance().processNodes(labels);
+    }
 }
+
+
+export { RedditExtractor }
