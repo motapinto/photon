@@ -37,7 +37,8 @@ export default class TwitterExtractor extends HttpClient {
         });
         
         if(tweets.meta.result_count > 0) {          
-          return Promise.all(tweets.data.map(async (tweet) => await this.processTweet(label, tweet)));
+          await Promise.all(tweets.data.map(async (tweet) => await this.processTweet(label, tweet)));
+          return TweetModel.getLimits();
         }
       } catch (err) {
         errorLogger.error(err.message);
@@ -47,6 +48,6 @@ export default class TwitterExtractor extends HttpClient {
 
   private async processTweet(energyLabel: string, tweet: Tweet) {
     const tweetModel = new TweetModel(tweet);
-    await tweetModel.linkToEnergy(energyLabel);
+    await tweetModel.create(energyLabel);
   }
 }

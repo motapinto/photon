@@ -52,10 +52,12 @@ export default class NewsExtractor extends HttpClient {
         });
 
         if(news.totalCount > 0) {
-          return Promise.all(news.value.map(async (article: NewsApiArticle) => {
+          await Promise.all(news.value.map(async (article: NewsApiArticle) => {
             const { description, body, keywords, language, isSafe, provider, image, ...properties } = article;
             return this.processArticle(label, properties as Article);
           }));
+
+          return ArticleModel.getLimits();
         }
       } catch (err) {
         errorLogger.error(err.message);
@@ -65,6 +67,6 @@ export default class NewsExtractor extends HttpClient {
 
   private async processArticle(energyLabel: string, article: Article) {
     const articleModel = new ArticleModel(article);
-    return articleModel.linkToEnergy(energyLabel);
+    return articleModel.create(energyLabel);
   }
 }
