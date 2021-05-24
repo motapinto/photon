@@ -1,4 +1,5 @@
 import neo4j, { Driver, Record } from 'neo4j-driver'
+import { Parameters } from 'neo4j-driver/types/query-runner'
 import Utils from '@utils/Utils';
 import { Edge } from '@model/Edge';
 import { Node } from '@model/Node';
@@ -35,14 +36,14 @@ export default class Database {
     return session;
   }
 
-  public async query(statement: string, populate?: boolean): Promise<Record[] | undefined> {
+  public async query(statement: string, params?: Parameters): Promise<Record[] | undefined> {
     const session = Database.neo.session();
     if(session === undefined) {
       throw new Error("Session is undefined!");
     }
 
     try {
-      const res = await session.run(statement);
+      const res = await session.run(statement, params);
       return res.records;    
     } catch (err) {
       throw new Error(err.message);
