@@ -12,25 +12,6 @@ interface RedditSubmissionsApiResponse {
 }
 
 abstract class BaseRedditExtractor extends HttpClient {
-    protected static energySubreddits = [
-        'energy',
-        'Futurology',
-        'environment',
-        'RenewableEnergy',
-        'worldnews',
-        'science',
-        'solar',
-        'climate',
-        'NuclearPower',
-        'Green',
-        'electricvehicles',
-        'fusion',
-        'HydrogenSocieties',
-        'oil',
-        'biomass',
-        'Petroleum',
-    ];
-
     public constructor(url: string) {
 		super(url);
     }
@@ -53,30 +34,26 @@ class RedditCommentsExtractor extends BaseRedditExtractor {
     };
 
     public async processNodes(labels: string[]) {
-        try {
-            const comments = await super.get<RedditCommentsApiResponse>({
-                params: {
-                    subreddit: BaseRedditExtractor.energySubreddits.join(','), 
-                }
-            });
-
-            return Promise.all(comments.data.map(async (comment) => {
-                await this.processComment(labels, comment)
-            }));
-        } catch (err) {
-            errorLogger.error(err.message);
-        }  
+        return Promise.all(labels.map(async label => {   
+            try {
+                const comments = await super.get<RedditCommentsApiResponse>({
+                    params: {
+                        q: label
+                    }
+                });
+              
+                return Promise.all(comments.data.map(async (comment) => {
+                    await this.processComment(label, comment)
+                }));
+            } catch (err) {
+              errorLogger.error(err.message);
+            }         
+        })); 
     }
 
-    private async processComment(energyLabels: string[], comment: RedditComment) {
-        const text = comment.body;
-        if (!text) return;
-        for (const label of energyLabels) {
-            if (text.toLowerCase().includes(label.toLowerCase())) {
-                const redditCommentModel = new RedditCommentModel(comment);
-                await redditCommentModel.linkToEnergy(label);
-            }
-        }
+    private async processComment(energyLabel: string, comment: RedditComment) {
+        const redditCommentModel = new RedditCommentModel(comment);
+        await redditCommentModel.linkToEnergy(energyLabel);
     }
 } 
 
@@ -97,30 +74,26 @@ class RedditSubmissionExtractor extends BaseRedditExtractor {
     };
   
     public async processNodes(labels: string[]) {
-        try {
-            const submissions = await super.get<RedditSubmissionsApiResponse>({
-                params: {
-                    subreddit: BaseRedditExtractor.energySubreddits.join(','), 
-                }
-            });
-
-            return Promise.all(submissions.data.map(async (sub) => {
-                await this.processSubmission(labels, sub)
-            }));
-        } catch (err) {
-            errorLogger.error(err.message);
-        }  
+        return Promise.all(labels.map(async label => {   
+            try {
+                const submissions = await super.get<RedditSubmissionsApiResponse>({
+                    params: {
+                        q: label 
+                    }
+                });
+              
+                return Promise.all(submissions.data.map(async (sub) => {
+                    await this.processSubmission(label, sub)
+                }));
+            } catch (err) {
+              errorLogger.error(err.message);
+            }         
+        })); 
     }
 
-    private async processSubmission(energyLabels: string[], submission: RedditSubmission) {
-        const text = submission.title + ' ' + submission.selftext;
-        if (!text) return;
-        for (const label of energyLabels) {
-            if (text.toLowerCase().includes(label.toLowerCase())) {
-                const redditSubmissionModel = new RedditSubmissionModel(submission);
-                await redditSubmissionModel.linkToEnergy(label);
-            }
-        }
+    private async processSubmission(energyLabel: string, submission: RedditSubmission) {
+        const redditSubmissionModel = new RedditSubmissionModel(submission);
+        await redditSubmissionModel.linkToEnergy(energyLabel);
     }
 }
 
