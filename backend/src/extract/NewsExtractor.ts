@@ -1,6 +1,7 @@
 import { errorLogger, infoLogger } from '@logger';
 import { Article, ArticleModel } from '@model/Article';
 import { TweetModel } from '@model/Tweet';
+import Utils from '@utils/Utils';
 import HttpClient from './HttpClient';
 
 interface NewsApiResponse {
@@ -38,28 +39,34 @@ export default class NewsExtractor extends HttpClient {
   };
 
   public async processNodes(labels: string[]) {
-    return Promise.all(labels.map(async label => {   
-      try {
-        const news = await super.get<NewsApiResponse>({
-          params: {
-            q: label,
-            pageNumber: '1',
-            pageSize: '50',
-            autoCorrect: 'true',
-            fromPublishedDate: 'null',
-            toPublishedDate: 'null',
-          }
-        });
+    return Promise.all(labels.map(async label => {
+      while(true) {  
+        try {
+          const news = await super.get<NewsApiResponse>({
+            params: {
+              q: label,
+              pageNumber: '1',
+              pageSize: '50',
+              autoCorrect: 'true',
+              fromPublishedDate: 'null',
+              toPublishedDate: 'null',
+            }
+          });
 
-        if(news.totalCount > 0) {
-          await Promise.all(news.value.map(async (article: NewsApiArticle) => {
-            const { description, body, keywords, language, isSafe, provider, image, ...properties } = article;
-            return this.processArticle(label, properties as Article);
-          }));
-        }
-      } catch (err) {
-        errorLogger.error(err.message);
-      }         
+          if(news.totalCount > 0) {
+            await Promise.all(news.value.map(async (article: NewsApiArticle) => {
+              const { description, body, keywords, language, isSafe, provider, image, ...properties } = article;
+              return this.processArticle(label, properties as Article);
+            }));
+          }
+        } catch (err) {
+          if(err.request.res.statusCode !== 429) {
+            errorLogger.error(err.message);
+            break;
+          }
+          await Utils.sleep(500);
+        }     
+      }    
     })); 
   }
 

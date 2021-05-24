@@ -1,5 +1,6 @@
 import { errorLogger, infoLogger } from '@logger';
 import { Tweet, TweetModel } from '@model/Tweet';
+import Utils from '@utils/Utils';
 import HttpClient from './HttpClient';
 
 interface TwitterApiResponse {
@@ -27,21 +28,27 @@ export default class TwitterExtractor extends HttpClient {
 
   public async processNodes(labels: string[]) {    
     return Promise.all(labels.map(async label => {   
-      try {
-        const tweets = await super.get<TwitterApiResponse>({
-          params: {
-            query: label,
-            max_results: 50,
-            'tweet.fields': 'author_id,created_at,id,public_metrics,text'
+      while(true) {
+        try {
+          const tweets = await super.get<TwitterApiResponse>({
+            params: {
+              query: label,
+              max_results: 50,
+              'tweet.fields': 'author_id,created_at,id,public_metrics,text'
+            }
+          });
+          
+          if(tweets.meta.result_count > 0) {          
+            await Promise.all(tweets.data.map(async (tweet) => await this.processTweet(label, tweet)));
           }
-        });
-        
-        if(tweets.meta.result_count > 0) {          
-          await Promise.all(tweets.data.map(async (tweet) => await this.processTweet(label, tweet)));
-        }
-      } catch (err) {
-        errorLogger.error(err.message);
-      }         
+        } catch (err) {
+          if(err.request.res.statusCode !== 429) {
+            errorLogger.error(err.message);
+            break;
+          }
+          await Utils.sleep(500);        
+        }   
+      }      
     }));  
   }
 

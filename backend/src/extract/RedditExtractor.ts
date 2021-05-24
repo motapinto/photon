@@ -2,6 +2,7 @@ import { errorLogger, infoLogger } from '@logger';
 import { RedditSubmission, RedditSubmissionModel } from '@model/reddit/RedditSubmission';
 import { RedditComment, RedditCommentModel } from '@model/reddit/RedditComment';
 import HttpClient from './HttpClient';
+import Utils from '@utils/Utils';
 
 interface RedditCommentsApiResponse {
     data: RedditComment[],
@@ -74,7 +75,8 @@ class RedditSubmissionExtractor extends BaseRedditExtractor {
     };
   
     public async processNodes(labels: string[]) {
-        return Promise.all(labels.map(async label => {   
+        return Promise.all(labels.map(async label => { 
+          while(true) { 
             try {
                 const submissions = await super.get<RedditSubmissionsApiResponse>({
                     params: {
@@ -86,8 +88,13 @@ class RedditSubmissionExtractor extends BaseRedditExtractor {
                     await this.processSubmission(label, sub)
                 }));
             } catch (err) {
-              errorLogger.error(err.message);
-            }         
+              if(err.request.res.statusCode !== 429) {
+                errorLogger.error(err.message);
+                break;
+              }
+              await Utils.sleep(500);
+            }   
+          }      
         })); 
     }
 

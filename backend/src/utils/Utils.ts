@@ -26,4 +26,8 @@ export default class Utils {
     if (!str) return '';
     return str.replace( /(<([^>]+)>)/ig, '');
   }
+
+  public static sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 }
