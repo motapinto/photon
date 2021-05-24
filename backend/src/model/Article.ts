@@ -28,14 +28,7 @@ export class ArticleModel {
     return this.db.createOrGetNode(this.getData());
   }
 
-  public async linkToEnergy(energyLabel: string) {
-    console.log(`
-    MATCH (origin:Resource {n4sch__label: "${energyLabel}"})
-    MERGE (dest: ${ArticleModel.label} ${Utils.stringify(this.article)})
-    MERGE (origin)-[e:HasArticle]->(dest)
-    RETURN origin, e, dest
-  `);
-    
+  public async linkToEnergy(energyLabel: string) {    
     return this.db.query(`
       MATCH (origin:Resource {n4sch__label: "${energyLabel}"})
       MERGE (dest: ${ArticleModel.label} ${Utils.stringify(this.article)})

@@ -72,7 +72,7 @@ class RedditCommentsExtractor extends BaseRedditExtractor {
         const text = comment.body;
         if (!text) return;
         for (const label of energyLabels) {
-            if (text.includes(label)) {
+            if (text.toLowerCase().includes(label.toLowerCase())) {
                 const redditCommentModel = new RedditCommentModel(comment);
                 await redditCommentModel.linkToEnergy(label);
             }
@@ -116,7 +116,7 @@ class RedditSubmissionExtractor extends BaseRedditExtractor {
         const text = submission.title + ' ' + submission.selftext;
         if (!text) return;
         for (const label of energyLabels) {
-            if (text.includes(label)) {
+            if (text.toLowerCase().includes(label.toLowerCase())) {
                 const redditSubmissionModel = new RedditSubmissionModel(submission);
                 await redditSubmissionModel.linkToEnergy(label);
             }

@@ -23,7 +23,7 @@ export default class ExtractionManager {
     };
 
     ExtractionManager.ontologyNodes = await Database.getInstance().query(
-      'MATCH (n:Resource) RETURN n ORDER BY n.n4sch__label LIMIT 3'
+      'MATCH (n:Resource) RETURN n ORDER BY n.n4sch__label LIMIT 10'
     ) ?? [];
   }
 
