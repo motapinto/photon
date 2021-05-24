@@ -59,7 +59,8 @@ export class TweetModel {
     const db = Database.getInstance();
 
     const tweet_limits = await db.query(`
-      MATCH(r:Resource)-[:HasTweet]->(t:Tweet)
+      MATCH(r:Resource)
+      OPTIONAL MATCH(r)-[:HasTweet]->(t:Tweet)
       WITH r, COUNT(t) as num_tweets
       RETURN max(num_tweets) as max_tweets, min(num_tweets) as min_tweets
     `) as Array<Record>;
@@ -68,7 +69,7 @@ export class TweetModel {
       throw new Error('Tweets limit cannot be calculated!');
     }
 
-    TweetModel.total_max_tweets = tweet_limits[0].get('max_tweets');
-    TweetModel.total_min_tweets = tweet_limits[0].get('min_tweets');
+    TweetModel.total_max_tweets = tweet_limits[0].get('max_tweets').low;
+    TweetModel.total_min_tweets = tweet_limits[0].get('min_tweets').low;
   }
 }

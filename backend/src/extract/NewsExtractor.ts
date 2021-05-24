@@ -56,8 +56,6 @@ export default class NewsExtractor extends HttpClient {
             const { description, body, keywords, language, isSafe, provider, image, ...properties } = article;
             return this.processArticle(label, properties as Article);
           }));
-
-          return ArticleModel.getLimits();
         }
       } catch (err) {
         errorLogger.error(err.message);

@@ -38,7 +38,6 @@ export default class TwitterExtractor extends HttpClient {
         
         if(tweets.meta.result_count > 0) {          
           await Promise.all(tweets.data.map(async (tweet) => await this.processTweet(label, tweet)));
-          return TweetModel.getLimits();
         }
       } catch (err) {
         errorLogger.error(err.message);

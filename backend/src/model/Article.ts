@@ -35,17 +35,18 @@ export class ArticleModel {
   public static async getLimits() {
     const db = Database.getInstance();
 
-    const tweet_limits = await db.query(`
-      MATCH(r:Resource)-[:HasTweet]->(t:Tweet)
-      WITH r, COUNT(t) as num_tweets
-      RETURN max(num_tweets) as max_tweets, min(num_tweets) as min_tweets
+    const article_limits = await db.query(`
+      MATCH(r:Resource)
+      OPTIONAL MATCH(r)-[:HasArticle]->(a:Article)
+      WITH r, COUNT(a) as num_articles
+      RETURN max(num_articles) as max_articles, min(num_articles) as min_articles
     `) as Array<Record>;
 
-    if(tweet_limits?.length != 1 || !tweet_limits[0].has('max_tweets') || !tweet_limits[0].has('min_tweets')) {
-      throw new Error('Tweets limit cannot be calculated!');
+    if(article_limits?.length != 1 || !article_limits[0].has('max_articles') || !article_limits[0].has('min_articles')) {
+      throw new Error('Articles limit cannot be calculated!');
     }
 
-    ArticleModel.total_max_articles = tweet_limits[0].get('max_tweets');
-    ArticleModel.total_min_articles = tweet_limits[0].get('min_tweets');
+    ArticleModel.total_max_articles = article_limits[0].get('max_articles').low;
+    ArticleModel.total_min_articles = article_limits[0].get('min_articles').low;
   }
 }

@@ -5,35 +5,40 @@ import { ArticleModel } from '@model/Article';
 
 export async function getAll(req: Request, res: Response) {
   try {
-    const { 
+    let { 
       twitter_inf_limit, 
       twitter_sup_limit, 
       reddit_inf_limit, 
       reddit_sup_limit, 
       news_inf_limit, 
       news_sup_limit
-    } = req.params;
+    } = req.query;
 
-    console.log(req.params);
+    if(!twitter_inf_limit || !twitter_sup_limit ||
+       !reddit_inf_limit || !reddit_sup_limit ||
+       !news_inf_limit || !news_sup_limit)
+       throw new Error("Undefined filter parameter");
     
     const filter_params = {
       twitter_limit: {
-        inf_limit: parseInt(twitter_inf_limit),
-        sup_limit: parseInt(twitter_sup_limit)
+        inf_limit: parseInt(twitter_inf_limit as string),
+        sup_limit: parseInt(twitter_sup_limit as string)
       },
       reddit_limit: {
-        inf_limit: parseInt(reddit_inf_limit),
-        sup_limit: parseInt(reddit_sup_limit)
+        inf_limit: parseInt(reddit_inf_limit as string),
+        sup_limit: parseInt(reddit_sup_limit as string)
       },
       news_limit: {
-        inf_limit: parseInt(news_inf_limit),
-        sup_limit: parseInt(news_sup_limit)
+        inf_limit: parseInt(news_inf_limit as string),
+        sup_limit: parseInt(news_sup_limit as string)
       }
     } as FilterParams;
 
     console.log(filter_params);
 
     const records = await SectorModel.getAll(filter_params);
+    await TweetModel.getLimits();
+    await ArticleModel.getLimits();
 
     return res.status(200).json({
       records,
