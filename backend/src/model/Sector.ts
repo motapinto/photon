@@ -3,6 +3,8 @@ import { Node } from "./Node";
 import { Record } from 'neo4j-driver';
 import { ArticleModel } from "./Article";
 import { TweetModel } from "./Tweet";
+import { RedditCommentModel } from "./reddit/RedditComment";
+import { RedditSubmissionModel } from "./reddit/RedditSubmission";
 
 export interface Sector extends Node {
   readonly properties: {
@@ -42,6 +44,11 @@ export class SectorModel {
       OPTIONAL MATCH(r)-[:HasArticle]->(a:${ArticleModel.label})
       WITH r, COUNT(a) as num_articles
       WHERE num_articles >= ${params.news_limit.inf_limit} AND num_articles <= ${params.news_limit.sup_limit}
+
+      OPTIONAL MATCH(r)-[:HasRedditContent]->(rc)
+      WHERE rc:${RedditCommentModel.label} OR rc:${RedditSubmissionModel.label}
+      WITH r, COUNT(a) as num_reddits
+      WHERE num_reddits >= ${params.reddit_limit.inf_limit} AND num_reddits <= ${params.reddit_limit.sup_limit}
       
       RETURN r
     `) as Promise<Record[]>;

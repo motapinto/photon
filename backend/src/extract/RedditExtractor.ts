@@ -54,7 +54,7 @@ class RedditCommentsExtractor extends BaseRedditExtractor {
 
     private async processComment(energyLabel: string, comment: RedditComment) {
         const redditCommentModel = new RedditCommentModel(comment);
-        await redditCommentModel.linkToEnergy(energyLabel);
+        await redditCommentModel.create(energyLabel);
     }
 } 
 
@@ -100,7 +100,7 @@ class RedditSubmissionExtractor extends BaseRedditExtractor {
 
     private async processSubmission(energyLabel: string, submission: RedditSubmission) {
         const redditSubmissionModel = new RedditSubmissionModel(submission);
-        await redditSubmissionModel.linkToEnergy(energyLabel);
+        await redditSubmissionModel.create(energyLabel);
     }
 }
 
