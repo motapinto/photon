@@ -41,13 +41,13 @@ function parseNode(node: any): Node | null {
     switch(mainLabel) {
         case mainLabels.class:
             return parseClass(id, properties);
-        case mainLabels.relationship:
-            // TODO: parse relationships?
-            break;
         case mainLabels.twitter:
             return parseTweet(id, properties);
         case mainLabels.reddit:
             // TODO: parse reddit?
+            break;
+        case mainLabels.news:
+            // TODO: parse news?
             break;
         default:
             break;

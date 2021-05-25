@@ -2,5 +2,6 @@
     "class": "Class",
     "relationship": "Relationship",
     "twitter": "Tweet",
-    "reddit": "Reddit"
+    "reddit": "Reddit",
+    "news": "News"
 }
