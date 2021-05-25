@@ -101,11 +101,11 @@ function handleGraphData(graphData: any): GraphData {
 }
 
 export function getGraphData(
-        twitter_inf: number, twitter_sup: number, reddit_inf: number, reddit_sup: number, news_inf: number, news_sup: number
+        twitterRange: number[], redditRange: number[], newsRange: number[]
     ): Promise<GraphData> {
 
     return axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/graph?twitter_inf_limit=${twitter_inf}&twitter_sup_limit=${twitter_sup}&reddit_inf_limit=${reddit_inf}&reddit_sup_limit=${reddit_sup}&news_inf_limit=${news_inf}&news_sup_limit=${news_sup}`,
+        `${process.env.REACT_APP_BACKEND_URL}/graph?twitter_inf_limit=${twitterRange[0]}&twitter_sup_limit=${twitterRange[1]}&reddit_inf_limit=${redditRange[0]}&reddit_sup_limit=${redditRange[1]}&news_inf_limit=${newsRange[0]}&news_sup_limit=${newsRange[1]}`,
     ).then((response) =>
         handleGraphData(response.data),
     ).catch((err) => {

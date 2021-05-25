@@ -33,7 +33,11 @@ function getVisibleResource(resource: GraphData): GraphData {
 }
 
 export default function Graph(): JSX.Element {
-    const resource = useGetResource(() => getGraphData(0,10000,0,10000,0,10000)).data as GraphData;
+    const min = 0, max = 100;
+    const [tweetsRange, setTweetsRange] = useState([min, max]);
+    const [newsRange, setNewsRange] = useState([min, max]);
+    const [redditsRange, setRedditsRange] = useState([min, max]);
+    const resource = useGetResource(() => getGraphData(tweetsRange, redditsRange, newsRange)).data as GraphData;
     const myGraph = ForceGraph3D();
     const [focusedNode, setFocusedNode] = useState(undefined);
 
@@ -106,7 +110,7 @@ export default function Graph(): JSX.Element {
     );
     
     return (
-        <MainScreen hasFilteringMenu={true}>
+        <MainScreen hasFilteringMenu={true} tweetsRangeFunc={setTweetsRange} redditsRangeFunc={setRedditsRange} newsRangeFunc={setNewsRange}>
             <div id="graph" />
             {popup}
         </MainScreen>

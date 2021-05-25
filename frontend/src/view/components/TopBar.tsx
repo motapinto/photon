@@ -34,13 +34,16 @@ const useStyles = makeStyles(() => ({
 
 interface TopBarProps {
     hasFilteringMenu?: boolean;
+    tweetsRangeFunc?: Function;
+    redditsRangeFunc?: Function;
+    newsRangeFunc?: Function;
 }
 
-export default function TopBar({hasFilteringMenu = false}: TopBarProps): JSX.Element {
+export default function TopBar({hasFilteringMenu = false, tweetsRangeFunc, redditsRangeFunc, newsRangeFunc}: TopBarProps): JSX.Element {
     const classes = useStyles();
     const menu = hasFilteringMenu ? (
         <div className={classes.link}>
-            <FilteringMenu />
+            <FilteringMenu tweetsRangeFunc={tweetsRangeFunc} redditsRangeFunc={redditsRangeFunc} newsRangeFunc={newsRangeFunc} />
         </div>
     ) : "";
 

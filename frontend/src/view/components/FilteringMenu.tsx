@@ -19,11 +19,17 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function FilteringMenu(): JSX.Element {
+interface FilteringMenuProps {
+    tweetsRangeFunc?: Function;
+    redditsRangeFunc?: Function;
+    newsRangeFunc?: Function;
+}
+
+export default function FilteringMenu({tweetsRangeFunc, redditsRangeFunc, newsRangeFunc}: FilteringMenuProps): JSX.Element {
     const classes = useStyles();
     const { createSliderWithTooltip } = Slider;
     const Range = createSliderWithTooltip(Slider.Range);
-    const min = 0, max = 10000
+    const min = 0, max = 100;
     const [tweetsRange, setTweetsRange] = useState([min, max]);
     const [newsRange, setNewsRange] = useState([min, max]);
     const [redditsRange, setRedditsRange] = useState([min, max]);
@@ -54,11 +60,14 @@ export default function FilteringMenu(): JSX.Element {
                             Range Number of Related News:
                         </Form.Label>
                         <Range min={min} max={max} defaultValue={newsRange} step={500}
-                            tipFormatter={value => `${value}`}
+                            tipFormatter={value => `${value}%`}
                             pushable
                             trackStyle={[{ backgroundColor: '#0d6efd' }]}
                             handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]}
-                            onAfterChange={value => setNewsRange(value)}
+                            onAfterChange={value => {
+                                setNewsRange(value);
+                                if (newsRangeFunc) newsRangeFunc(value);
+                            }}
                         />
                     </Form.Group>
                 </Form>
@@ -68,11 +77,14 @@ export default function FilteringMenu(): JSX.Element {
                             Range Number of Reddit Posts:
                         </Form.Label>
                         <Range min={min} max={max} defaultValue={redditsRange} step={500}
-                            tipFormatter={value => `${value}`}
+                            tipFormatter={value => `${value}%`}
                             pushable
                             trackStyle={[{ backgroundColor: '#0d6efd' }]}
                             handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]}
-                            onAfterChange={value => setRedditsRange(value)}
+                            onAfterChange={value => {
+                                setRedditsRange(value);
+                                if (redditsRangeFunc) redditsRangeFunc(value);
+                            }}
                         />
                     </Form.Group>
                 </Form>
@@ -82,11 +94,14 @@ export default function FilteringMenu(): JSX.Element {
                             Range Number of Twitter Posts:
                         </Form.Label>
                         <Range min={min} max={max} defaultValue={tweetsRange} step={500}
-                            tipFormatter={value => `${value}`}
+                            tipFormatter={value => `${value}%`}
                             pushable
                             trackStyle={[{ backgroundColor: '#0d6efd' }]}
                             handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]}
-                            onAfterChange={value => setTweetsRange(value)}
+                            onAfterChange={value => {
+                                setTweetsRange(value);
+                                if (tweetsRangeFunc) tweetsRangeFunc(value);
+                            }}
                         />
                     </Form.Group>
                 </Form>
