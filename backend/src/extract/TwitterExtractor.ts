@@ -1,5 +1,6 @@
 import { errorLogger, infoLogger } from '@logger';
 import { Tweet, TweetModel } from '@model/Tweet';
+import Utils from '@utils/Utils';
 import HttpClient from './HttpClient';
 
 interface TwitterApiResponse {
@@ -28,6 +29,7 @@ export default class TwitterExtractor extends HttpClient {
   public async processNodes(labels: string[]) {    
     return Promise.all(labels.map(async label => {   
       try {
+        infoLogger.info(`Extracting tweets for energy label: ${label}`)
         const tweets = await super.get<TwitterApiResponse>({
           params: {
             query: label,
@@ -40,8 +42,8 @@ export default class TwitterExtractor extends HttpClient {
           await Promise.all(tweets.data.map(async (tweet) => await this.processTweet(label, tweet)));
         }
       } catch (err) {
-        errorLogger.error(err.message);
-      }         
+        errorLogger.error(err.message);       
+      }   
     }));  
   }
 
