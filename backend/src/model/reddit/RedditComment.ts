@@ -52,8 +52,8 @@ export class RedditCommentModel {
 	
 		const reddit_limits = await db.query(`
 		  MATCH(r:Resource)
-		  OPTIONAL MATCH(r)-[:HasRedditContent]->(rs:${RedditCommentModel.label})
-		  WITH r, COUNT(t) as num_rcoms
+		  OPTIONAL MATCH(r)-[:HasRedditContent]->(rc:${RedditCommentModel.label})
+		  WITH r, COUNT(rc) as num_rcoms
 		  RETURN max(num_rcoms) as max_rcoms, min(num_rcoms) as min_rcoms
 		`) as Array<Record>;
 	
@@ -63,10 +63,5 @@ export class RedditCommentModel {
 	
 		RedditCommentModel.total_max_rcoms = reddit_limits[0].get('max_rcoms').low;
 		RedditCommentModel.total_min_rcoms = reddit_limits[0].get('min_rcoms').low;
-
-		console.log("\n\n\nLIMIT FOR COMS");
-		console.log(RedditCommentModel.total_max_rcoms);
-		console.log(RedditCommentModel.total_min_rcoms);
-		console.log("\n\n\n");
 	}
 }

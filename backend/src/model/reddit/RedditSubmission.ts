@@ -54,7 +54,7 @@ export class RedditSubmissionModel {
 		const reddit_limits = await db.query(`
 		  MATCH(r:Resource)
 		  OPTIONAL MATCH(r)-[:HasRedditContent]->(rs:${RedditSubmissionModel.label})
-		  WITH r, COUNT(t) as num_rsubs
+		  WITH r, COUNT(rs) as num_rsubs
 		  RETURN max(num_rsubs) as max_rsubs, min(num_rsubs) as min_rsubs
 		`) as Array<Record>;
 	
@@ -64,11 +64,5 @@ export class RedditSubmissionModel {
 	
 		RedditSubmissionModel.total_max_rsubs = reddit_limits[0].get('max_rsubs').low;
 		RedditSubmissionModel.total_min_rsubs = reddit_limits[0].get('min_rsubs').low;
-
-		console.log("\n\n\nLIMIT FOR SUBS");
-		console.log(RedditSubmissionModel.total_max_rsubs);
-		console.log(RedditSubmissionModel.total_min_rsubs);
-		console.log("\n\n\n");
-
 	}
 }

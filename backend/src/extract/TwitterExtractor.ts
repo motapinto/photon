@@ -28,27 +28,22 @@ export default class TwitterExtractor extends HttpClient {
 
   public async processNodes(labels: string[]) {    
     return Promise.all(labels.map(async label => {   
-      while(true) {
-        try {
-          const tweets = await super.get<TwitterApiResponse>({
-            params: {
-              query: label,
-              max_results: 50,
-              'tweet.fields': 'author_id,created_at,id,public_metrics,text'
-            }
-          });
-          
-          if(tweets.meta.result_count > 0) {          
-            await Promise.all(tweets.data.map(async (tweet) => await this.processTweet(label, tweet)));
+      try {
+        infoLogger.info(`Extracting tweets for energy label: ${label}`)
+        const tweets = await super.get<TwitterApiResponse>({
+          params: {
+            query: label,
+            max_results: 50,
+            'tweet.fields': 'author_id,created_at,id,public_metrics,text'
           }
-        } catch (err) {
-          if(err.request.res.statusCode !== 429) {
-            errorLogger.error(err.message);
-            break;
-          }
-          await Utils.sleep(500);        
-        }   
-      }      
+        });
+        
+        if(tweets.meta.result_count > 0) {          
+          await Promise.all(tweets.data.map(async (tweet) => await this.processTweet(label, tweet)));
+        }
+      } catch (err) {
+        errorLogger.error(err.message);       
+      }   
     }));  
   }
 

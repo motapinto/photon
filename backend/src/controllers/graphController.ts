@@ -36,11 +36,11 @@ export async function getAll(req: Request, res: Response) {
       }
     } as FilterParams;
 
-    console.log(filter_params);
-
     const records = await SectorModel.getAll(filter_params);
     await TweetModel.getLimits();
     await ArticleModel.getLimits();
+    await RedditCommentModel.getLimits();
+    await RedditSubmissionModel.getLimits();
 
     return res.status(200).json({
       records,

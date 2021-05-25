@@ -47,7 +47,7 @@ export class SectorModel {
 
       OPTIONAL MATCH(r)-[:HasRedditContent]->(rc)
       WHERE rc:${RedditCommentModel.label} OR rc:${RedditSubmissionModel.label}
-      WITH r, COUNT(a) as num_reddits
+      WITH r, COUNT(rc) as num_reddits
       WHERE num_reddits >= ${params.reddit_limit.inf_limit} AND num_reddits <= ${params.reddit_limit.sup_limit}
       
       RETURN r
