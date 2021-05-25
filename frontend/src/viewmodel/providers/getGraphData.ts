@@ -6,10 +6,24 @@ import Tweet from "../../model/tweet";
 import Article from "../../model/article";
 import mainLabels from "../../model/labels.json";
 import RedditComment from "../../model/redditComment";
+import RedditSubmission from "../../model/redditSubmission";
 
 type GraphData = {
     nodes: Node[],
     links: Link[],
+}
+
+function parseRedditSubmission(id: string, properties: any): RedditSubmission {
+    const label = "RedditSubmission";
+    const author = properties["author"];
+    const numComments = properties["num_comments"]["high"] + properties["num_comments"]["low"];
+    const title = properties["title"];
+    const permalink = properties["permalink"];
+    const score = properties["score"]["high"] + properties["score"]["low"];
+    const subreddit = properties["subreddit"];
+    const subredditSubscribers = properties["subreddit_subscribers"]["high"] + properties["subreddit_subscribers"]["low"];
+
+    return new RedditSubmission(id, label, author, numComments, permalink, score, subreddit, subredditSubscribers, title);
 }
 
 function parseRedditComment(id: string, properties: any): RedditComment {
@@ -17,7 +31,7 @@ function parseRedditComment(id: string, properties: any): RedditComment {
     const author = properties["author"];
     const body = properties["body"];
     const permalink = properties["permalink"];
-    const score = properties["score"];
+    const score = properties["score"]["high"] + properties["score"]["low"];
     const subreddit = properties["subreddit"];
 
     return new RedditComment(id, label, author, body, permalink, score, subreddit);
@@ -68,6 +82,8 @@ function parseNode(node: any): Node | null {
             return parseTweet(id, properties);
         case mainLabels.redditComment:
             return parseRedditComment(id, properties);
+        case mainLabels.redditSubmission:
+            return parseRedditSubmission(id, properties);
         case mainLabels.news:
             return parseArticle(id, properties);
         default:

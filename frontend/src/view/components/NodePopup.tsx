@@ -14,6 +14,7 @@ import Tweet from "../../model/tweet";
 import Article from "../../model/article";
 import mainLabels from "../../model/labels.json";
 import RedditComment from "../../model/redditComment";
+import RedditSubmission from "../../model/redditSubmission";
 
 const useStyles = makeStyles({
     root: {
@@ -153,12 +154,48 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                             Subreddit: {redditComment.subreddit}
                         </Typography>
                         <Typography className={classes.pos}>
+                            Score: {redditComment.score}
+                        </Typography>
+                        <Typography className={classes.pos}>
                             Click here for more info: <a href={redditComment.permalink}>link</a>
                         </Typography>
                     </div>
                 );
                 break
             }
+            case mainLabels.redditSubmission: {
+                const redditSubmission = node as RedditSubmission;
+                label = "Reddit Submission";
+                content = (
+                    <div className={classes.contentDiv}>
+                        <Typography className={classes.pos}>
+                            Title: "{redditSubmission.title}"
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Author: {redditSubmission.author}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Subreddit: {redditSubmission.subreddit}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Subreddit Subscribers: {redditSubmission.subredditSubscribers}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Number of comments: {redditSubmission.numComments}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Score: {redditSubmission.score}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Click here for more info: <a href={redditSubmission.permalink}>link</a>
+                        </Typography>
+                    </div>
+                );
+                break
+            }
+            default:
+                label = "Invalid";
+                break;
         }
 
         cardContent = (

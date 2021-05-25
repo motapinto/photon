@@ -3,5 +3,6 @@
     "relationship": "Relationship",
     "twitter": "Tweet",
     "redditComment": "RedditComment",
+    "redditSubmission": "RedditSubmission",
     "news": "Article"
 }
