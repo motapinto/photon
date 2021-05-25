@@ -86,7 +86,6 @@ function handleGraphData(graphData: any): GraphData {
             processedIds.add(origin.id);
         }
         if (!processedIds.has(dest.id)) {
-            console.log(dest);
             nodes.push(dest);
             processedIds.add(dest.id);
         }
