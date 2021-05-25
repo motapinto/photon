@@ -5,14 +5,26 @@ import Sector from "../../model/sector";
 import Tweet from "../../model/tweet";
 import Article from "../../model/article";
 import mainLabels from "../../model/labels.json";
+import RedditComment from "../../model/redditComment";
 
 type GraphData = {
     nodes: Node[],
     links: Link[],
 }
 
+function parseRedditComment(id: string, properties: any): RedditComment {
+    const label = "RedditComment";
+    const author = properties["author"];
+    const body = properties["body"];
+    const permalink = properties["permalink"];
+    const score = properties["score"];
+    const subreddit = properties["subreddit"];
+
+    return new RedditComment(id, label, author, body, permalink, score, subreddit);
+}
+
 function parseArticle(id: string, properties: any): Article {
-    const label = "News Article";
+    const label = "Article";
     const datePublished = properties["datePublished"];
     const snippet = properties["snippet"];
     const title = properties["title"];
@@ -54,9 +66,8 @@ function parseNode(node: any): Node | null {
             return parseClass(id, properties);
         case mainLabels.twitter:
             return parseTweet(id, properties);
-        case mainLabels.reddit:
-            // TODO: parse reddit?
-            break;
+        case mainLabels.redditComment:
+            return parseRedditComment(id, properties);
         case mainLabels.news:
             return parseArticle(id, properties);
         default:
@@ -78,7 +89,7 @@ function handleGraphData(graphData: any): GraphData {
     let nodes: Node[] = [];
     let links: Link[] = [];
     let processedIds: Set<string> = new Set();
-    console.log(graphData);
+
     graphData['records'].forEach((element: any) => {
         const fields = element["_fields"];
 

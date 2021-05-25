@@ -13,11 +13,12 @@ import Sector from "../../model/sector";
 import Tweet from "../../model/tweet";
 import Article from "../../model/article";
 import mainLabels from "../../model/labels.json";
+import RedditComment from "../../model/redditComment";
 
 const useStyles = makeStyles({
     root: {
         minWidth: 275,
-        maxWidth: "20%",
+        maxWidth: "30%",
         position: "fixed",
         zIndex: 1,
         top: "20%",
@@ -79,7 +80,7 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                             Name: {sector.name}
                         </Typography>
                         <Typography className={classes.pos}>
-                            URI: {sector.uri}
+                            Click here for more info: <a href={sector.uri}>link</a>
                         </Typography>
                     </div>
                 );
@@ -131,13 +132,31 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                             Creation date: {article.datePublished}
                         </Typography>
                         <Typography className={classes.pos}>
-                            URL: {article.url}
+                            Click here for more info: <a href={article.url}>link</a>
                         </Typography>
                     </div>
                 );
                 break
             }
-            case mainLabels.reddit: {
+            case mainLabels.redditComment: {
+                const redditComment = node as RedditComment;
+                label = "Reddit Comment";
+                content = (
+                    <div className={classes.contentDiv}>
+                        <Typography className={classes.pos}>
+                            Content: "{redditComment.body}"
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Author: {redditComment.author}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Subreddit: {redditComment.subreddit}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Click here for more info: <a href={redditComment.permalink}>link</a>
+                        </Typography>
+                    </div>
+                );
                 break
             }
         }
