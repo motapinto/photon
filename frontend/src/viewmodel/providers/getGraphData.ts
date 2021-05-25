@@ -69,7 +69,7 @@ function handleGraphData(graphData: any): GraphData {
     let links: Link[] = [];
     let processedIds: Set<string> = new Set();
 
-    graphData.forEach((element: any) => {
+    graphData['records'].forEach((element: any) => {
         const fields = element["_fields"];
 
         //Origin

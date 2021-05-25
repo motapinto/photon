@@ -20,6 +20,7 @@ export function useGetResource<T>(getResource: () => Promise<T>): Resource<T> {
     const [state, setState] = useState(promise);
     useEffect(() => {
         getResourceAndUpdate(getResource, setState);
-    }, [getResource]);
+        // @ts-ignore
+    }, []);
     return state;
 }

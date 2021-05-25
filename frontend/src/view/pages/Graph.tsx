@@ -37,7 +37,7 @@ export default function Graph(): JSX.Element {
     const [tweetsRange, setTweetsRange] = useState([min, max]);
     const [newsRange, setNewsRange] = useState([min, max]);
     const [redditsRange, setRedditsRange] = useState([min, max]);
-    const resource = useGetResource(() => getGraphData(tweetsRange, redditsRange, newsRange)).data as GraphData;
+    const resource = useGetResource(getGraphData.bind(null, tweetsRange, redditsRange, newsRange)).data as GraphData;
     const myGraph = ForceGraph3D();
     const [focusedNode, setFocusedNode] = useState(undefined);
 
@@ -86,13 +86,13 @@ export default function Graph(): JSX.Element {
         let element = document.getElementById("graph");
         if (element) {
             myGraph(element).onNodeHover((node: any) => {
-                                if (element) element.style.cursor = node ? "pointer" : "auto"
-                            })
-                            .onNodeClick(focusNode)
-                            .nodeAutoColorBy("label")
-                            .linkAutoColorBy("label")
-                            .onBackgroundClick(defocusNode)
-                            .graphData(getVisibleResource(resource));
+                if (element) element.style.cursor = node ? "pointer" : "auto"
+            })
+            .onNodeClick(focusNode)
+            .nodeAutoColorBy("label")
+            .linkAutoColorBy("label")
+            .onBackgroundClick(defocusNode)
+            .graphData(getVisibleResource(resource));
             // @ts-ignore
             myGraph.d3Force('link')?.distance(200);
         }

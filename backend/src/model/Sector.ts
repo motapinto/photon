@@ -43,7 +43,9 @@ export class SectorModel {
       WITH r, COUNT(a) as num_articles
       WHERE num_articles >= ${params.news_limit.inf_limit} AND num_articles <= ${params.news_limit.sup_limit}
       
-      RETURN r
+      MATCH (origin)-[edge]-(dest)
+      RETURN origin, edge, dest
+      LIMIT 1000
     `) as Promise<Record[]>;
   }
 }
