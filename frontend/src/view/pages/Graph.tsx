@@ -81,6 +81,8 @@ export default function Graph(): JSX.Element {
         
         function showGraph() {
             myGraph.graphData(getVisibleResource(resource));
+            // @ts-ignore
+            myGraph.d3Force('charge')?.strength(-5);
         }
 
         let element = document.getElementById("graph");
