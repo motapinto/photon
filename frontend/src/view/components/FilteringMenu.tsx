@@ -59,7 +59,7 @@ export default function FilteringMenu({tweetsRangeFunc, redditsRangeFunc, newsRa
                         <Form.Label className={classes.label}>
                             Range Number of Related News:
                         </Form.Label>
-                        <Range min={min} max={max} defaultValue={newsRange} step={500}
+                        <Range min={min} max={max} defaultValue={newsRange} step={5}
                             tipFormatter={value => `${value}%`}
                             pushable
                             trackStyle={[{ backgroundColor: '#0d6efd' }]}
@@ -76,7 +76,7 @@ export default function FilteringMenu({tweetsRangeFunc, redditsRangeFunc, newsRa
                         <Form.Label className={classes.label}>
                             Range Number of Reddit Posts:
                         </Form.Label>
-                        <Range min={min} max={max} defaultValue={redditsRange} step={500}
+                        <Range min={min} max={max} defaultValue={redditsRange} step={5}
                             tipFormatter={value => `${value}%`}
                             pushable
                             trackStyle={[{ backgroundColor: '#0d6efd' }]}
@@ -93,7 +93,7 @@ export default function FilteringMenu({tweetsRangeFunc, redditsRangeFunc, newsRa
                         <Form.Label className={classes.label}>
                             Range Number of Twitter Posts:
                         </Form.Label>
-                        <Range min={min} max={max} defaultValue={tweetsRange} step={500}
+                        <Range min={min} max={max} defaultValue={tweetsRange} step={5}
                             tipFormatter={value => `${value}%`}
                             pushable
                             trackStyle={[{ backgroundColor: '#0d6efd' }]}
