@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../css/MainScreen.css";
 import {
     makeStyles,
@@ -23,6 +23,10 @@ export default function FilteringMenu(): JSX.Element {
     const classes = useStyles();
     const { createSliderWithTooltip } = Slider;
     const Range = createSliderWithTooltip(Slider.Range);
+    const min = 0, max = 10000
+    const [tweetsRange, setTweetsRange] = useState([min, max]);
+    const [newsRange, setNewsRange] = useState([min, max]);
+    const [redditsRange, setRedditsRange] = useState([min, max]);
 
     return (
         <DropdownButton
@@ -49,37 +53,40 @@ export default function FilteringMenu(): JSX.Element {
                         <Form.Label className={classes.label}>
                             Range Number of Related News:
                         </Form.Label>
-                        <Range min={0} max={10000} defaultValue={[0, 10000]} step={500} 
+                        <Range min={min} max={max} defaultValue={newsRange} step={500}
                             tipFormatter={value => `${value}`}
                             pushable
                             trackStyle={[{ backgroundColor: '#0d6efd' }]}
                             handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]}
+                            onAfterChange={value => setNewsRange(value)}
                         />
                     </Form.Group>
                 </Form>
                 <Form>
-                    <Form.Group controlId="relatedPosts" className={classes.displayCol}>
+                    <Form.Group controlId="relatedRedditPosts" className={classes.displayCol}>
                         <Form.Label className={classes.label}>
-                            Range Number of Related Posts:
+                            Range Number of Reddit Posts:
                         </Form.Label>
-                        <Range min={0} max={10000} defaultValue={[0, 10000]} step={500} 
+                        <Range min={min} max={max} defaultValue={redditsRange} step={500}
                             tipFormatter={value => `${value}`}
                             pushable
                             trackStyle={[{ backgroundColor: '#0d6efd' }]}
-                            handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]} 
+                            handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]}
+                            onAfterChange={value => setRedditsRange(value)}
                         />
                     </Form.Group>
                 </Form>
                 <Form>
-                    <Form.Group controlId="valueGrowth" className={classes.displayCol}>
+                    <Form.Group controlId="relatedTwitterPosts" className={classes.displayCol}>
                         <Form.Label className={classes.label}>
-                            Range Value of Growth:
+                            Range Number of Twitter Posts:
                         </Form.Label>
-                        <Range min={0} max={10000} defaultValue={[0, 10000]} step={500} 
+                        <Range min={min} max={max} defaultValue={tweetsRange} step={500}
                             tipFormatter={value => `${value}`}
                             pushable
                             trackStyle={[{ backgroundColor: '#0d6efd' }]}
-                            handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]} 
+                            handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]}
+                            onAfterChange={value => setTweetsRange(value)}
                         />
                     </Form.Group>
                 </Form>

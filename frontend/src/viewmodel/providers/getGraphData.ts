@@ -100,10 +100,12 @@ function handleGraphData(graphData: any): GraphData {
     return data;
 }
 
-export function getGraphData(): Promise<GraphData> {
+export function getGraphData(
+        twitter_inf: number, twitter_sup: number, reddit_inf: number, reddit_sup: number, news_inf: number, news_sup: number
+    ): Promise<GraphData> {
 
     return axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/graph`,
+        `${process.env.REACT_APP_BACKEND_URL}/graph?twitter_inf_limit=${twitter_inf}&twitter_sup_limit=${twitter_sup}&reddit_inf_limit=${reddit_inf}&reddit_sup_limit=${reddit_sup}&news_inf_limit=${news_inf}&news_sup_limit=${news_sup}`,
     ).then((response) =>
         handleGraphData(response.data),
     ).catch((err) => {

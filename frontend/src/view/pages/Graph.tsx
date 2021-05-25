@@ -33,7 +33,7 @@ function getVisibleResource(resource: GraphData): GraphData {
 }
 
 export default function Graph(): JSX.Element {
-    const resource = useGetResource(getGraphData).data as GraphData;
+    const resource = useGetResource(() => getGraphData(0,10000,0,10000,0,10000)).data as GraphData;
     const myGraph = ForceGraph3D();
     const [focusedNode, setFocusedNode] = useState(undefined);
 

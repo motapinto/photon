@@ -16,7 +16,7 @@ import mainLabels from "../../model/labels.json";
 const useStyles = makeStyles({
     root: {
         minWidth: 275,
-        maxWidth: "50%",
+        maxWidth: "20%",
         position: "fixed",
         zIndex: 1,
         top: "20%",
