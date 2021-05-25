@@ -11,6 +11,7 @@ import { ThumbDown, ThumbUp } from '@material-ui/icons';
 import Node from "../../model/node";
 import Sector from "../../model/sector";
 import Tweet from "../../model/tweet";
+import Article from "../../model/article";
 import mainLabels from "../../model/labels.json";
 
 const useStyles = makeStyles({
@@ -110,6 +111,27 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                         </Typography>
                         <Typography className={classes.pos}>
                             Retweet count: {tweet.retweetCount}
+                        </Typography>
+                    </div>
+                );
+                break
+            }
+            case mainLabels.news: {
+                const article = node as Article;
+                label = "News Article";
+                content = (
+                    <div className={classes.contentDiv}>
+                        <Typography className={classes.pos}>
+                            Title: "{article.title}"
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Content: "{article.snippet}"
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Creation date: {article.datePublished}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            URL: {article.url}
                         </Typography>
                     </div>
                 );

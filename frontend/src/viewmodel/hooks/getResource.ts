@@ -20,7 +20,7 @@ export function useGetResource<T>(getResource: () => Promise<T>): Resource<T> {
     const [state, setState] = useState(promise);
     useEffect(() => {
         getResourceAndUpdate(getResource, setState);
-        // @ts-ignore
+        // eslint-disable-next-line
     }, []);
     return state;
 }

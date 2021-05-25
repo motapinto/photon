@@ -61,7 +61,7 @@ export default function Graph(): JSX.Element {
             if (popup) popup.setAttribute("style", "display: block");
 
             // Aim at node from outside it
-            const distance = 170;
+            const distance = 300;
             const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
         
             myGraph.cameraPosition(
@@ -91,6 +91,7 @@ export default function Graph(): JSX.Element {
             .onNodeClick(focusNode)
             .nodeAutoColorBy("label")
             .linkAutoColorBy("label")
+            .linkWidth(5)
             .onBackgroundClick(defocusNode)
             .graphData(getVisibleResource(resource));
             // @ts-ignore

@@ -3,11 +3,22 @@ import Link from "../../model/link";
 import Node from "../../model/node";
 import Sector from "../../model/sector";
 import Tweet from "../../model/tweet";
+import Article from "../../model/article";
 import mainLabels from "../../model/labels.json";
 
 type GraphData = {
     nodes: Node[],
     links: Link[],
+}
+
+function parseArticle(id: string, properties: any): Article {
+    const label = "News Article";
+    const datePublished = properties["datePublished"];
+    const snippet = properties["snippet"];
+    const title = properties["title"];
+    const url = properties["url"];
+
+    return new Article(id, label, datePublished, snippet, title, url);
 }
 
 function parseTweet(id: string, properties: any): Tweet {
@@ -47,8 +58,7 @@ function parseNode(node: any): Node | null {
             // TODO: parse reddit?
             break;
         case mainLabels.news:
-            // TODO: parse news?
-            break;
+            return parseArticle(id, properties);
         default:
             break;
     }
@@ -68,7 +78,7 @@ function handleGraphData(graphData: any): GraphData {
     let nodes: Node[] = [];
     let links: Link[] = [];
     let processedIds: Set<string> = new Set();
-
+    console.log(graphData);
     graphData['records'].forEach((element: any) => {
         const fields = element["_fields"];
 
