@@ -1,8 +1,8 @@
 import { errorLogger, infoLogger } from '@logger';
-import { RedditSubmission } from '@model/reddit/RedditSubmission';
-import { RedditComment } from '@model/reddit/RedditComment';
+import { RedditSubmission, RedditSubmissionModel } from '@model/reddit/RedditSubmission';
+import { RedditComment, RedditCommentModel } from '@model/reddit/RedditComment';
 import HttpClient from './HttpClient';
-import dotenv from 'dotenv';
+import Utils from '@utils/Utils';
 
 interface RedditCommentsApiResponse {
     data: RedditComment[],
@@ -12,33 +12,13 @@ interface RedditSubmissionsApiResponse {
     data: RedditSubmission[],
 }
 
-abstract class RedditExtractor extends HttpClient {
-    protected static energySubreddits = [
-        'energy',
-        'Futurology',
-        'environment',
-        'RenewableEnergy',
-        'worldnews',
-        'science',
-        'solar',
-        'climate',
-        'NuclearPower',
-        'Green',
-        'electricvehicles',
-        'fusion',
-        'HydrogenSocieties',
-        'oil',
-        'biomass',
-        'Petroleum',
-    ];
-  
+abstract class BaseRedditExtractor extends HttpClient {
     public constructor(url: string) {
-		dotenv.config();
 		super(url);
     }
 }
 
-class RedditCommentsExtractor extends RedditExtractor {
+class RedditCommentsExtractor extends BaseRedditExtractor {
     private static instance: RedditCommentsExtractor;
 	private static url = 'https://api.pushshift.io/reddit/comment/search';
 
@@ -54,26 +34,31 @@ class RedditCommentsExtractor extends RedditExtractor {
         return RedditCommentsExtractor.instance;
     };
 
-    public async processAll() {        
-        try {
-            const RedditComments = await super.get<RedditCommentsApiResponse>({
-                params: {
-                    subreddit: RedditExtractor.energySubreddits.join(','), 
-                }
-            });
-
-            RedditComments.data.forEach(async (comment) => this.processComment(comment));
-        } catch (err) {
-            errorLogger.error(err.message);
-        }         
+    public async processNodes(labels: string[]) {
+        return Promise.all(labels.map(async label => {   
+            try {
+                const comments = await super.get<RedditCommentsApiResponse>({
+                    params: {
+                        q: label
+                    }
+                });
+              
+                return Promise.all(comments.data.map(async (comment) => {
+                    await this.processComment(label, comment)
+                }));
+            } catch (err) {
+              errorLogger.error(err.message);
+            }         
+        })); 
     }
-  
-    private async processComment(comment: RedditComment) {
-    	infoLogger.info(comment);
+
+    private async processComment(energyLabel: string, comment: RedditComment) {
+        const redditCommentModel = new RedditCommentModel(comment);
+        await redditCommentModel.create(energyLabel);
     }
 } 
 
-class RedditSubmissionExtractor extends RedditExtractor {
+class RedditSubmissionExtractor extends BaseRedditExtractor {
     private static instance: RedditSubmissionExtractor;
     private static url = 'https://api.pushshift.io/reddit/submission/search';
   
@@ -89,28 +74,42 @@ class RedditSubmissionExtractor extends RedditExtractor {
       return RedditSubmissionExtractor.instance;
     };
   
-    public async processAll() {        
-        try {
-            const RedditSubmissions = await super.get<RedditSubmissionsApiResponse>({
-                params: {
-                    subreddit: RedditExtractor.energySubreddits.join(','), 
-                }
-            });
-
-            RedditSubmissions.data.forEach(async (submission) => this.processSubmission(submission));
-        } catch (err) {
-            errorLogger.error(err.message);
-        }         
+    public async processNodes(labels: string[]) {
+        return Promise.all(labels.map(async label => { 
+          while(true) { 
+            try {
+                const submissions = await super.get<RedditSubmissionsApiResponse>({
+                    params: {
+                        q: label 
+                    }
+                });
+              
+                return Promise.all(submissions.data.map(async (sub) => {
+                    await this.processSubmission(label, sub)
+                }));
+            } catch (err) {
+              if(err.request.res.statusCode !== 429) {
+                errorLogger.error(err.message);
+                break;
+              }
+              await Utils.sleep(500);
+            }   
+          }      
+        })); 
     }
-  
-    private async processSubmission(submission: RedditSubmission) {
-    	infoLogger.info(submission);
+
+    private async processSubmission(energyLabel: string, submission: RedditSubmission) {
+        const redditSubmissionModel = new RedditSubmissionModel(submission);
+        await redditSubmissionModel.create(energyLabel);
     }
-} 
-
-RedditSubmissionExtractor.getInstance().processAll();
-RedditCommentsExtractor.getInstance().processAll();
-
-export {
-	RedditCommentsExtractor,
 }
+
+class RedditExtractor {
+    public static async processNodes(labels: string[]) {
+        await RedditSubmissionExtractor.getInstance().processNodes(labels);
+        await RedditCommentsExtractor.getInstance().processNodes(labels);
+    }
+}
+
+
+export { RedditExtractor }

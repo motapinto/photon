@@ -1,27 +1,9 @@
 import Database from "@database/Database";
 import Utils from "@utils/Utils";
-import { Sector } from "../Sector";
 import { Node } from "../Node";
-import { HasRedditContent } from "../edges/HasRedditContent";
+import { Record } from 'neo4j-driver';
 
 export interface RedditSubmission extends Node {
-  readonly properties: {
-		id: string,
-		author: string,
-		created_utc: number,
-		title: string,
-		selftext: string,
-		score: number,
-		permalink: string,
-		subreddit: string,
-		subreddit_id: string,
-		subreddit_subscribers: number,
-		num_comments: number,
-		[x: string]: any // allows any additional properties
-	};
-}
-
-interface RedditSubmissionProperties {
 	id: string,
 	author: string,
 	created_utc: number,
@@ -36,28 +18,51 @@ interface RedditSubmissionProperties {
 }
 
 export class RedditSubmissionModel {
+  	public static label = "RedditSubmission";
+	public static total_max_rsubs = 0;
+	public static total_min_rsubs = 0;
+	private static wantedFields = [
+		'id', 'author', 'created_utc', 'title', 'selftext', 'score', 'permalink',
+		'subreddit', 'subreddit_id', 'subreddit_subscribers', 'num_comments',
+	];
+
 	private db: Database = Database.getInstance();
-	private submissionLabel: string;
-	private properties: RedditSubmissionProperties;
+	private properties: any;
   
 	public constructor(submission: RedditSubmission) {
-	  this.submissionLabel = submission.label;
-	  this.properties = submission.properties as RedditSubmissionProperties;
+		this.properties = {};
+		for (const key in submission) {
+			if (RedditSubmissionModel.wantedFields.includes(key)) {
+				const fieldKey = key as keyof typeof submission;
+				this.properties[key] = submission[fieldKey];
+			}
+		}
 	}
-  
-	public getData(): Node {
-	  return { label: this.submissionLabel, properties: this.properties };
+
+	public create(energyLabel: string) {	  
+		return this.db.query(`
+			MATCH (origin:Resource {n4sch__label: "${energyLabel}"})
+			MERGE (dest: ${RedditSubmissionModel.label} ${Utils.stringify(this.properties)})
+			MERGE (origin)-[e:HasRedditContent]->(dest)
+			RETURN origin, e, dest
+		`);
 	}
-  
-	public add(): Promise<any> {
-	  return this.db.createNode(this.getData());
+
+	public static async getLimits() {
+		const db = Database.getInstance();
+	
+		const reddit_limits = await db.query(`
+		  MATCH(r:Resource)
+		  OPTIONAL MATCH(r)-[:HasRedditContent]->(rs:${RedditSubmissionModel.label})
+		  WITH r, COUNT(rs) as num_rsubs
+		  RETURN max(num_rsubs) as max_rsubs, min(num_rsubs) as min_rsubs
+		`) as Array<Record>;
+	
+		if(reddit_limits?.length != 1 || !reddit_limits[0].has('max_rsubs') || !reddit_limits[0].has('min_rsubs')) {
+		  throw new Error('Tweets limit cannot be calculated!');
+		}
+	
+		RedditSubmissionModel.total_max_rsubs = reddit_limits[0].get('max_rsubs').low;
+		RedditSubmissionModel.total_min_rsubs = reddit_limits[0].get('min_rsubs').low;
 	}
-  
-	public linkToEnergy(energy: Sector, edge: HasRedditContent) {    
-	  return this.db.query(`
-		MATCH (origin: ${energy.label} { name: "${energy.properties.name }" }), (dest: ${this.submissionLabel} {id: "${this.properties.id}"})
-		MERGE (origin)-[e: ${edge.label} ${Utils.stringify(edge.properties)}]->(dest)
-		RETURN origin, e, dest
-	  `);
-	}
-  }
+}

@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { SectorModel, FilterParams } from '@model/Sector';
 import { TweetModel } from '@model/Tweet';
 import { ArticleModel } from '@model/Article';
+import { RedditCommentModel } from '@model/reddit/RedditComment';
+import { RedditSubmissionModel } from '@model/reddit/RedditSubmission';
 
 export async function getAll(req: Request, res: Response) {
   try {
@@ -34,11 +36,11 @@ export async function getAll(req: Request, res: Response) {
       }
     } as FilterParams;
 
-    console.log(filter_params);
-
     const records = await SectorModel.getAll(filter_params);
     await TweetModel.getLimits();
     await ArticleModel.getLimits();
+    await RedditCommentModel.getLimits();
+    await RedditSubmissionModel.getLimits();
 
     return res.status(200).json({
       records,
@@ -46,6 +48,8 @@ export async function getAll(req: Request, res: Response) {
       max_tweets: TweetModel.total_max_tweets,
       min_news: ArticleModel.total_min_articles,
       max_news: ArticleModel.total_max_articles,
+      min_reddits: RedditCommentModel.total_min_rcoms + RedditSubmissionModel.total_min_rsubs,
+      max_reddits: RedditCommentModel.total_max_rcoms + RedditSubmissionModel.total_max_rsubs
     });
   } catch (err) {
     return res.sendStatus(500);
