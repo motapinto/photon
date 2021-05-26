@@ -5,7 +5,7 @@ export default class Sector extends Node {
     uri: string;
 
     constructor(id: string, label: string, name: string, uri: string) {
-        super(id, label, undefined, true);
+        super(id, label, undefined, false);
         this.name = name;
         this.uri = uri;
     }
