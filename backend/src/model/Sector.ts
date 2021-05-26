@@ -19,15 +19,15 @@ export interface Sector extends Node {
 export type FilterParams = {
   twitter_limit: {
     inf_limit: number, 
-    sup_limit: number
+    sup_limit?: number
   },
   reddit_limit: {
     inf_limit: number, 
-    sup_limit: number
+    sup_limit?: number
   },
   news_limit: {
     inf_limit: number, 
-    sup_limit: number
+    sup_limit?: number
   }
 };
 
@@ -35,26 +35,13 @@ export class SectorModel {
   public static async getAll(params: FilterParams):Promise<Record[]>  {
     const db = Database.getInstance();
 
-    console.log(`
-    MATCH(r:Resource)
-    OPTIONAL MATCH(r)-[:HasTweet]->(t:${TweetModel.label})
-    WITH r, COUNT(t) as num_tweets
-    WHERE num_tweets >= ${params.twitter_limit.inf_limit} AND num_tweets <= ${params.twitter_limit.sup_limit}
+    if(!params.news_limit.sup_limit || !params.reddit_limit.sup_limit || !params.twitter_limit.sup_limit) {
+      return db.query(`
+        MATCH (origin)-[edge]-(dest)
+        RETURN origin, edge, dest
+      `) as Promise<Record[]>;
+    }
     
-    OPTIONAL MATCH(r)-[:HasArticle]->(a:${ArticleModel.label})
-    WITH r, COUNT(a) as num_articles
-    WHERE num_articles >= ${params.news_limit.inf_limit} AND num_articles <= ${params.news_limit.sup_limit}
-
-    OPTIONAL MATCH(r)-[:HasRedditContent]->(rc)
-    WHERE rc:${RedditCommentModel.label} OR rc:${RedditSubmissionModel.label}
-    WITH r, COUNT(rc) as num_reddits
-    WHERE num_reddits >= ${params.reddit_limit.inf_limit} AND num_reddits <= ${params.reddit_limit.sup_limit}
-    
-    MATCH (r)-[edge]-(dest)
-    RETURN r, edge, dest
-  `);
-    
-
     return db.query(`
       MATCH(r:Resource)
       OPTIONAL MATCH(r)-[:HasTweet]->(t:${TweetModel.label})
@@ -70,9 +57,8 @@ export class SectorModel {
       WITH r, COUNT(rc) as num_reddits
       WHERE num_reddits >= ${params.reddit_limit.inf_limit} AND num_reddits <= ${params.reddit_limit.sup_limit}
       
-      MATCH (origin)-[edge]-(dest)
-      RETURN origin, edge, dest
-      LIMIT 1000
+      MATCH (r)-[edge]-(dest)
+      RETURN r as origin, edge, dest
     `) as Promise<Record[]>;
   }
 }
