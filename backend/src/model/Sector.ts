@@ -35,6 +35,26 @@ export class SectorModel {
   public static async getAll(params: FilterParams):Promise<Record[]>  {
     const db = Database.getInstance();
 
+    console.log(`
+    MATCH(r:Resource)
+    OPTIONAL MATCH(r)-[:HasTweet]->(t:${TweetModel.label})
+    WITH r, COUNT(t) as num_tweets
+    WHERE num_tweets >= ${params.twitter_limit.inf_limit} AND num_tweets <= ${params.twitter_limit.sup_limit}
+    
+    OPTIONAL MATCH(r)-[:HasArticle]->(a:${ArticleModel.label})
+    WITH r, COUNT(a) as num_articles
+    WHERE num_articles >= ${params.news_limit.inf_limit} AND num_articles <= ${params.news_limit.sup_limit}
+
+    OPTIONAL MATCH(r)-[:HasRedditContent]->(rc)
+    WHERE rc:${RedditCommentModel.label} OR rc:${RedditSubmissionModel.label}
+    WITH r, COUNT(rc) as num_reddits
+    WHERE num_reddits >= ${params.reddit_limit.inf_limit} AND num_reddits <= ${params.reddit_limit.sup_limit}
+    
+    MATCH (r)-[edge]-(dest)
+    RETURN r, edge, dest
+  `);
+    
+
     return db.query(`
       MATCH(r:Resource)
       OPTIONAL MATCH(r)-[:HasTweet]->(t:${TweetModel.label})
