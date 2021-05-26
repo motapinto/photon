@@ -20,6 +20,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "dev": "nodemon --config nodemon.json",
     "build": "react-scripts build",
     "eject": "react-scripts eject"
   },

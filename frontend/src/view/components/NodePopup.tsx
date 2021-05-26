@@ -18,7 +18,7 @@ import RedditSubmission from "../../model/redditSubmission";
 
 const useStyles = makeStyles({
     root: {
-        minWidth: 275,
+        minWidth: 150,
         maxWidth: "30%",
         position: "fixed",
         zIndex: 1,
