@@ -1,54 +1,90 @@
 import axios from "axios";
 import Link from "../../model/link";
 import Node from "../../model/node";
-// import Article from "../../model/article";
 import Sector from "../../model/sector";
-// import Country from "../../model/country";
-// import labels from "../../model/labels.json";
+import Tweet from "../../model/tweet";
+import Article from "../../model/article";
+import mainLabels from "../../model/labels.json";
+import RedditComment from "../../model/redditComment";
+import RedditSubmission from "../../model/redditSubmission";
 
 type GraphData = {
     nodes: Node[],
     links: Link[],
 }
 
-// function parseArticle(id: string, labels: string[], node: any): Article {
-//     const properties = node["properties"];
-//     const publishedAt = properties["datePublished"];
-//     const score = properties["score"]["low"] + properties["score"]["high"];
-//     const title = properties["title"];
-//     const url = properties["url"];
+function parseRedditSubmission(id: string, properties: any): RedditSubmission {
+    const label = "RedditSubmission";
+    const author = properties["author"];
+    const numComments = properties["num_comments"]["high"] + properties["num_comments"]["low"];
+    const title = properties["title"];
+    const permalink = properties["permalink"];
+    const score = properties["score"]["high"] + properties["score"]["low"];
+    const subreddit = properties["subreddit"];
+    const subredditSubscribers = properties["subreddit_subscribers"]["high"] + properties["subreddit_subscribers"]["low"];
 
-//     return new Article(id, labels, publishedAt, score, title, url);
-// }
+    return new RedditSubmission(id, label, author, numComments, permalink, score, subreddit, subredditSubscribers, title);
+}
 
-// function parseCountry(id: string, labels: string[], node: any): Country {
-//     const properties = node["properties"];
-//     const name = properties["name"];
+function parseRedditComment(id: string, properties: any): RedditComment {
+    const label = "RedditComment";
+    const author = properties["author"];
+    const body = properties["body"];
+    const permalink = properties["permalink"];
+    const score = properties["score"]["high"] + properties["score"]["low"];
+    const subreddit = properties["subreddit"];
 
-//     return new Country(id, labels, name);
-// }
+    return new RedditComment(id, label, author, body, permalink, score, subreddit);
+}
 
-function parseSector(id: string, labels: string[], node: any): Sector {
-    const properties = node["properties"];
-    const name = properties["n4sch__label"];
+function parseArticle(id: string, properties: any): Article {
+    const label = "Article";
+    const datePublished = properties["datePublished"];
+    const snippet = properties["snippet"];
+    const title = properties["title"];
+    const url = properties["url"];
+
+    return new Article(id, label, datePublished, snippet, title, url);
+}
+
+function parseTweet(id: string, properties: any): Tweet {
+    const label = "Tweet";
+    const authorId = properties["author_id"];
+    const createdAt = properties["created_at"];
+    const likeCount = properties["like_count"]["low"];
+    const quoteCount = properties["quote_count"]["low"];
+    const replyCount = properties["reply_count"]["low"];
+    const retweetCount = properties["retweet_count"]["low"];
+    const text = properties["text"];
+
+    return new Tweet(id, label, authorId, createdAt, likeCount, quoteCount, replyCount, retweetCount, text);
+}
+
+function parseClass(id: string, properties: any): Sector {
+    const label = "Class";
+    const name = properties["n4sch__label"] ? properties["n4sch__label"] : properties["n4sch__name"];
     const uri = properties["uri"];
-    const growth = 0;
-    const numArticles = 0;
 
-    return new Sector(id, labels, growth, name, uri, numArticles);
+    return new Sector(id, label, name, uri);
 }
 
 function parseNode(node: any): Node | null {
     const id = `${node["identity"]["high"]}_${node["identity"]["low"]}`;    
     const labels = node["labels"];
-    const mainLabel = labels.length >= 2 ? labels[1] : "N/A";
+    const mainLabel = labels.length >= 2 ? (labels[1]).substring(7) : labels[0];
+    const properties = node["properties"];
 
     switch(mainLabel) {
-        case "Class":
-            return parseSector(id, labels, node);
-        case "Relationship":
-            // TODO: parse relationships?
-            break;
+        case mainLabels.class:
+            return parseClass(id, properties);
+        case mainLabels.twitter:
+            return parseTweet(id, properties);
+        case mainLabels.redditComment:
+            return parseRedditComment(id, properties);
+        case mainLabels.redditSubmission:
+            return parseRedditSubmission(id, properties);
+        case mainLabels.news:
+            return parseArticle(id, properties);
         default:
             break;
     }
@@ -69,16 +105,16 @@ function handleGraphData(graphData: any): GraphData {
     let links: Link[] = [];
     let processedIds: Set<string> = new Set();
 
-    graphData.forEach((element: any) => {   
+    graphData['records'].forEach((element: any) => {
         const fields = element["_fields"];
 
         //Origin
         const origin = parseNode(fields[0]);
         if (!origin) return;
-
+        
         //Dest
         const dest = parseNode(fields[2]);
-        if (!dest) return; 
+        if (!dest) return;
 
         // Insert nodes (avoiding duplicates)
         if (!processedIds.has(origin.id)) {
@@ -96,15 +132,16 @@ function handleGraphData(graphData: any): GraphData {
     });
 
     let data: GraphData;
-    data =  {nodes, links};
-
+    data = {nodes, links};
     return data;
 }
 
-export function getGraphData(): Promise<GraphData> {
-    
+export function getGraphData(
+        twitterRange: number[], redditRange: number[], newsRange: number[]
+    ): Promise<GraphData> {
+
     return axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/graph`,
+        `${process.env.REACT_APP_BACKEND_URL}/graph?twitter_inf_limit=${twitterRange[0]}&twitter_sup_limit=${twitterRange[1]}&reddit_inf_limit=${redditRange[0]}&reddit_sup_limit=${redditRange[1]}&news_inf_limit=${newsRange[0]}&news_sup_limit=${newsRange[1]}`,
     ).then((response) =>
         handleGraphData(response.data),
     ).catch((err) => {

@@ -59,7 +59,7 @@ export class RedditSubmissionModel {
 		`) as Array<Record>;
 	
 		if(reddit_limits?.length != 1 || !reddit_limits[0].has('max_rsubs') || !reddit_limits[0].has('min_rsubs')) {
-		  throw new Error('Tweets limit cannot be calculated!');
+		  throw new Error('Reddit submissions limit cannot be calculated!');
 		}
 	
 		RedditSubmissionModel.total_max_rsubs = reddit_limits[0].get('max_rsubs').low;

@@ -1,15 +1,17 @@
 import Node from "./node";
 
 export default class Article extends Node {
-    publishedAt: string;
-    score: number;
+    name: string;
+    datePublished: string;
+    snippet: string;
     title: string;
     url: string;
 
-    constructor(id: string, labels: string[], publishedAt: string, score: number, title: string, url: string) {
-        super(id, labels);
-        this.publishedAt = publishedAt;
-        this.score = score;
+    constructor(id: string, label: string, datePublished: string, snippet: string, title: string, url: string) {
+        super(id, label, undefined, false);
+        this.name = label;
+        this.datePublished = datePublished;
+        this.snippet = snippet;
         this.title = title;
         this.url = url;
     }

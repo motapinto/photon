@@ -58,7 +58,7 @@ export class RedditCommentModel {
 		`) as Array<Record>;
 	
 		if(reddit_limits?.length != 1 || !reddit_limits[0].has('max_rcoms') || !reddit_limits[0].has('min_rcoms')) {
-		  throw new Error('Tweets limit cannot be calculated!');
+		  throw new Error('Reddit comment limit cannot be calculated!');
 		}
 	
 		RedditCommentModel.total_max_rcoms = reddit_limits[0].get('max_rcoms').low;

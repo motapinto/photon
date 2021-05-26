@@ -1,7 +1,8 @@
 {
-    "origin": "Origin",
-    "article": "Article",
-    "subArea": "subArea",
-    "majorArea": "majorArea",
-    "country": "Country"
+    "class": "Class",
+    "relationship": "Relationship",
+    "twitter": "Tweet",
+    "redditComment": "RedditComment",
+    "redditSubmission": "RedditSubmission",
+    "news": "Article"
 }

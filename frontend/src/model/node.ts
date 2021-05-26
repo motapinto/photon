@@ -1,11 +1,13 @@
 export default class Node {
     id: string;
-    labels: string[];
-    val?: number;
+    label: string;
+    val: number;
+    visible: boolean;
 
-    constructor(id: string, labels: string[], val: number = 4) {
+    constructor(id: string, label: string, val: number = 4, visible: boolean = true) {
         this.id = id;
-        this.labels = labels;
+        this.label = label;
         this.val = val * (val/2);
+        this.visible = visible;
     }
 }

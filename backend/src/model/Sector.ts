@@ -19,15 +19,15 @@ export interface Sector extends Node {
 export type FilterParams = {
   twitter_limit: {
     inf_limit: number, 
-    sup_limit: number
+    sup_limit?: number
   },
   reddit_limit: {
     inf_limit: number, 
-    sup_limit: number
+    sup_limit?: number
   },
   news_limit: {
     inf_limit: number, 
-    sup_limit: number
+    sup_limit?: number
   }
 };
 
@@ -35,6 +35,13 @@ export class SectorModel {
   public static async getAll(params: FilterParams):Promise<Record[]>  {
     const db = Database.getInstance();
 
+    if(!params.news_limit.sup_limit || !params.reddit_limit.sup_limit || !params.twitter_limit.sup_limit) {
+      return db.query(`
+        MATCH (origin)-[edge]-(dest)
+        RETURN origin, edge, dest
+      `) as Promise<Record[]>;
+    }
+    
     return db.query(`
       MATCH(r:Resource)
       OPTIONAL MATCH(r)-[:HasTweet]->(t:${TweetModel.label})
@@ -50,7 +57,8 @@ export class SectorModel {
       WITH r, COUNT(rc) as num_reddits
       WHERE num_reddits >= ${params.reddit_limit.inf_limit} AND num_reddits <= ${params.reddit_limit.sup_limit}
       
-      RETURN r
+      MATCH (r)-[edge]-(dest)
+      RETURN r as origin, edge, dest
     `) as Promise<Record[]>;
   }
 }

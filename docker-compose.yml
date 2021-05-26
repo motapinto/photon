@@ -44,7 +44,7 @@ services:
       - photon-backend
     networks:
       - photon-network
-    command: npm run start
+    command: npm run dev
 
 networks:
   photon-network:

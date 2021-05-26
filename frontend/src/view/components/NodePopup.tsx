@@ -1,21 +1,24 @@
 import React from "react";
 import {
-    Card,
+    //Card,
     CardContent,
     Typography,
     makeStyles,
     Button,
-    Grid,
-} from '@material-ui/core/';
+} from '@material-ui/core';
+import { Card, ListGroup } from 'react-bootstrap';
 import Node from "../../model/node";
-// import Article from "../../model/article";
 import Sector from "../../model/sector";
-// import Country from "../../model/country";
-// import labels from "../../model/labels.json";
+import Tweet from "../../model/tweet";
+import Article from "../../model/article";
+import mainLabels from "../../model/labels.json";
+import RedditComment from "../../model/redditComment";
+import RedditSubmission from "../../model/redditSubmission";
 
 const useStyles = makeStyles({
     root: {
-        minWidth: 275,
+        minWidth: 150,
+        maxWidth: "30%",
         position: "fixed",
         zIndex: 1,
         top: "20%",
@@ -28,7 +31,7 @@ const useStyles = makeStyles({
         marginBottom: 12,
     },
     closeButton: {
-        float: "right",
+        width: "100%",
         backgroundColor: "#b57c80",
         "&:hover": {
             backgroundColor: "#a46c80",
@@ -50,6 +53,12 @@ const useStyles = makeStyles({
     },
     contentDiv: {
         color: "rgba(8,4,20,1)",
+    },
+    dislike: {
+        marginLeft: "2rem",
+    },
+    cardAttribute: {
+        fontWeight: "bold",
     }
 });
 
@@ -61,93 +70,126 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
     const classes = useStyles();
 
     let cardContent = (<CardContent />);
-    let labels;
     let content;
+    let label;
     if (node !== undefined) {
-        const sector = node as Sector;
-        content = (
-            <div className={classes.contentDiv}>
-                <Typography className={classes.pos}>
-                    Name: {sector.name}
-                </Typography>
-                <Typography className={classes.pos}>
-                    URI: {sector.uri}
-                </Typography>
-                <Typography className={classes.pos}>
-                    Num Articles: {sector.numArticles}
-                </Typography>
-            </div>
-        );
-
-        // switch(node.label) {
-        //     case labels.article: {
-        //         const article = node as Article;
-        //         label = "Article";
-        //         content = (
-        //             <div className={classes.contentDiv}>
-        //                 <Typography className={classes.pos}>
-        //                     Title: {article.title}
-        //                 </Typography>
-        //                 <Typography className={classes.pos}>
-        //                     Published at: {article.publishedAt}
-        //                 </Typography>
-        //                 <Typography className={classes.pos}>
-        //                     Score: {article.score}
-        //                 </Typography>
-        //                 <Typography className={classes.pos}>
-        //                     Visit the article <a href={article.url}>here</a>
-        //                 </Typography>
-        //             </div>
-        //         );
-        //         break;
-        //     }
-        //     case labels.origin:
-        //     case labels.majorArea:
-        //     case labels.subArea: {
-        //         const sector = node as Sector;
-        //         if (node.label === labels.origin)
-        //             label = "Origin";
-        //         else if (node.label === labels.majorArea)
-        //             label = "Major Sector";
-        //         else label = "Sub Sector";
-        //         content = (
-        //             <div className={classes.contentDiv}>
-        //                 <Typography className={classes.pos}>
-        //                     Name: {sector.name}
-        //                 </Typography>
-        //                 <Typography className={classes.pos}>
-        //                     Growth: {sector.val}
-        //                 </Typography>
-        //                 <Typography className={classes.pos}>
-        //                     Number of articles: {sector.numArticles}
-        //                 </Typography>
-        //             </div>
-        //         );
-        //         break;
-        //     }
-        //     case labels.country: {
-        //         const country = node as Country;
-        //         label = "Country";
-        //         content = (
-        //             <div className={classes.contentDiv}>
-        //                 <Typography className={classes.pos}>
-        //                     Name: {country.name}
-        //                 </Typography>
-        //             </div>
-        //         );
-        //         break;
-        //    }
+        switch(node.label) {
+            case mainLabels.class: {
+                const sector = node as Sector;
+                label = "Energy Sector";
+                content = (
+                    <div className={classes.contentDiv}>
+                        <Typography className={classes.pos}>
+                            <span className={classes.cardAttribute}>Name:</span> {sector.name}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Click here for more info: <a href={sector.uri}>link</a>
+                        </Typography>
+                    </div>
+                );
+                break
+            }
+            case mainLabels.twitter: {
+                const tweet = node as Tweet;
+                label = "Tweet";
+                content = (
+                    <div className={classes.contentDiv}>
+                        <Card.Subtitle className="mb-2 text-muted">{new Date(tweet.createdAt).toString()}</Card.Subtitle>
+                        <Card.Text>
+                            {tweet.text}
+                        </Card.Text>
+                        <ListGroup variant="flush">
+                            <ListGroup.Item><span className={classes.cardAttribute}>Like count:</span> {tweet.likeCount}</ListGroup.Item>
+                            <ListGroup.Item><span className={classes.cardAttribute}>Retweet count:</span> {tweet.retweetCount}</ListGroup.Item>
+                            <ListGroup.Item><span className={classes.cardAttribute}>Quote count:</span> {tweet.quoteCount}</ListGroup.Item>
+                            <ListGroup.Item><span className={classes.cardAttribute}>Reply count:</span> {tweet.replyCount}</ListGroup.Item>
+                        </ListGroup>
+                    </div>
+                );
+                break
+            }
+            case mainLabels.news: {
+                const article = node as Article;
+                label = "News Article";
+                content = (
+                    <div className={classes.contentDiv}>
+                        <Typography className={classes.pos}>
+                            <span className={classes.cardAttribute}>Title:</span> "{article.title}"
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            <span className={classes.cardAttribute}>Content:</span> "{article.snippet}"
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            <span className={classes.cardAttribute}>Creation date:</span> {article.datePublished}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Click here for more info: <a href={article.url}>link</a>
+                        </Typography>
+                    </div>
+                );
+                break
+            }
+            case mainLabels.redditComment: {
+                const redditComment = node as RedditComment;
+                label = "Reddit Comment";
+                content = (
+                    <div className={classes.contentDiv}>
+                        <Typography className={classes.pos}>
+                            <span className={classes.cardAttribute}>Content:</span> "{redditComment.body}"
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            <span className={classes.cardAttribute}>Author:</span> {redditComment.author}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            <span className={classes.cardAttribute}>Subreddit:</span> {redditComment.subreddit}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            <span className={classes.cardAttribute}>Score:</span> {redditComment.score}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Click here for more info: <a href={`reddit.com${redditComment.permalink}`}>link</a>
+                        </Typography>
+                    </div>
+                );
+                break
+            }
+            case mainLabels.redditSubmission: {
+                const redditSubmission = node as RedditSubmission;
+                label = "Reddit Submission";
+                content = (
+                    <div className={classes.contentDiv}>
+                        <Typography className={classes.pos}>
+                            <span className={classes.cardAttribute}>Title:</span> "{redditSubmission.title}"
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            <span className={classes.cardAttribute}>Author:</span> {redditSubmission.author}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            <span className={classes.cardAttribute}>Subreddit:</span> {redditSubmission.subreddit}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            <span className={classes.cardAttribute}>Subreddit Subscribers:</span> {redditSubmission.subredditSubscribers}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            <span className={classes.cardAttribute}>Number of comments:</span> {redditSubmission.numComments}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            <span className={classes.cardAttribute}>Score:</span> {redditSubmission.score}
+                        </Typography>
+                        <Typography className={classes.pos}>
+                            Click here for more info: <a href={`reddit.com${redditSubmission.permalink}`}>link</a>
+                        </Typography>
+                    </div>
+                );
+                break
+            }
+            default:
+                label = "Invalid";
+                break;
+        }
 
         cardContent = (
             <CardContent>
-                <Grid container direction="row" className={classes.title}>
-                    <Typography gutterBottom className={classes.id}>
-                        {node.id}
-                    </Typography>
-                    <Typography gutterBottom className={classes.label}>
-                        {labels}
-                    </Typography>
-                </Grid>
                 {content}
             </CardContent>
         );
@@ -159,11 +201,14 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
     }
 
     return (
-        <Card className={classes.root} variant="outlined" id="popup">
+        <Card className={classes.root} id="popup">
+            <Card.Body>
+                <Card.Title>{label}</Card.Title>
+                {cardContent}
+            </Card.Body>
             <Button className={classes.closeButton} onClick={closePopup}>
-                X
+                Close
             </Button>
-            {cardContent}
         </Card>
     );
 }

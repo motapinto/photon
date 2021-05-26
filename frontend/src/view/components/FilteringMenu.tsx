@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "../css/MainScreen.css";
 import {
-    Typography,
-    Grid,
     makeStyles,
 } from "@material-ui/core";
 import Form from 'react-bootstrap/Form';
+import { DropdownButton, ButtonGroup } from 'react-bootstrap';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 const useStyles = makeStyles(() => ({
-    rangeLabel: {
+    label: {
         marginRight: "1rem",
+        marginTop: "1rem",
     },
     displayCol: {
         display: "flex",
@@ -17,84 +19,93 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function FilteringMenu(): JSX.Element {
-    const classes = useStyles();
-    const newsSlider = document.getElementById("relatedNews");
-    const postsSlider = document.getElementById("relatedPosts");
-    const growthSlider = document.getElementById("valueGrowth");
-    
-    //@ts-ignore
-    const [newsValue, setNews] = useState(0);
-    //@ts-ignore
-    const [postsValue, setPosts] = useState(0);
-    //@ts-ignore
-    const [growthValue, setGrowth] = useState(0);
+interface FilteringMenuProps {
+    tweetsRangeFunc?: Function;
+    redditsRangeFunc?: Function;
+    newsRangeFunc?: Function;
+}
 
-    useEffect(() => {
-        if (newsSlider) newsSlider.oninput = function() {
-            //@ts-ignore
-            setNews(newsSlider?.value);
-        }
-        if (postsSlider) postsSlider.oninput = function() {
-            //@ts-ignore
-            setPosts(postsSlider?.value);
-        }
-        if (growthSlider) growthSlider.oninput = function() {
-            //@ts-ignore
-            setGrowth(growthSlider?.value);
-        }
-    }, [newsSlider, postsSlider, growthSlider]);
+export default function FilteringMenu({tweetsRangeFunc, redditsRangeFunc, newsRangeFunc}: FilteringMenuProps): JSX.Element {
+    const classes = useStyles();
+    const { createSliderWithTooltip } = Slider;
+    const Range = createSliderWithTooltip(Slider.Range);
+    const min = 0, max = 100;
+    const [tweetsRange, setTweetsRange] = useState([min, max]);
+    const [newsRange, setNewsRange] = useState([min, max]);
+    const [redditsRange, setRedditsRange] = useState([min, max]);
 
     return (
-        <div id="FilteringMenu">
-            <Grid container direction="column">
-                <Typography variant="h6">
-                    Filtering Menu
-                </Typography>
-            </Grid>
-            <Form>
-                <Form.Label>Node labels</Form.Label>
-                <div key={"inline-checkbox1"} className="mb-3">
-                    <Form.Check inline label="Origin" type={"checkbox"} defaultChecked  />
-                    <Form.Check inline label="Major Sector" type={"checkbox"} defaultChecked  />
-                    <Form.Check inline label="Sub Sector" type={"checkbox"} defaultChecked  />
-                </div>
-                <div key={"inline-checkbox2"} className="mb-3">
-                    <Form.Check inline label="Article" type={"checkbox"} defaultChecked  />
-                    <Form.Check inline label="Country" type={"checkbox"} defaultChecked  />
-                </div>
-            </Form>
-            <Form>
-                <Form.Group controlId="relatedNews" className={classes.displayCol}>
-                    <Form.Label className={classes.rangeLabel}>
-                        Min Number of Related News: <span id="outputNews">{newsValue}</span>
-                    </Form.Label>
-                    <Form.Control type="range" min="0" max="10000" step="500" defaultValue="0"/>
-                </Form.Group>
-            </Form>
-            <Form>
-                <Form.Group controlId="relatedPosts" className={classes.displayCol}>
-                    <Form.Label className={classes.rangeLabel}>
-                        Min Number of Related Posts: <span id="outputPosts">{postsValue}</span>
-                    </Form.Label>
-                    <Form.Control type="range" min="0" max="10000" step="500" defaultValue="0"/>
-                </Form.Group>
-            </Form>
-            <Form>
-                <Form.Group controlId="valueGrowth" className={classes.displayCol}>
-                    <Form.Label className={classes.rangeLabel}>
-                        Min Value of Growth: <span id="outputGrowth">{growthValue}</span>
-                    </Form.Label>
-                    <Form.Control type="range" min="0" max="10000" step="500" defaultValue="0"/>
-                </Form.Group>
-            </Form>
-            <Form.Group controlId="formGridState">
-                <Form.Label>From Country</Form.Label>
-                <Form.Control as="select" defaultValue="Choose...">
-                    <option>Choose...</option>
-                    <option>...</option>
-                </Form.Control>
-            </Form.Group>
-        </div>
+        <DropdownButton
+            as={ButtonGroup}
+            key={"down"}
+            id={"dropdown-button-drop-down"}
+            drop={"down"}
+            variant={"secondary"}
+            title={"Filtering Menu"}
+        >
+            <div>
+                <Form>
+                    <Form.Label className={classes.label}>Node labels</Form.Label>
+                    <div key={"inline-checkbox1"} className="mb-3">
+                        <Form.Check inline label="News Article" type={"checkbox"} defaultChecked  />
+                        <Form.Check inline label="Twitter Post" type={"checkbox"} defaultChecked  />
+                    </div>
+                    <div key={"inline-checkbox2"} className="mb-3">
+                        <Form.Check inline label="Reddit Post" type={"checkbox"} defaultChecked  />
+                    </div>
+                </Form>
+                <Form>
+                    <Form.Group controlId="relatedNews" className={classes.displayCol}>
+                        <Form.Label className={classes.label}>
+                            Range Number of Related News:
+                        </Form.Label>
+                        <Range min={min} max={max} defaultValue={newsRange} step={5}
+                            tipFormatter={value => `${value}%`}
+                            pushable
+                            trackStyle={[{ backgroundColor: '#0d6efd' }]}
+                            handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]}
+                            onAfterChange={value => {
+                                setNewsRange(value);
+                                if (newsRangeFunc) newsRangeFunc(value);
+                            }}
+                        />
+                    </Form.Group>
+                </Form>
+                <Form>
+                    <Form.Group controlId="relatedRedditPosts" className={classes.displayCol}>
+                        <Form.Label className={classes.label}>
+                            Range Number of Reddit Posts:
+                        </Form.Label>
+                        <Range min={min} max={max} defaultValue={redditsRange} step={5}
+                            tipFormatter={value => `${value}%`}
+                            pushable
+                            trackStyle={[{ backgroundColor: '#0d6efd' }]}
+                            handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]}
+                            onAfterChange={value => {
+                                setRedditsRange(value);
+                                if (redditsRangeFunc) redditsRangeFunc(value);
+                            }}
+                        />
+                    </Form.Group>
+                </Form>
+                <Form>
+                    <Form.Group controlId="relatedTwitterPosts" className={classes.displayCol}>
+                        <Form.Label className={classes.label}>
+                            Range Number of Twitter Posts:
+                        </Form.Label>
+                        <Range min={min} max={max} defaultValue={tweetsRange} step={5}
+                            tipFormatter={value => `${value}%`}
+                            pushable
+                            trackStyle={[{ backgroundColor: '#0d6efd' }]}
+                            handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]}
+                            onAfterChange={value => {
+                                setTweetsRange(value);
+                                if (tweetsRangeFunc) tweetsRangeFunc(value);
+                            }}
+                        />
+                    </Form.Group>
+                </Form>
+            </div>
+        </DropdownButton>
     );
 }

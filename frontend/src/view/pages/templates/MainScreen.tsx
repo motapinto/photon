@@ -17,11 +17,15 @@ const useStyles = makeStyles(() => ({
 type MainScreenProps = {
     children: React.ReactChild | React.ReactFragment | React.ReactPortal | boolean;
     hasTopBar?: boolean;
+    hasFilteringMenu?: boolean;
+    tweetsRangeFunc?: Function;
+    redditsRangeFunc?: Function;
+    newsRangeFunc?: Function;
 }
 
-export default function MainScreen({ children, hasTopBar = true } : MainScreenProps): JSX.Element {
+export default function MainScreen({ children, hasTopBar = true, hasFilteringMenu = false, tweetsRangeFunc, redditsRangeFunc, newsRangeFunc } : MainScreenProps): JSX.Element {
     const classes = useStyles();
-    const topBar = hasTopBar ? <TopBar /> : "";
+    const topBar = hasTopBar ? <TopBar hasFilteringMenu={hasFilteringMenu} tweetsRangeFunc={tweetsRangeFunc} redditsRangeFunc={redditsRangeFunc} newsRangeFunc={newsRangeFunc}/> : "";
     return (
         <Grid id={"GridWrapper"}>
             {topBar}

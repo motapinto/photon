@@ -88,11 +88,12 @@ class RedditSubmissionExtractor extends BaseRedditExtractor {
                     await this.processSubmission(label, sub)
                 }));
             } catch (err) {
-              if(err.request.res.statusCode !== 429) {
+              if(err.request.res.statusCode !== 429) {                  
                 errorLogger.error(err.message);
                 break;
               }
-              await Utils.sleep(500);
+    
+              await Utils.sleep(1000);
             }   
           }      
         })); 
