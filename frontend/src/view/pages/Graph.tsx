@@ -37,7 +37,11 @@ export default function Graph(): JSX.Element {
     const [tweetsRange, setTweetsRange] = useState([min, max]);
     const [newsRange, setNewsRange] = useState([min, max]);
     const [redditsRange, setRedditsRange] = useState([min, max]);
-    const resource = useGetResource(getGraphData.bind(null, tweetsRange, redditsRange, newsRange)).data as GraphData;
+    const resource = useGetResource(
+        getGraphData.bind(null, tweetsRange, newsRange, redditsRange),
+        [tweetsRange, newsRange, redditsRange]
+    ).data as GraphData;
+
     const myGraph = ForceGraph3D();
     const [focusedNode, setFocusedNode] = useState(undefined);
 
@@ -82,7 +86,7 @@ export default function Graph(): JSX.Element {
         function showGraph() {
             myGraph.graphData(getVisibleResource(resource));
             // @ts-ignore
-            //myGraph.d3Force('charge')?.strength(-3);
+            myGraph.d3Force('charge')?.strength(-2);
         }
 
         let element = document.getElementById("graph");
@@ -100,6 +104,7 @@ export default function Graph(): JSX.Element {
             myGraph.d3Force('link')?.distance(200);
         }
 
+        console.log("Frontend");
         // eslint-disable-next-line
     }, [resource]);
 
