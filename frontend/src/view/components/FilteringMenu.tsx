@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "../css/MainScreen.css";
 import {
     makeStyles,
@@ -46,16 +46,6 @@ export default function FilteringMenu({tweetsMaxMin, tweetsRangeFunc, redditsMax
             title={"Filtering Menu"}
         >
             <div>
-                <Form>
-                    <Form.Label className={classes.label}>Node labels</Form.Label>
-                    <div key={"inline-checkbox1"} className="mb-3">
-                        <Form.Check inline label="News Article" type={"checkbox"} defaultChecked  />
-                        <Form.Check inline label="Twitter Post" type={"checkbox"} defaultChecked  />
-                    </div>
-                    <div key={"inline-checkbox2"} className="mb-3">
-                        <Form.Check inline label="Reddit Post" type={"checkbox"} defaultChecked  />
-                    </div>
-                </Form>
                 <Form>
                     <Form.Group controlId="relatedNews" className={classes.displayCol}>
                         <Form.Label className={classes.label}>

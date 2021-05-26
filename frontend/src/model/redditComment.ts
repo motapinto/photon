@@ -9,7 +9,7 @@ export default class RedditComment extends Node {
     subreddit: string;
 
     constructor(id: string, label: string, author: string, body: string, permalink: string, score: number, subreddit: string) {
-        super(id, label, undefined, true);
+        super(id, label, undefined, false);
         this.name = label;
         this.author = author;
         this.body = body;

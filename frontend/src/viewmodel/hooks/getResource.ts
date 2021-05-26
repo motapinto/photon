@@ -8,19 +8,20 @@ async function getResourceAndUpdate<T>(
     try {
         const resource = await getResource();
         setState(new Resource(resource));
-    } catch (reason) {
+    } catch (err) {
         // eslint-disable-next-line no-console
-        console.error(`An error has occurred: ${reason}`);
+        console.error(`An error has occurred: ${err.message}`);
         setState(new Resource<T>(undefined, true));
     }
 }
 
-export function useGetResource<T>(getResource: () => Promise<T>): Resource<T> {
+export function useGetResource<T>(getResource: () => Promise<T>, dependencies: any[]): Resource<T> {
     const promise = new Resource<T>();
     const [state, setState] = useState(promise);
+    
     useEffect(() => {
         getResourceAndUpdate(getResource, setState);
         // eslint-disable-next-line
-    }, []);
+    }, dependencies);
     return state;
 }

@@ -11,7 +11,7 @@ export default class RedditSubmission extends Node {
     title: string;
 
     constructor(id: string, label: string, author: string, numComments: number, permalink: string, score: number, subreddit: string, subredditSubscribers: number, title: string) {
-        super(id, label, undefined, true);
+        super(id, label, undefined, false);
         this.name = label;
         this.author = author;
         this.title = title;

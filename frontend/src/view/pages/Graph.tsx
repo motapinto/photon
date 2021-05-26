@@ -40,16 +40,16 @@ export default function Graph(): JSX.Element {
     const [tweetsRange, setTweetsRange] = useState([min, max]);
     const [newsRange, setNewsRange] = useState([min, max]);
     const [redditsRange, setRedditsRange] = useState([min, max]);
-    const dataResource = useGetResource(getGraphData.bind(null, tweetsRange, redditsRange, newsRange)).data;
+    const dataResource = useGetResource(getGraphData.bind(null, tweetsRange, redditsRange, newsRange),
+        [tweetsRange, redditsRange, newsRange]
+    ).data;
     let resource = (dataResource ? dataResource.records : {nodes: [], links: []}) as GraphData;
     if (dataResource && load) {
         load = false;
         maxmin = dataResource.maxmin;
-        console.log(maxmin);
         setTweetsRange([maxmin[0], maxmin[1]]);
         setNewsRange([maxmin[2], maxmin[3]]);
         setRedditsRange([maxmin[4], maxmin[5]]);
-        console.log(tweetsRange);
     }
     const myGraph = ForceGraph3D();
     const [focusedNode, setFocusedNode] = useState(undefined);
@@ -95,7 +95,7 @@ export default function Graph(): JSX.Element {
         function showGraph() {
             myGraph.graphData(getVisibleResource(resource));
             // @ts-ignore
-            myGraph.d3Force('charge')?.strength(-5);
+            myGraph.d3Force('charge')?.strength(-2);
         }
 
         let element = document.getElementById("graph");
@@ -116,14 +116,15 @@ export default function Graph(): JSX.Element {
         // eslint-disable-next-line
     }, [resource]);
 
-    const popup = focusedNode === undefined ? (
-        <div />
-    ) :
-    (
-        <div>
-            <Popup node={focusedNode} />
-        </div>
-    );
+
+    const popup = focusedNode === undefined ?
+        null
+        : 
+        (
+            <div>
+                <Popup node={focusedNode} />
+            </div>
+        );
     
     return (
         <MainScreen hasFilteringMenu={true} tweetsMaxMin={[maxmin[0],maxmin[1]]} tweetsRangeFunc={setTweetsRange} redditsMaxMin={[maxmin[4],maxmin[5]]} redditsRangeFunc={setRedditsRange} newsMaxMin={[maxmin[2],maxmin[3]]} newsRangeFunc={setNewsRange}>

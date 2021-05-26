@@ -5,10 +5,8 @@ import {
     Typography,
     makeStyles,
     Button,
-    Grid,
 } from '@material-ui/core';
-import { Card } from 'react-bootstrap';
-import { Favorite } from '@material-ui/icons';
+import { Card, ListGroup } from 'react-bootstrap';
 import Node from "../../model/node";
 import Sector from "../../model/sector";
 import Tweet from "../../model/tweet";
@@ -59,6 +57,9 @@ const useStyles = makeStyles({
     dislike: {
         marginLeft: "2rem",
     },
+    cardAttribute: {
+        fontWeight: "bold",
+    }
 });
 
 interface PopupProps {
@@ -79,7 +80,7 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                 content = (
                     <div className={classes.contentDiv}>
                         <Typography className={classes.pos}>
-                            Name: {sector.name}
+                            <span className={classes.cardAttribute}>Name:</span> {sector.name}
                         </Typography>
                         <Typography className={classes.pos}>
                             Click here for more info: <a href={sector.uri}>link</a>
@@ -93,27 +94,16 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                 label = "Tweet";
                 content = (
                     <div className={classes.contentDiv}>
-                        <Typography className={classes.pos}>
-                            Content: "{tweet.text}"
-                        </Typography>
-                        <Typography className={classes.pos}>
-                            Author ID: {tweet.authorId}
-                        </Typography>
-                        <Typography className={classes.pos}>
-                            Creation date: {tweet.createdAt}
-                        </Typography>
-                        <Typography className={classes.pos}>
-                            <Favorite />{tweet.likeCount}
-                        </Typography>
-                        <Typography className={classes.pos}>
-                            Quote count: {tweet.quoteCount}
-                        </Typography>
-                        <Typography className={classes.pos}>
-                            Reply count: {tweet.replyCount}
-                        </Typography>
-                        <Typography className={classes.pos}>
-                            Retweet count: {tweet.retweetCount}
-                        </Typography>
+                        <Card.Subtitle className="mb-2 text-muted">{new Date(tweet.createdAt).toString()}</Card.Subtitle>
+                        <Card.Text>
+                            {tweet.text}
+                        </Card.Text>
+                        <ListGroup variant="flush">
+                            <ListGroup.Item><span className={classes.cardAttribute}>Like count:</span> {tweet.likeCount}</ListGroup.Item>
+                            <ListGroup.Item><span className={classes.cardAttribute}>Retweet count:</span> {tweet.retweetCount}</ListGroup.Item>
+                            <ListGroup.Item><span className={classes.cardAttribute}>Quote count:</span> {tweet.quoteCount}</ListGroup.Item>
+                            <ListGroup.Item><span className={classes.cardAttribute}>Reply count:</span> {tweet.replyCount}</ListGroup.Item>
+                        </ListGroup>
                     </div>
                 );
                 break
@@ -124,13 +114,13 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                 content = (
                     <div className={classes.contentDiv}>
                         <Typography className={classes.pos}>
-                            Title: "{article.title}"
+                            <span className={classes.cardAttribute}>Title:</span> "{article.title}"
                         </Typography>
                         <Typography className={classes.pos}>
-                            Content: "{article.snippet}"
+                            <span className={classes.cardAttribute}>Content:</span> "{article.snippet}"
                         </Typography>
                         <Typography className={classes.pos}>
-                            Creation date: {article.datePublished}
+                            <span className={classes.cardAttribute}>Creation date:</span> {article.datePublished}
                         </Typography>
                         <Typography className={classes.pos}>
                             Click here for more info: <a href={article.url}>link</a>
@@ -145,16 +135,16 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                 content = (
                     <div className={classes.contentDiv}>
                         <Typography className={classes.pos}>
-                            Content: "{redditComment.body}"
+                            <span className={classes.cardAttribute}>Content:</span> "{redditComment.body}"
                         </Typography>
                         <Typography className={classes.pos}>
-                            Author: {redditComment.author}
+                            <span className={classes.cardAttribute}>Author:</span> {redditComment.author}
                         </Typography>
                         <Typography className={classes.pos}>
-                            Subreddit: {redditComment.subreddit}
+                            <span className={classes.cardAttribute}>Subreddit:</span> {redditComment.subreddit}
                         </Typography>
                         <Typography className={classes.pos}>
-                            Score: {redditComment.score}
+                            <span className={classes.cardAttribute}>Score:</span> {redditComment.score}
                         </Typography>
                         <Typography className={classes.pos}>
                             Click here for more info: <a href={redditComment.permalink}>link</a>
@@ -169,22 +159,22 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                 content = (
                     <div className={classes.contentDiv}>
                         <Typography className={classes.pos}>
-                            Title: "{redditSubmission.title}"
+                            <span className={classes.cardAttribute}>Title:</span> "{redditSubmission.title}"
                         </Typography>
                         <Typography className={classes.pos}>
-                            Author: {redditSubmission.author}
+                            <span className={classes.cardAttribute}>Author:</span> {redditSubmission.author}
                         </Typography>
                         <Typography className={classes.pos}>
-                            Subreddit: {redditSubmission.subreddit}
+                            <span className={classes.cardAttribute}>Subreddit:</span> {redditSubmission.subreddit}
                         </Typography>
                         <Typography className={classes.pos}>
-                            Subreddit Subscribers: {redditSubmission.subredditSubscribers}
+                            <span className={classes.cardAttribute}>Subreddit Subscribers:</span> {redditSubmission.subredditSubscribers}
                         </Typography>
                         <Typography className={classes.pos}>
-                            Number of comments: {redditSubmission.numComments}
+                            <span className={classes.cardAttribute}>Number of comments:</span> {redditSubmission.numComments}
                         </Typography>
                         <Typography className={classes.pos}>
-                            Score: {redditSubmission.score}
+                            <span className={classes.cardAttribute}>Score:</span> {redditSubmission.score}
                         </Typography>
                         <Typography className={classes.pos}>
                             Click here for more info: <a href={redditSubmission.permalink}>link</a>
@@ -200,14 +190,6 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
 
         cardContent = (
             <CardContent>
-                <Grid container direction="row" className={classes.title}>
-                    <Typography gutterBottom className={classes.id}>
-                        {node.id}
-                    </Typography>
-                    <Typography gutterBottom className={classes.label}>
-                        {label}
-                    </Typography>
-                </Grid>
                 {content}
             </CardContent>
         );
@@ -221,7 +203,7 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
     return (
         <Card className={classes.root} id="popup">
             <Card.Body>
-                <Card.Title>Node Description</Card.Title>
+                <Card.Title>{label}</Card.Title>
                 {cardContent}
             </Card.Body>
             <Button className={classes.closeButton} onClick={closePopup}>
