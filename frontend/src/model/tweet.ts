@@ -11,7 +11,7 @@ export default class Tweet extends Node {
     text: string;
 
     constructor(id: string, label: string, authorId: string, createdAt: string, likeCount: number, quoteCount: number, replyCount: number, retweetCount: number, text: string) {
-        super(id, label, undefined, false);
+        super(id, label, undefined, true);
         this.name = label;
         this.authorId = authorId;
         this.createdAt = createdAt;

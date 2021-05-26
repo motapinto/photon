@@ -32,12 +32,25 @@ function getVisibleResource(resource: GraphData): GraphData {
     return visibleResource;
 }
 
+let load = true;
+
 export default function Graph(): JSX.Element {
     const min = 0, max = 100;
+    let maxmin: number[] = [min, max, min, max, min, max];
     const [tweetsRange, setTweetsRange] = useState([min, max]);
     const [newsRange, setNewsRange] = useState([min, max]);
     const [redditsRange, setRedditsRange] = useState([min, max]);
-    const resource = useGetResource(getGraphData.bind(null, tweetsRange, redditsRange, newsRange)).data as GraphData;
+    const dataResource = useGetResource(getGraphData.bind(null, tweetsRange, redditsRange, newsRange)).data;
+    let resource = (dataResource ? dataResource.records : {nodes: [], links: []}) as GraphData;
+    if (dataResource && load) {
+        load = false;
+        maxmin = dataResource.maxmin;
+        console.log(maxmin);
+        setTweetsRange([maxmin[0], maxmin[1]]);
+        setNewsRange([maxmin[2], maxmin[3]]);
+        setRedditsRange([maxmin[4], maxmin[5]]);
+        console.log(tweetsRange);
+    }
     const myGraph = ForceGraph3D();
     const [focusedNode, setFocusedNode] = useState(undefined);
 
@@ -82,7 +95,7 @@ export default function Graph(): JSX.Element {
         function showGraph() {
             myGraph.graphData(getVisibleResource(resource));
             // @ts-ignore
-            //myGraph.d3Force('charge')?.strength(-3);
+            myGraph.d3Force('charge')?.strength(-5);
         }
 
         let element = document.getElementById("graph");
@@ -113,7 +126,7 @@ export default function Graph(): JSX.Element {
     );
     
     return (
-        <MainScreen hasFilteringMenu={true} tweetsRangeFunc={setTweetsRange} redditsRangeFunc={setRedditsRange} newsRangeFunc={setNewsRange}>
+        <MainScreen hasFilteringMenu={true} tweetsMaxMin={[maxmin[0],maxmin[1]]} tweetsRangeFunc={setTweetsRange} redditsMaxMin={[maxmin[4],maxmin[5]]} redditsRangeFunc={setRedditsRange} newsMaxMin={[maxmin[2],maxmin[3]]} newsRangeFunc={setNewsRange}>
             <div id="graph" />
             {popup}
         </MainScreen>

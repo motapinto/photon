@@ -8,6 +8,11 @@ import mainLabels from "../../model/labels.json";
 import RedditComment from "../../model/redditComment";
 import RedditSubmission from "../../model/redditSubmission";
 
+type GraphResponse = {
+    records: GraphData,
+    maxmin: number[],
+}
+
 type GraphData = {
     nodes: Node[],
     links: Link[],
@@ -100,7 +105,7 @@ function parseLink(link: any): Link {
     return new Link(id, source, target, type);
 }
 
-function handleGraphData(graphData: any): GraphData {
+function handleGraphData(graphData: any): any {
     let nodes: Node[] = [];
     let links: Link[] = [];
     let processedIds: Set<string> = new Set();
@@ -131,14 +136,22 @@ function handleGraphData(graphData: any): GraphData {
         links.push(link);
     });
 
-    let data: GraphData;
-    data = {nodes, links};
+    let maxMin = [graphData['min_tweets'], graphData['max_tweets'], graphData['min_news'], graphData['max_news'], graphData['min_reddits'], graphData['max_reddits']];
+
+    const nodesLinks: GraphData = {
+        nodes, links
+    };
+    const data: GraphResponse = {
+        records: nodesLinks,
+        maxmin: maxMin,
+    }
+    
     return data;
 }
 
 export function getGraphData(
         twitterRange: number[], redditRange: number[], newsRange: number[]
-    ): Promise<GraphData> {
+    ): Promise<GraphResponse> {
 
     return axios.get(
         `${process.env.REACT_APP_BACKEND_URL}/graph?twitter_inf_limit=${twitterRange[0]}&twitter_sup_limit=${twitterRange[1]}&reddit_inf_limit=${redditRange[0]}&reddit_sup_limit=${redditRange[1]}&news_inf_limit=${newsRange[0]}&news_sup_limit=${newsRange[1]}`,

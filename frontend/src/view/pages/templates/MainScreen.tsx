@@ -18,14 +18,19 @@ type MainScreenProps = {
     children: React.ReactChild | React.ReactFragment | React.ReactPortal | boolean;
     hasTopBar?: boolean;
     hasFilteringMenu?: boolean;
+    tweetsMaxMin?: number[];
     tweetsRangeFunc?: Function;
+    redditsMaxMin?: number[];
     redditsRangeFunc?: Function;
+    newsMaxMin?: number[];
     newsRangeFunc?: Function;
 }
 
-export default function MainScreen({ children, hasTopBar = true, hasFilteringMenu = false, tweetsRangeFunc, redditsRangeFunc, newsRangeFunc } : MainScreenProps): JSX.Element {
+export default function MainScreen({ children, hasTopBar = true, hasFilteringMenu = false, tweetsMaxMin, tweetsRangeFunc, redditsMaxMin, redditsRangeFunc, newsMaxMin, newsRangeFunc } : MainScreenProps): JSX.Element {
     const classes = useStyles();
-    const topBar = hasTopBar ? <TopBar hasFilteringMenu={hasFilteringMenu} tweetsRangeFunc={tweetsRangeFunc} redditsRangeFunc={redditsRangeFunc} newsRangeFunc={newsRangeFunc}/> : "";
+    const topBar = hasTopBar ? (
+        <TopBar hasFilteringMenu={hasFilteringMenu} tweetsMaxMin={tweetsMaxMin} tweetsRangeFunc={tweetsRangeFunc} redditsMaxMin={redditsMaxMin} redditsRangeFunc={redditsRangeFunc} newsMaxMin={newsMaxMin} newsRangeFunc={newsRangeFunc}/>
+    ): "";
     return (
         <Grid id={"GridWrapper"}>
             {topBar}
