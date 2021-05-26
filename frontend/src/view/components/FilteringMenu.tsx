@@ -52,7 +52,7 @@ export default function FilteringMenu({tweetsMaxMin, tweetsRangeFunc, redditsMax
                             Range Number of Related News:
                         </Form.Label>
                         <Range min={newsMaxMin[0]} max={newsMaxMin[1]} defaultValue={newsRange} step={1}
-                            disabled={newsMaxMin[0] == 0 && newsMaxMin[1] == 0}
+                            disabled={newsMaxMin[0] === 0 && newsMaxMin[1] === 0}
                             tipFormatter={value => `${value}`}
                             pushable
                             trackStyle={[{ backgroundColor: '#0d6efd' }]}
@@ -70,7 +70,7 @@ export default function FilteringMenu({tweetsMaxMin, tweetsRangeFunc, redditsMax
                             Range Number of Reddit Posts:
                         </Form.Label>
                         <Range min={redditsMaxMin[0]} max={redditsMaxMin[1]} defaultValue={redditsRange} step={1}
-                            disabled={redditsMaxMin[0] == 0 && redditsMaxMin[1] == 0}
+                            disabled={redditsMaxMin[0] === 0 && redditsMaxMin[1] === 0}
                             tipFormatter={value => `${value}`}
                             pushable
                             trackStyle={[{ backgroundColor: '#0d6efd' }]}
@@ -88,7 +88,7 @@ export default function FilteringMenu({tweetsMaxMin, tweetsRangeFunc, redditsMax
                             Range Number of Twitter Posts:
                         </Form.Label>
                         <Range min={tweetsMaxMin[0]} max={tweetsMaxMin[1]} defaultValue={tweetsRange} step={1}
-                            disabled={tweetsMaxMin[0] == 0 && tweetsMaxMin[1] == 0}
+                            disabled={tweetsMaxMin[0] === 0 && tweetsMaxMin[1] === 0}
                             tipFormatter={value => `${value}`}
                             pushable
                             trackStyle={[{ backgroundColor: '#0d6efd' }]}
