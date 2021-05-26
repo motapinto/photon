@@ -33,10 +33,10 @@ function getVisibleResource(resource: GraphData): GraphData {
 }
 
 let load = true;
+const min = 0, max = 100;
+let maxmin: number[] = [min, max, min, max, min, max];
 
 export default function Graph(): JSX.Element {
-    const min = 0, max = 100;
-    let maxmin: number[] = [min, max, min, max, min, max];
     const [tweetsRange, setTweetsRange] = useState([min, max]);
     const [newsRange, setNewsRange] = useState([min, max]);
     const [redditsRange, setRedditsRange] = useState([min, max]);
