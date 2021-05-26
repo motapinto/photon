@@ -34,16 +34,19 @@ const useStyles = makeStyles(() => ({
 
 interface TopBarProps {
     hasFilteringMenu?: boolean;
+    tweetsMaxMin?: number[];
     tweetsRangeFunc?: Function;
+    redditsMaxMin?: number[];
     redditsRangeFunc?: Function;
+    newsMaxMin?: number[];
     newsRangeFunc?: Function;
 }
 
-export default function TopBar({hasFilteringMenu = false, tweetsRangeFunc, redditsRangeFunc, newsRangeFunc}: TopBarProps): JSX.Element {
+export default function TopBar({hasFilteringMenu = false, tweetsMaxMin = [0,0], tweetsRangeFunc, redditsMaxMin = [0,0], redditsRangeFunc, newsMaxMin = [0,0], newsRangeFunc}: TopBarProps): JSX.Element {
     const classes = useStyles();
     const menu = hasFilteringMenu ? (
         <div className={classes.link}>
-            <FilteringMenu tweetsRangeFunc={tweetsRangeFunc} redditsRangeFunc={redditsRangeFunc} newsRangeFunc={newsRangeFunc} />
+            <FilteringMenu tweetsMaxMin={tweetsMaxMin} tweetsRangeFunc={tweetsRangeFunc} redditsMaxMin={redditsMaxMin} redditsRangeFunc={redditsRangeFunc} newsMaxMin={newsMaxMin} newsRangeFunc={newsRangeFunc} />
         </div>
     ) : "";
 

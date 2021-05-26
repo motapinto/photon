@@ -147,7 +147,7 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                             <span className={classes.cardAttribute}>Score:</span> {redditComment.score}
                         </Typography>
                         <Typography className={classes.pos}>
-                            Click here for more info: <a href={`reddit.com${redditComment.permalink}`}>link</a>
+                            Click here for more info: <a href={redditComment.permalink}>link</a>
                         </Typography>
                     </div>
                 );
@@ -177,7 +177,7 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                             <span className={classes.cardAttribute}>Score:</span> {redditSubmission.score}
                         </Typography>
                         <Typography className={classes.pos}>
-                            Click here for more info: <a href={`reddit.com${redditSubmission.permalink}`}>link</a>
+                            Click here for more info: <a href={redditSubmission.permalink}>link</a>
                         </Typography>
                     </div>
                 );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "../css/MainScreen.css";
 import {
     makeStyles,
@@ -20,19 +20,21 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface FilteringMenuProps {
+    tweetsMaxMin: number[];
     tweetsRangeFunc?: Function;
+    redditsMaxMin: number[];
     redditsRangeFunc?: Function;
+    newsMaxMin: number[];
     newsRangeFunc?: Function;
 }
 
-export default function FilteringMenu({tweetsRangeFunc, redditsRangeFunc, newsRangeFunc}: FilteringMenuProps): JSX.Element {
+export default function FilteringMenu({tweetsMaxMin, tweetsRangeFunc, redditsMaxMin, redditsRangeFunc, newsMaxMin, newsRangeFunc}: FilteringMenuProps): JSX.Element {
     const classes = useStyles();
     const { createSliderWithTooltip } = Slider;
     const Range = createSliderWithTooltip(Slider.Range);
-    const min = 0, max = 100;
-    const [tweetsRange, setTweetsRange] = useState([min, max]);
-    const [newsRange, setNewsRange] = useState([min, max]);
-    const [redditsRange, setRedditsRange] = useState([min, max]);
+    const [tweetsRange, setTweetsRange] = useState([tweetsMaxMin[0], tweetsMaxMin[1]]);
+    const [newsRange, setNewsRange] = useState([newsMaxMin[0], newsMaxMin[1]]);
+    const [redditsRange, setRedditsRange] = useState([redditsMaxMin[0], redditsMaxMin[1]]);
 
     return (
         <DropdownButton
@@ -45,22 +47,13 @@ export default function FilteringMenu({tweetsRangeFunc, redditsRangeFunc, newsRa
         >
             <div>
                 <Form>
-                    <Form.Label className={classes.label}>Node labels</Form.Label>
-                    <div key={"inline-checkbox1"} className="mb-3">
-                        <Form.Check inline label="News Article" type={"checkbox"} defaultChecked  />
-                        <Form.Check inline label="Twitter Post" type={"checkbox"} defaultChecked  />
-                    </div>
-                    <div key={"inline-checkbox2"} className="mb-3">
-                        <Form.Check inline label="Reddit Post" type={"checkbox"} defaultChecked  />
-                    </div>
-                </Form>
-                <Form>
                     <Form.Group controlId="relatedNews" className={classes.displayCol}>
                         <Form.Label className={classes.label}>
                             Range Number of Related News:
                         </Form.Label>
-                        <Range min={min} max={max} defaultValue={newsRange} step={5}
-                            tipFormatter={value => `${value}%`}
+                        <Range min={newsMaxMin[0]} max={newsMaxMin[1]} defaultValue={newsRange} step={1}
+                            disabled={newsMaxMin[0] == 0 && newsMaxMin[1] == 0}
+                            tipFormatter={value => `${value}`}
                             pushable
                             trackStyle={[{ backgroundColor: '#0d6efd' }]}
                             handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]}
@@ -76,8 +69,9 @@ export default function FilteringMenu({tweetsRangeFunc, redditsRangeFunc, newsRa
                         <Form.Label className={classes.label}>
                             Range Number of Reddit Posts:
                         </Form.Label>
-                        <Range min={min} max={max} defaultValue={redditsRange} step={5}
-                            tipFormatter={value => `${value}%`}
+                        <Range min={redditsMaxMin[0]} max={redditsMaxMin[1]} defaultValue={redditsRange} step={1}
+                            disabled={redditsMaxMin[0] == 0 && redditsMaxMin[1] == 0}
+                            tipFormatter={value => `${value}`}
                             pushable
                             trackStyle={[{ backgroundColor: '#0d6efd' }]}
                             handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]}
@@ -93,8 +87,9 @@ export default function FilteringMenu({tweetsRangeFunc, redditsRangeFunc, newsRa
                         <Form.Label className={classes.label}>
                             Range Number of Twitter Posts:
                         </Form.Label>
-                        <Range min={min} max={max} defaultValue={tweetsRange} step={5}
-                            tipFormatter={value => `${value}%`}
+                        <Range min={tweetsMaxMin[0]} max={tweetsMaxMin[1]} defaultValue={tweetsRange} step={1}
+                            disabled={tweetsMaxMin[0] == 0 && tweetsMaxMin[1] == 0}
+                            tipFormatter={value => `${value}`}
                             pushable
                             trackStyle={[{ backgroundColor: '#0d6efd' }]}
                             handleStyle={[{ backgroundColor: '#0d6efd', borderColor: '#0d6efd' }]}
