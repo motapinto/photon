@@ -40,7 +40,8 @@ export default class NewsExtractor extends HttpClient {
 
   public async processNodes(labels: string[]) {
     return Promise.all(labels.map(async label => {
-      while(true) {  
+      let tries = 5;
+      while(tries > 0) {  
         try {
           const news = await super.get<NewsApiResponse>({
             params: {
@@ -64,6 +65,8 @@ export default class NewsExtractor extends HttpClient {
             errorLogger.error(err.message);
             break;
           }
+
+          tries --;
           await Utils.sleep(500);
         }     
       }    
