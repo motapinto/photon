@@ -7,7 +7,7 @@ import {
     Button,
     Grid,
 } from '@material-ui/core';
-import { Card } from 'react-bootstrap';
+import { Card, ListGroup } from 'react-bootstrap';
 import { Favorite } from '@material-ui/icons';
 import Node from "../../model/node";
 import Sector from "../../model/sector";
@@ -78,6 +78,7 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                 label = "Energy Sector";
                 content = (
                     <div className={classes.contentDiv}>
+                        <Card.Title>Energy Sector</Card.Title>
                         <Typography className={classes.pos}>
                             Name: {sector.name}
                         </Typography>
@@ -93,27 +94,17 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                 label = "Tweet";
                 content = (
                     <div className={classes.contentDiv}>
-                        <Typography className={classes.pos}>
-                            Content: "{tweet.text}"
-                        </Typography>
-                        <Typography className={classes.pos}>
-                            Author ID: {tweet.authorId}
-                        </Typography>
-                        <Typography className={classes.pos}>
-                            Creation date: {tweet.createdAt}
-                        </Typography>
-                        <Typography className={classes.pos}>
-                            <Favorite />{tweet.likeCount}
-                        </Typography>
-                        <Typography className={classes.pos}>
-                            Quote count: {tweet.quoteCount}
-                        </Typography>
-                        <Typography className={classes.pos}>
-                            Reply count: {tweet.replyCount}
-                        </Typography>
-                        <Typography className={classes.pos}>
-                            Retweet count: {tweet.retweetCount}
-                        </Typography>
+                        <Card.Title>Tweet</Card.Title>
+                        <Card.Subtitle className="mb-2 text-muted">{tweet.createdAt}</Card.Subtitle>
+                        <Card.Text>
+                            {tweet.text}
+                        </Card.Text>
+                        <ListGroup variant="flush">
+                            <ListGroup.Item>Like count: {tweet.likeCount}</ListGroup.Item>
+                            <ListGroup.Item>Retweet count: {tweet.retweetCount}</ListGroup.Item>
+                            <ListGroup.Item>Quote count: {tweet.quoteCount}</ListGroup.Item>
+                            <ListGroup.Item>Reply count: {tweet.replyCount}</ListGroup.Item>
+                        </ListGroup>
                     </div>
                 );
                 break

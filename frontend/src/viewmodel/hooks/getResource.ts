@@ -20,7 +20,6 @@ export function useGetResource<T>(getResource: () => Promise<T>, dependencies: a
     const [state, setState] = useState(promise);
     
     useEffect(() => {
-        console.log("Backend");
         getResourceAndUpdate(getResource, setState);
         // eslint-disable-next-line
     }, dependencies);

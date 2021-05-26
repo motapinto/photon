@@ -103,19 +103,19 @@ export default function Graph(): JSX.Element {
             // @ts-ignore
             myGraph.d3Force('link')?.distance(200);
         }
-
-        console.log("Frontend");
+        
         // eslint-disable-next-line
     }, [resource]);
 
-    const popup = focusedNode === undefined ? (
-        <div />
-    ) :
-    (
-        <div>
-            <Popup node={focusedNode} />
-        </div>
-    );
+
+    const popup = focusedNode === undefined ?
+        null
+        : 
+        (
+            <div>
+                <Popup node={focusedNode} />
+            </div>
+        );
     
     return (
         <MainScreen hasFilteringMenu={true} tweetsRangeFunc={setTweetsRange} redditsRangeFunc={setRedditsRange} newsRangeFunc={setNewsRange}>
