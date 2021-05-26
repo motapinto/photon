@@ -51,14 +51,13 @@ function parseTweet(id: string, properties: any): Tweet {
     const label = "Tweet";
     const authorId = properties["author_id"];
     const createdAt = properties["created_at"];
-    const likeCount = properties["like_count"]["high"];
-    const dislikeCount = properties["like_count"]["low"];
-    const quoteCount = properties["quote_count"]["high"] + properties["quote_count"]["low"];
-    const replyCount = properties["reply_count"]["high"] + properties["reply_count"]["low"];
-    const retweetCount = properties["retweet_count"]["high"] + properties["retweet_count"]["low"];
+    const likeCount = properties["like_count"]["low"];
+    const quoteCount = properties["quote_count"]["low"];
+    const replyCount = properties["reply_count"]["low"];
+    const retweetCount = properties["retweet_count"]["low"];
     const text = properties["text"];
 
-    return new Tweet(id, label, authorId, createdAt, likeCount, dislikeCount, quoteCount, replyCount, retweetCount, text);
+    return new Tweet(id, label, authorId, createdAt, likeCount, quoteCount, replyCount, retweetCount, text);
 }
 
 function parseClass(id: string, properties: any): Sector {

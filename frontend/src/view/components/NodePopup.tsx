@@ -1,13 +1,14 @@
 import React from "react";
 import {
-    Card,
+    //Card,
     CardContent,
     Typography,
     makeStyles,
     Button,
     Grid,
 } from '@material-ui/core';
-import { ThumbDown, ThumbUp } from '@material-ui/icons';
+import { Card } from 'react-bootstrap';
+import { Favorite } from '@material-ui/icons';
 import Node from "../../model/node";
 import Sector from "../../model/sector";
 import Tweet from "../../model/tweet";
@@ -32,7 +33,7 @@ const useStyles = makeStyles({
         marginBottom: 12,
     },
     closeButton: {
-        float: "right",
+        width: "100%",
         backgroundColor: "#b57c80",
         "&:hover": {
             backgroundColor: "#a46c80",
@@ -102,8 +103,7 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
                             Creation date: {tweet.createdAt}
                         </Typography>
                         <Typography className={classes.pos}>
-                            <ThumbUp />{tweet.likeCount}
-                            <ThumbDown className={classes.dislike}/>{tweet.dislikeCount}
+                            <Favorite />{tweet.likeCount}
                         </Typography>
                         <Typography className={classes.pos}>
                             Quote count: {tweet.quoteCount}
@@ -219,11 +219,14 @@ export default function NodePopup({node}: PopupProps): JSX.Element {
     }
 
     return (
-        <Card className={classes.root} variant="outlined" id="popup">
+        <Card className={classes.root} id="popup">
+            <Card.Body>
+                <Card.Title>Node Description</Card.Title>
+                {cardContent}
+            </Card.Body>
             <Button className={classes.closeButton} onClick={closePopup}>
-                X
+                Close
             </Button>
-            {cardContent}
         </Card>
     );
 }
