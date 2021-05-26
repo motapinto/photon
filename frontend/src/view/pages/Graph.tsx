@@ -103,7 +103,7 @@ export default function Graph(): JSX.Element {
             // @ts-ignore
             myGraph.d3Force('link')?.distance(200);
         }
-        
+
         // eslint-disable-next-line
     }, [resource]);
 
