@@ -21,30 +21,45 @@ Photon is an application capable of:
 ## Requirements
 * Docker
 * NPM
-* .env similar do .env.example in backend/
+* .env (create from .env.example in backend/)
 
 ## Usage
 ### Docker Usage - Both Frontend and Backend
-* docker-compose up
-* docker-compose exec photon-backend npm run seed
+* `docker-compose up`
+* `docker-compose exec photon-backend npm run seed`
 
 ### Backend Usage 
-* cd backend
-* npm install
-* npm run neo4j
-* [npm run seed]
-* npm run dev
+`cd backend`
+* `npm install`
+* `npm run neo4`
+* `npm run seed` (optional)
+* `npm run dev`
 
 **Note:** If you want to use mock data, instead of real data, you can use *npm run seed* to test our application. If not, just skip that instruction.
 
 ### Frontend Usage
 * cd frontend
-* npm install
-* npm start
-* [npm build]
-* [npm eject]
+* `npm install`
+* `npm start`
+* `npm build` (optional)
+* `npm eject` (optional)
 
 **Note:** Check README.md file inside photon folder to see in more detail *npm start, npm build and npm eject* commands results.
+
+## Gallery
+### Architecture
+
+<p>
+<img src="images/architecture.png" width="982px">
+</p>
+
+### App
+
+<p>
+<img src="images/graph.png" width="280px">
+<img src="images/elem.png" width="420px">
+<img src="images/nodes.png" width="282px">
+</p>
 
 ## Developers
 * [Eduardo Ribeiro](https://github.com/EduRibeiro00)
