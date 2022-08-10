@@ -1,5 +1,7 @@
 # Photon
 
+> Check the final [report](docs/report.pdf) and [presentation](docs/presentation.pdf)!
+
 ## Description
 Photon is an application capable of:
 * Extracting and analyzing energy related data from various sources
@@ -50,15 +52,15 @@ Photon is an application capable of:
 ### Architecture
 
 <p>
-<img src="images/architecture.png" width="982px">
+<img src="images/architecture.png" width="852px">
 </p>
 
 ### App
 
 <p>
-<img src="images/graph.png" width="280px">
-<img src="images/elem.png" width="420px">
-<img src="images/nodes.png" width="282px">
+<img src="images/graph.png" width="240px">
+<img src="images/elem.png" width="360px">
+<img src="images/nodes.png" width="242px">
 </p>
 
 ## Developers
