@@ -51,16 +51,16 @@ Photon is an application capable of:
 ## Gallery
 ### Architecture
 
-<p>
-<img src="images/architecture.png" width="852px">
+<p align="center">
+<img src="images/architecture.png" width="800px">
 </p>
 
 ### App
 
-<p>
-<img src="images/graph.png" width="240px">
-<img src="images/elem.png" width="360px">
-<img src="images/nodes.png" width="242px">
+<p align="center">
+<img src="images/graph.png" width="400px">
+<img src="images/nodes.png" width="400px">
+<img src="images/elem.png" width="600px">
 </p>
 
 ## Developers
